@@ -1,0 +1,8 @@
+{
+	"trialNum": 1,
+	"speed": 3,
+	"xPos": 0,
+	"yPos": 5,
+	"zPos": 30,
+	"objects": ["Cube", "Sphere"]
+}
