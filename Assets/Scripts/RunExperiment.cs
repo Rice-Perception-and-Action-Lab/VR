@@ -12,9 +12,10 @@ public class RunExperiment : MonoBehaviour {
     private Trial[] trials;             // The input file converted to an array of Trial objects 
     private int curTrial;               // Track the number of the current trial being run
     private float trialStart;           // Track the time that the current trial began
+    private bool waiting;               // Boolean to track whether we're waiting between trials
+    private float waitTime;             // Timer to track how long we've been waiting
     private string objName;             // The name of the prefab object used for the given trial
     private Vector3 startPos;           // The initial position of the moving object for the current trial
-
     private Transform obj;              // The prefab object that will be instantiated
     private Transform movingObj;        // The object that will approach the user
 
@@ -143,7 +144,9 @@ public class RunExperiment : MonoBehaviour {
 
         // Increment trial number so we don't run this trial again
         //curTrial++;
-        InitializeTrial();
+        //InitializeTrial();
+        waiting = true;
+        waitTime = 0.0f;
     }
 
     /**
@@ -162,6 +165,8 @@ public class RunExperiment : MonoBehaviour {
         Debug.Log("trial len :" + trials.Length);
 
         curTrial = 0;
+        waiting = true;
+        waitTime = 0.0f;
     }
 
     /**
@@ -189,10 +194,20 @@ public class RunExperiment : MonoBehaviour {
         }
         else
         {
-            // On the first update, initialize the first trial
-            if (curTrial == 0)
+            // Don't check for a timeout if we're waiting to end the trial
+            if (waiting)
             {
-                InitializeTrial();
+                // Only initialize a new trial after the waiting period is over
+                if (waitTime >= 3.0f)
+                {
+                    waiting = false;
+                    InitializeTrial();
+                }
+                else
+                {
+                    // Increment wait time
+                    waitTime += Time.deltaTime;
+                }
             }
             else
             {

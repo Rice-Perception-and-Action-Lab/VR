@@ -10,6 +10,8 @@ public class TrackControllerResponse : MonoBehaviour {
     private GameObject movingObj;               // a reference to the MovingObj GameObject so we can call methods from the RunExperiment script attached to it
     private RunExperiment script;               // a reference to the RunExperiment script so we can call its methods
 
+    private float respTime;
+
     private SteamVR_Controller.Device Controller
     {
         // Finds the index of the controller from all tracked objects; allows us to easily track controller input
@@ -24,6 +26,8 @@ public class TrackControllerResponse : MonoBehaviour {
         // Find the MovingObj GameObject so we can call methods from the MoveObj script attached to it
         movingObj = GameObject.Find("MovingObj");
         script = movingObj.GetComponent<RunExperiment>();
+
+        waiting = false;
     }
 	
 	// Update is called once per frame
@@ -37,6 +41,7 @@ public class TrackControllerResponse : MonoBehaviour {
 
                 // End the current trial
                 script.CompleteTrial(Time.time, true);
+                respTime = Time.time;
 
                 // Wait for 3 seconds before initializing the next trial
                 waiting = true;
@@ -45,18 +50,16 @@ public class TrackControllerResponse : MonoBehaviour {
         }
         else
         {
-            // Keep waiting until 3 seconds have passed
-            if (timer < 3.0f)
+            // Keep waiting until 2.5 seconds have passed 
+            // (next trial starts after 3, so controller should accept input by then)
+            if (timer < 2.0f)
             {
-                
                 timer += Time.deltaTime;
-                //Debug.Log("Waiting... " + timer);
             }
             else
             {
+                // Controller can receive input again
                 waiting = false;
-                Debug.Log("Preparing to initialize next trial");
-                script.InitializeTrial();
             }
         }
 
