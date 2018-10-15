@@ -1,0 +1,46 @@
+{
+    "Items": [
+        {
+            "trialNum": 2,
+            "finalDist": 15.0,
+            "startXCoord": 0.0,
+            "startYCoord": 3.0,
+            "startZCoord": 15.0,
+            "velocity": 3.0,
+            "timeVisible": 3.0,
+            "objType": "Sphere",
+            "trialStart": 0.0,
+            "responseTime": 6.002745151519775,
+            "receivedResponse": false,
+            "ttc": 5.0
+        },
+        {
+            "trialNum": 3,
+            "finalDist": 30.0,
+            "startXCoord": 0.0,
+            "startYCoord": 3.0,
+            "startZCoord": 30.0,
+            "velocity": 5.0,
+            "timeVisible": 4.0,
+            "objType": "Cube",
+            "trialStart": 6.002745151519775,
+            "responseTime": 14.005448341369629,
+            "receivedResponse": false,
+            "ttc": 6.0
+        },
+        {
+            "trialNum": 4,
+            "finalDist": 80.0,
+            "startXCoord": 0.0,
+            "startYCoord": 3.0,
+            "startZCoord": 80.0,
+            "velocity": 10.0,
+            "timeVisible": 5.0,
+            "objType": "Cube",
+            "trialStart": 14.005448341369629,
+            "responseTime": 24.007097244262697,
+            "receivedResponse": false,
+            "ttc": 8.0
+        }
+    ]
+}
