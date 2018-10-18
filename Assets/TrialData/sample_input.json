@@ -1,25 +1,12 @@
 {
   "trials": [
     {
-      "trialNum":     1,
-      "finalDist":    15,
-      "velocity":     3,
+      "trialNum": 1,
+      "finalDist": 120,
+      "velocity": 3,
       "timeVisible": 3,
-      "objects": ["Cube", "Sphere"]
-    },
-    {
-      "trialNum": 2,
-      "finalDist": 30,
-      "velocity": 5,
-      "timeVisible": 4,
-      "objects": [ "Cube", "Sphere" ]
-    },
-    {
-      "trialNum": 3,
-      "finalDist": 80,
-      "velocity": 10,
-      "timeVisible": 5,
-      "objects": [ "Cube", "Sphere" ]
+      "objects": [ "Sphere" ]
     }
+
   ]
 }

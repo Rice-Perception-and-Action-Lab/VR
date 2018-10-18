@@ -19,6 +19,12 @@ public class RunExperiment : MonoBehaviour {
     private Transform obj;              // The prefab object that will be instantiated
     private Transform movingObj;        // The object that will approach the user
 
+    private float ttcTimer;
+    private float timer2;
+    private float prevTime;
+    private bool startTimer;
+    private bool printTime;
+
 
     [System.Serializable]
     class TrialArray
@@ -120,8 +126,13 @@ public class RunExperiment : MonoBehaviour {
         // a game object to avoid errors
         if (movingObj && movingObj.gameObject)
         {
-            Debug.Log("Deleting moving object for trial " + curTrial);
-            Destroy(movingObj.gameObject);
+            //Debug.Log("Deleting moving object for trial " + curTrial);
+            //Destroy(movingObj.gameObject);
+            Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
+            rend.material.color = Color.black;
+
+            startTimer = true;
+            prevTime = Time.time;
         } 
         else
         {
@@ -136,7 +147,8 @@ public class RunExperiment : MonoBehaviour {
     {
         // Delete the existing object in the trial if a button was pressed
         // before the object was hidden from view
-        HideObj();
+        //HideObj();
+        //Destroy(movingObj.gameObject);
 
         // Add this trial's data to the data manager
         dataManager.AddTrial(curTrial, trials[curTrial - 1].finalDist, startPos, trials[curTrial - 1].velocity,
@@ -155,18 +167,18 @@ public class RunExperiment : MonoBehaviour {
      */
     void Start()
     {
-        Debug.Log("here");
-        Debug.Log("input file: " + input_file);
-        Debug.Log("time: " + Time.time);
-
         // Load the data from the desired input file
         this.trials = LoadTrialData(input_file, Time.time);
-
-        Debug.Log("trial len :" + trials.Length);
 
         curTrial = 0;
         waiting = true;
         waitTime = 0.0f;
+
+        ttcTimer = 0.0f;
+        startTimer = false;
+        prevTime = 0.0f;
+        timer2 = 0.0f;
+        printTime = true;
     }
 
     /**
@@ -184,7 +196,39 @@ public class RunExperiment : MonoBehaviour {
             float step = trials[curTrial - 1].velocity * Time.deltaTime;
 
             // Move the object 1 step closer to the target
-            movingObj.position = Vector3.MoveTowards(movingObj.position, target.position, step);
+            Vector3 prevPos = movingObj.position;
+
+            //Vector3 adj = new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 2));
+            //Vector3 adj = new Vector3(0.0f, (movingObj.localScale.y / 2), 0.0f);
+            Vector3 adj = new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 2.0f));
+
+            Debug.Log("ADJ: " + adj.z);
+
+            movingObj.position = Vector3.MoveTowards(movingObj.position, target.position + adj, step);
+
+            Debug.Log("Target Position X: " + target.position.x + " Y: " + target.position.y + " Z: " + target.position.z);
+            Debug.Log("Moving Obj Size X: " + movingObj.localScale.x + " Y: " + movingObj.localScale.y + " Z: " + movingObj.localScale.z);
+
+            if (startTimer)
+            {
+                ttcTimer += Time.deltaTime;
+                float temp = Time.time;
+                timer2 += Time.time - prevTime;
+                prevTime = temp;
+            }
+
+            Vector3 newPos = movingObj.position;
+
+            //Debug.Log("Prev Pos: " + prevPos + "  New Pos: " + newPos);
+
+            if (prevPos == newPos && printTime)
+            {
+                Debug.Log("Contact");
+                Debug.Log("TTC TIMER: " + ttcTimer);
+                Debug.Log("TIMER 2: " + timer2);
+                startTimer = false;
+                printTime = false;
+            }
 
             // If the object has been visible for the time visible param, hide it
             if ((Time.time - trialStart) >= trials[curTrial - 1].timeVisible)
