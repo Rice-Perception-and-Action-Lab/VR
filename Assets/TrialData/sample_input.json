@@ -2,11 +2,31 @@
   "trials": [
     {
       "trialNum": 1,
-      "finalDist": 120,
+      "finalDist": 90,
       "velocity": 3,
       "timeVisible": 3,
-      "objects": [ "Sphere" ]
+      "objects": [ "Cube" ]
+    },
+    {
+      "trialNum": 1,
+      "finalDist": 90,
+      "velocity": 3,
+      "timeVisible": 3,
+      "objects": [ "Cube" ]
+    },
+    {
+      "trialNum": 1,
+      "finalDist": 39,
+      "velocity": 3,
+      "timeVisible": 3,
+      "objects": [ "Cube" ]
+    },
+    {
+      "trialNum": 1,
+      "finalDist": 10,
+      "velocity": 2,
+      "timeVisible": 3,
+      "objects": [ "Cube" ]
     }
-
   ]
 }
