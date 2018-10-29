@@ -2,7 +2,7 @@
   "trials": [
     {
       "trialNum": 1,
-      "finalDist": 90,
+      "finalDist": 39,
       "velocity": 3,
       "timeVisible": 3,
       "objects": [ "Cube" ]

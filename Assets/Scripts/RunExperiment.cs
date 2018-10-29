@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using UnityEngine;
-
-// https://docs.unity3d.com/ScriptReference/Time-frameCount.html
 
 public class RunExperiment : MonoBehaviour {
 
+    // Set via the Unity editor
     public SaveData dataManager;        // The GameObject responsible for tracking trial responses
     public Transform viveCamera;        // Position of the target (i.e., the Vive camera rig)
 
@@ -16,7 +14,10 @@ public class RunExperiment : MonoBehaviour {
     private string inputFile;           // A JSON file holding the information for every trial to be run
     private bool targetCamera;          // A boolean to determine if the object follows the user's head or not
 
+    // Experiment-Dependent Variables
     private Trial[] trials;             // The input file converted to an array of Trial objects 
+
+    // Trial-Dependent Variables
     private int curTrial;               // Track the number of the current trial being run
     private Vector3 targetPos;           // The target that the moving object aims for
     private float trialStart;           // Track the time that the current trial began
@@ -26,31 +27,6 @@ public class RunExperiment : MonoBehaviour {
     private Vector3 startPos;           // The initial position of the moving object for the current trial
     private Transform obj;              // The prefab object that will be instantiated
     private Transform movingObj;        // The object that will approach the user
-
-    private float ttcTimer;
-    private float timer2;
-    private float prevTime;
-    private bool startTimer;
-    private bool printTime;
-
-    private System.Diagnostics.Stopwatch watch;
-
-    public static class WinApi
-    {
-        /// <summary>TimeBeginPeriod(). See the Windows API documentation for details.</summary>
-
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage"), SuppressUnmanagedCodeSecurity]
-        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod", SetLastError = true)]
-
-        public static extern uint TimeBeginPeriod(uint uMilliseconds);
-
-        /// <summary>TimeEndPeriod(). See the Windows API documentation for details.</summary>
-
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage"), SuppressUnmanagedCodeSecurity]
-        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod", SetLastError = true)]
-
-        public static extern uint TimeEndPeriod(uint uMilliseconds);
-    }
 
     [System.Serializable]
     public class Config
@@ -129,9 +105,6 @@ public class RunExperiment : MonoBehaviour {
         {
             Debug.Log("Initializing trial " + curTrial);
 
-            watch = new System.Diagnostics.Stopwatch();
-            watch.Start();
-
             // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
             targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
       
@@ -184,9 +157,6 @@ public class RunExperiment : MonoBehaviour {
             //Destroy(movingObj.gameObject);
             Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
             rend.material.color = Color.black;
-
-            startTimer = true;
-            prevTime = Time.time;
         } 
         else
         {
@@ -221,8 +191,6 @@ public class RunExperiment : MonoBehaviour {
      */
     void Start()
     {
-        WinApi.TimeBeginPeriod(1);
-
         // Load the config file
         this.config = LoadConfig("config.json");
 
@@ -230,40 +198,40 @@ public class RunExperiment : MonoBehaviour {
         inputFile = config.dataFile;
         targetCamera = config.targetCamera;
 
-
-
         // Load the data from the desired input file
         this.trials = LoadTrialData(inputFile, Time.time);
 
+        // Initialize global variables
         curTrial = 0;
         waiting = true;
         waitTime = 0.0f;
-
-        ttcTimer = 0.0f;
-        startTimer = false;
-        prevTime = 0.0f;
-        timer2 = 0.0f;
-        printTime = true;
     }
 
+    /**
+     * Move the object over a fixed period of time (determined by the distance to travel and velocity
+     * of the object). Hide the object after a certain period of time has passed.
+     */
     public IEnumerator MoveOverTime(Vector3 finalPos, float seconds)
     {
         float elapsedTime = 0.0f;
         float trialTTC = 0.0f;
         bool objHidden = false;
+        Vector3 adjustment = new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 4.0f));
         Vector3 startingPos = movingObj.position;
-        Debug.Log("SECONDS: " + seconds);
         while (elapsedTime < seconds)
         {
-            if (!objHidden && elapsedTime >= trials[curTrial - 1].timeVisible)
+            if (movingObj.position.z > adjustment.z)
             {
-                Debug.Log("TIME VISIBLE: " + elapsedTime);
-                Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
-                HideObj();
-                objHidden = true;
-            }
+                if (!objHidden && elapsedTime >= trials[curTrial - 1].timeVisible)
+                {
+                    Debug.Log("TIME VISIBLE: " + elapsedTime);
+                    Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
+                    HideObj();
+                    objHidden = true;
+                }
 
-            movingObj.position = Vector3.Lerp(startingPos, finalPos, (elapsedTime / seconds));
+                movingObj.position = Vector3.Lerp(startingPos, finalPos, (elapsedTime / seconds));
+            }
             elapsedTime += Time.deltaTime;
             if (objHidden)
                 trialTTC += Time.deltaTime;
@@ -275,9 +243,7 @@ public class RunExperiment : MonoBehaviour {
     }
 
     /**
-     * Every frame, move the object and check if it should disappear 
-     * from view. If the first trial hasn't been initialized yet, then
-     * do so.
+     * Initialize trials as needed. 
      */
     void FixedUpdate()
     {
@@ -289,20 +255,7 @@ public class RunExperiment : MonoBehaviour {
             if (targetCamera)
             {
                 targetPos = viveCamera.position;
-            }
-
-            if (startTimer)
-            {
-                ttcTimer += Time.deltaTime;
-                float temp = Time.time;
-                timer2 += Time.time - prevTime;
-                prevTime = temp;
-            }
-
-            Vector3 newPos = movingObj.position;
-
-            // If the object has been visible for the time visible param, hide it
-            
+            }            
         }
         else
         {
@@ -332,93 +285,5 @@ public class RunExperiment : MonoBehaviour {
             }
         }
     }
-
-
-    /*void FixedUpdate()
-    {
-        Debug.Log("Frame Count: " + Time.frameCount);
-
-        // Make sure there is currently a trial running before attempting
-        // to move an object
-        if (movingObj)
-        {
-            // Update the target position if we're trying to follow the user's head
-            if (targetCamera)
-            {
-                targetPos = viveCamera.position;
-            }
-
-            // step size equals current trial's velocity * frame rate
-            float step = trials[curTrial - 1].velocity * Time.deltaTime;
-
-            // Move the object 1 step closer to the target
-            Vector3 prevPos = movingObj.position;
-
-            //Vector3 adj = new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 2));
-            //Vector3 adj = new Vector3(0.0f, (movingObj.localScale.y / 2), 0.0f);
-            Vector3 adj = new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 2.0f));
-            //Vector3 adj = new Vector3(0.0f, 0.0f, (movingObj.localScale.z));
-            //Debug.Log("adj z: " + adj.z);
-
-            //movingObj.position = Vector3.MoveTowards(movingObj.position, targetPos, step);
-           movingObj.position = Vector3.MoveTowards(movingObj.position, targetPos - adj, step);
-
-            if (startTimer)
-            {
-                ttcTimer += Time.deltaTime;
-                float temp = Time.time;
-                timer2 += Time.time - prevTime;
-                prevTime = temp;
-            }
-
-            Vector3 newPos = movingObj.position;
-
-            //Debug.Log("Prev Pos: " + prevPos + "  New Pos: " + newPos);
-
-            if (prevPos == newPos && printTime)
-            {
-                Debug.Log("Contact");
-                Debug.Log("TTC TIMER: " + ttcTimer);
-                Debug.Log("TIMER 2: " + timer2);
-                watch.Stop();
-                Debug.Log("STOPWATCH: " + watch.ElapsedMilliseconds);
-                startTimer = false;
-                printTime = false;
-            }
-
-            // If the object has been visible for the time visible param, hide it
-            if ((Time.time - trialStart) >= trials[curTrial - 1].timeVisible)
-            {
-                HideObj();
-            }
-        }
-        else
-        {
-            // Don't check for a timeout if we're waiting to end the trial
-            if (waiting)
-            {
-                // Only initialize a new trial after the waiting period is over
-                if (waitTime >= 3.0f)
-                {
-                    waiting = false;
-                    InitializeTrial();
-                }
-                else
-                {
-                    // Increment wait time
-                    waitTime += Time.deltaTime;
-                }
-            }
-            else
-            {
-                // Check for a timeout (i.e., no controller response for some specified amount of time)
-                if ((curTrial - 1 < trials.Length) && (Time.time - trialStart) >= (trials[curTrial - 1].timeVisible * 2))
-                {
-                    Debug.Log("Timeout");
-                    CompleteTrial(Time.time, false);
-                }
-            }
-        }*/
-    //}
 
 }
