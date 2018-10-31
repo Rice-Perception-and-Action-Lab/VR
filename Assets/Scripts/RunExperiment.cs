@@ -6,27 +6,29 @@ using UnityEngine;
 public class RunExperiment : MonoBehaviour {
 
     // Set via the Unity editor
-    public SaveData dataManager;        // The GameObject responsible for tracking trial responses
-    public Transform viveCamera;        // Position of the target (i.e., the Vive camera rig)
+    public SaveData dataManager;            // The GameObject responsible for tracking trial responses
+    public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
 
     // The Config options
-    private Config config;              // The configuration file specifying certain experiment-wide parameters
-    private string inputFile;           // A JSON file holding the information for every trial to be run
-    private bool targetCamera;          // A boolean to determine if the object follows the user's head or not
+    private Config config;                  // The configuration file specifying certain experiment-wide parameters
+    private string inputFile;               // A JSON file holding the information for every trial to be run
+    private bool targetCamera;              // A boolean to determine if the object follows the user's head or not
 
     // Experiment-Dependent Variables
-    private Trial[] trials;             // The input file converted to an array of Trial objects 
+    private Trial[] trials;                 // The input file converted to an array of Trial objects 
+    private IEnumerator movementCoroutine;  // The coroutine responsible for moving the object in the world
 
     // Trial-Dependent Variables
-    private int curTrial;               // Track the number of the current trial being run
-    private Vector3 targetPos;           // The target that the moving object aims for
-    private float trialStart;           // Track the time that the current trial began
-    private bool waiting;               // Boolean to track whether we're waiting between trials
-    private float waitTime;             // Timer to track how long we've been waiting
-    private string objName;             // The name of the prefab object used for the given trial
-    private Vector3 startPos;           // The initial position of the moving object for the current trial
-    private Transform obj;              // The prefab object that will be instantiated
-    private Transform movingObj;        // The object that will approach the user
+    private int curTrial;                   // Track the number of the current trial being run
+    private bool isRunning;                 // Tracks whether or not a trial is currently active
+    private Vector3 targetPos;              // The target that the moving object aims for
+    private float trialStart;               // Track the time that the current trial began
+    private bool waiting;                   // Boolean to track whether we're waiting between trials
+    private float waitTime;                 // Timer to track how long we've been waiting
+    private string objName;                 // The name of the prefab object used for the given trial
+    private Vector3 startPos;               // The initial position of the moving object for the current trial
+    private Transform obj;                  // The prefab object that will be instantiated
+    private Transform movingObj;            // The object that will approach the user
 
     [System.Serializable]
     public class Config
@@ -67,6 +69,7 @@ public class RunExperiment : MonoBehaviour {
         public float velocity;          // the speed the object is moving (in meters / second)
         public float timeVisible;       // the amount of time this object should be visible before disappearing
         public string[] objects;        // the names of the potential object prefabs that can be instantiated
+        public float rotationSpeed;     // the speed at which the object should rotate each frame
     }
 
     /**
@@ -108,9 +111,14 @@ public class RunExperiment : MonoBehaviour {
             // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
             targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
       
-
             // Get the current trial from the data array
             Trial trial = trials[curTrial];
+
+            // Set the target position for the moving object
+            if (targetCamera)
+            {
+                targetPos = viveCamera.position;
+            }
 
             // Set the inital position of the moving object
             startPos = new Vector3(targetPos.x, targetPos.y, trial.finalDist);
@@ -128,12 +136,15 @@ public class RunExperiment : MonoBehaviour {
             // Instantiate the object so that it's visible
             movingObj = Instantiate(obj, startPos, Quaternion.identity);
 
+            isRunning = true;
+
             // Set the start time of this trial so that it can be 
             // recorded by the data manager
             trialStart = Time.time;
             curTrial++;
 
-            StartCoroutine(MoveOverTime(endPos, (trial.finalDist / trial.velocity)));
+            movementCoroutine = MoveOverTime(endPos, (trial.finalDist / trial.velocity));
+            StartCoroutine(movementCoroutine);
         }
         else
         {
@@ -153,11 +164,13 @@ public class RunExperiment : MonoBehaviour {
         // a game object to avoid errors
         if (movingObj && movingObj.gameObject)
         {
-            //Debug.Log("Deleting moving object for trial " + curTrial);
-            //Destroy(movingObj.gameObject);
+            Debug.Log("Deleting moving object for trial " + curTrial);          // remove for testing
+            //Destroy(movingObj.gameObject);                                      // remove for testing
             Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
-            rend.material.color = Color.black;
-        } 
+            rend.enabled = false;
+
+            //rend.material.color = Color.black;                                // add for testing
+        }
         else
         {
             Debug.Log("ERROR: Could not delete moving object; object did not exist");
@@ -171,8 +184,11 @@ public class RunExperiment : MonoBehaviour {
     {
         // Delete the existing object in the trial if a button was pressed
         // before the object was hidden from view
-        //HideObj();
-        //Destroy(movingObj.gameObject);
+        //HideObj();                          // remove for testing
+        StopCoroutine(movementCoroutine);
+        Destroy(movingObj.gameObject);      // remove for testing
+
+        isRunning = false;
 
         // Add this trial's data to the data manager
         dataManager.AddTrial(curTrial, trials[curTrial - 1].finalDist, startPos, trials[curTrial - 1].velocity,
@@ -183,6 +199,17 @@ public class RunExperiment : MonoBehaviour {
         //InitializeTrial();
         waiting = true;
         waitTime = 0.0f;
+    }
+
+    /**
+     * Checks whether a trial is currently running as a helper method for
+     * communicating with the TrackControllerResponse script. Returns true if
+     * a trial is active or false if no trial is active and we are waiting for
+     * user input to move on.
+     */
+    public bool CheckTrialRunning()
+    {
+        return isRunning;
     }
 
     /**
@@ -205,6 +232,7 @@ public class RunExperiment : MonoBehaviour {
         curTrial = 0;
         waiting = true;
         waitTime = 0.0f;
+        isRunning = false;
     }
 
     /**
@@ -232,6 +260,10 @@ public class RunExperiment : MonoBehaviour {
 
                 movingObj.position = Vector3.Lerp(startingPos, finalPos, (elapsedTime / seconds));
             }
+
+            // Update the rotation of the object every time
+            movingObj.Rotate(-trials[curTrial - 1].rotationSpeed * Time.deltaTime, 0, 0, Space.Self);
+
             elapsedTime += Time.deltaTime;
             if (objHidden)
                 trialTTC += Time.deltaTime;
@@ -241,49 +273,4 @@ public class RunExperiment : MonoBehaviour {
         Debug.Log("ELAPSED TIME: " + elapsedTime);
         Debug.Log("TTC: " + trialTTC);
     }
-
-    /**
-     * Initialize trials as needed. 
-     */
-    void FixedUpdate()
-    {
-        // Make sure there is currently a trial running before attempting
-        // to move an object
-        if (movingObj)
-        {
-            // Update the target position if we're trying to follow the user's head
-            if (targetCamera)
-            {
-                targetPos = viveCamera.position;
-            }            
-        }
-        else
-        {
-            // Don't check for a timeout if we're waiting to end the trial
-            if (waiting)
-            {
-                // Only initialize a new trial after the waiting period is over
-                if (waitTime >= 3.0f)
-                {
-                    waiting = false;
-                    InitializeTrial();
-                }
-                else
-                {
-                    // Increment wait time
-                    waitTime += Time.deltaTime;
-                }
-            }
-            else
-            {
-                // Check for a timeout (i.e., no controller response for some specified amount of time)
-                if ((curTrial - 1 < trials.Length) && (Time.time - trialStart) >= (trials[curTrial - 1].timeVisible * 2))
-                {
-                    Debug.Log("Timeout");
-                    CompleteTrial(Time.time, false);
-                }
-            }
-        }
-    }
-
 }

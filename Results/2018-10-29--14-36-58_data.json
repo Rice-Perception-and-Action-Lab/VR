@@ -1,0 +1,60 @@
+{
+    "Items": [
+        {
+            "trialNum": 2,
+            "finalDist": 39.0,
+            "startXCoord": 1.3897185325622559,
+            "startYCoord": 6.2389326095581059,
+            "startZCoord": 39.0,
+            "velocity": 3.0,
+            "timeVisible": 3.0,
+            "objType": "Cube",
+            "trialStart": 3.0,
+            "trialEnd": 9.588727951049805,
+            "receivedResponse": true,
+            "ttc": 13.0
+        },
+        {
+            "trialNum": 3,
+            "finalDist": 90.0,
+            "startXCoord": 1.3897275924682618,
+            "startYCoord": 6.239015579223633,
+            "startZCoord": 90.0,
+            "velocity": 3.0,
+            "timeVisible": 3.0,
+            "objType": "Cube",
+            "trialStart": 12.600000381469727,
+            "trialEnd": 21.993436813354493,
+            "receivedResponse": true,
+            "ttc": 30.0
+        },
+        {
+            "trialNum": 4,
+            "finalDist": 39.0,
+            "startXCoord": 1.3900961875915528,
+            "startYCoord": 6.239339351654053,
+            "startZCoord": 39.0,
+            "velocity": 3.0,
+            "timeVisible": 3.0,
+            "objType": "Cube",
+            "trialStart": 25.011112213134767,
+            "trialEnd": 31.66632080078125,
+            "receivedResponse": true,
+            "ttc": 13.0
+        },
+        {
+            "trialNum": 5,
+            "finalDist": 10.0,
+            "startXCoord": 1.3895162343978882,
+            "startYCoord": 6.238792896270752,
+            "startZCoord": 10.0,
+            "velocity": 2.0,
+            "timeVisible": 3.0,
+            "objType": "Cube",
+            "trialStart": 34.67778015136719,
+            "trialEnd": 38.152225494384769,
+            "receivedResponse": true,
+            "ttc": 5.0
+        }
+    ]
+}

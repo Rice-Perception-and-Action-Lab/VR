@@ -33,35 +33,22 @@ public class TrackControllerResponse : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (!waiting)
+        bool runningTrial = script.CheckTrialRunning();
+
+        if (runningTrial && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+            Debug.Log("Touchpad button pressed; end current trial");
+
+            // End the current trial
+            script.CompleteTrial(Time.time, true);
+            respTime = Time.time;
+        } else
+        {
+            if (!runningTrial && Controller.GetHairTriggerDown())
             {
-                Debug.Log("Controller input received; launch next trial");
-
-                // End the current trial
-                script.CompleteTrial(Time.time, true);
-                respTime = Time.time;
-
-                // Wait for 3 seconds before initializing the next trial
-                waiting = true;
-                timer = 0.0f;
+                Debug.Log("Hair trigger pressed; launch next trial");
+                script.InitializeTrial();
             }
         }
-        else
-        {
-            // Keep waiting until 2.5 seconds have passed 
-            // (next trial starts after 3, so controller should accept input by then)
-            if (timer < 2.0f)
-            {
-                timer += Time.deltaTime;
-            }
-            else
-            {
-                // Controller can receive input again
-                waiting = false;
-            }
-        }
-
     }
 }
