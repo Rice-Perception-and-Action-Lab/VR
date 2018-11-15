@@ -2,23 +2,15 @@
   "trials": [
     {
       "trialNum": 1,
-      "finalDist": 10,
+      "finalDist": 12,
       "velocity": 2,
       "timeVisible": 5,
-      "objects": [ "Soccer Ball" ],
-      "rotationSpeed": 10
-    },
-    {
-      "trialNum": 1,
-      "finalDist": 90,
-      "velocity": 3,
-      "timeVisible": 20,
       "objects": [ "Soccer Ball" ],
       "rotationSpeed": 1
     },
     {
       "trialNum": 1,
-      "finalDist": 39,
+      "finalDist": 18,
       "velocity": 3,
       "timeVisible": 3,
       "objects": [ "Soccer Ball" ],
@@ -26,9 +18,17 @@
     },
     {
       "trialNum": 1,
-      "finalDist": 10,
-      "velocity": 2,
-      "timeVisible": 5,
+      "finalDist": 32,
+      "velocity": 4,
+      "timeVisible": 3,
+      "objects": [ "Soccer Ball" ],
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 1,
+      "finalDist": 120,
+      "velocity": 10,
+      "timeVisible": 2,
       "objects": [ "Soccer Ball" ],
       "rotationSpeed": 1
     }

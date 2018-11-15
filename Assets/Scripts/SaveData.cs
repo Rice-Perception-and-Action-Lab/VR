@@ -8,10 +8,12 @@ using UnityEngine;
 public class SaveData : MonoBehaviour
 {
 
-    public TrialData[] data;    // the data collected for each trial ran
+    public TrialData[] data;        // the TTC data collected for each trial ran
+    private List<HeadPos> posData;  // the head position data collected for each trial
 
-    private int i;              // index to track current position in data array
-    private float expStart;     // the start time of the experiment (all trial times are relative to this value)
+    private int i;                  // index to track current position in data array
+    private float expStart;         // the start time of the experiment (all trial times are relative to this value)
+    private string datetime;        // the date/time that this experiment started
 
     /**
      * This class holds all data for an individual trial. It includes all 
@@ -52,6 +54,26 @@ public class SaveData : MonoBehaviour
             this.trialEnd = trialEnd;
             this.receivedResponse = receivedResponse;
             this.ttc = (dist / velocity);
+        }
+    }
+
+    [System.Serializable]
+    public class HeadPos
+    {
+        public float timestamp;     // The time this position was recorded
+        public float x;             // The x-coordinate of the camera rig at the given point in time
+        public float y;             // The x-coordinate of the camera rig at the given point in time
+        public float z;             // The x-coordinate of the camera rig at the given point in time
+
+        /**
+         * A constructor for the HeadPos object
+         */
+        public HeadPos(float timestamp, Vector3 pos)
+        {
+            this.timestamp = timestamp;
+            this.x = pos.x;
+            this.y = pos.y;
+            this.z = pos.z;
         }
     }
 
@@ -101,6 +123,10 @@ public class SaveData : MonoBehaviour
 
         Debug.Log("Experiment starting at time " + startTime);
         this.expStart = startTime;
+
+        this.datetime = System.DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss");
+
+        posData = new List<HeadPos>();
     }
 
     /**
@@ -133,13 +159,58 @@ public class SaveData : MonoBehaviour
 
     }
 
+    public void AddHeadPos(float timestamp, Vector3 curPos)
+    {
+        posData.Add(new HeadPos(timestamp, curPos));
+    }
+
+    public void WritePosData()
+    {
+        HeadPos[] posArr = posData.ToArray();
+        string jsonData = JsonHelper.ToJson(posArr, true);
+        string dir = Application.dataPath + "/../Results/HeadPos/";
+
+        // Create the directory if it hasn't already been created
+        if (!Directory.Exists(dir))
+        {
+            Debug.Log("creating dir " + dir);
+            Directory.CreateDirectory(dir);
+        }
+
+        // Add the time of the experiment and create that directory, if needed
+        dir += datetime + "/";
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        string trialDataFile = "Trial" + (i) + ".json";
+        string filepath = Path.Combine(dir, trialDataFile);
+
+        using (StreamWriter writer = new StreamWriter(filepath, false))
+        {
+            writer.WriteLine(jsonData);
+            writer.Flush();
+        }
+
+        posData = new List<HeadPos>();
+    }
+
     /**
      * This method writes all trial data to a JSON file.
      */
     public void Save()
     {
         string jsonData = JsonHelper.ToJson(data, true);
-        string dir = Application.dataPath + "/../Results/";
+        string dir = Application.dataPath + "/../Results/ParticipantResponse/";
+
+        // Create the directory if it hasn't already been created
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+
         string dataFile = System.DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss") + "_data.json";
         string filepath = Path.Combine(dir, dataFile);
         Debug.Log("Saving data to " + filepath);

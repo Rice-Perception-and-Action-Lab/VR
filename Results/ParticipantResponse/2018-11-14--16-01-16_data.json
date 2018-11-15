@@ -1,0 +1,60 @@
+{
+    "Items": [
+        {
+            "trialNum": 2,
+            "finalDist": 12.0,
+            "startXCoord": 1.3499263525009156,
+            "startYCoord": 6.23353385925293,
+            "startZCoord": 12.0,
+            "velocity": 2.0,
+            "timeVisible": 5.0,
+            "objType": "Soccer Ball",
+            "trialStart": 1.0741254091262818,
+            "trialEnd": 16.71619415283203,
+            "receivedResponse": true,
+            "ttc": 6.0
+        },
+        {
+            "trialNum": 3,
+            "finalDist": 18.0,
+            "startXCoord": 1.3497123718261719,
+            "startYCoord": 6.233303546905518,
+            "startZCoord": 18.0,
+            "velocity": 3.0,
+            "timeVisible": 3.0,
+            "objType": "Soccer Ball",
+            "trialStart": 18.371320724487306,
+            "trialEnd": 29.943401336669923,
+            "receivedResponse": true,
+            "ttc": 6.0
+        },
+        {
+            "trialNum": 4,
+            "finalDist": 32.0,
+            "startXCoord": 1.3496148586273194,
+            "startYCoord": 6.23319149017334,
+            "startZCoord": 32.0,
+            "velocity": 4.0,
+            "timeVisible": 3.0,
+            "objType": "Soccer Ball",
+            "trialStart": 30.909717559814454,
+            "trialEnd": 45.02565002441406,
+            "receivedResponse": true,
+            "ttc": 8.0
+        },
+        {
+            "trialNum": 5,
+            "finalDist": 120.0,
+            "startXCoord": 1.349654197692871,
+            "startYCoord": 6.233231544494629,
+            "startZCoord": 120.0,
+            "velocity": 10.0,
+            "timeVisible": 2.0,
+            "objType": "Soccer Ball",
+            "trialStart": 45.703372955322269,
+            "trialEnd": 53.765899658203128,
+            "receivedResponse": true,
+            "ttc": 12.0
+        }
+    ]
+}

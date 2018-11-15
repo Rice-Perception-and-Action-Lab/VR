@@ -7,6 +7,7 @@ public class RunExperiment : MonoBehaviour {
 
     // Set via the Unity editor
     public SaveData dataManager;            // The GameObject responsible for tracking trial responses
+    public UnityEngine.UI.Text feedbackMsg; // The text displayed on the scene's canvas when the participant responds with their TTC guess
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
 
     // The Config options
@@ -17,6 +18,7 @@ public class RunExperiment : MonoBehaviour {
     // Experiment-Dependent Variables
     private Trial[] trials;                 // The input file converted to an array of Trial objects 
     private IEnumerator movementCoroutine;  // The coroutine responsible for moving the object in the world
+    private Transform headPos;              // The location of the camera rig relevant to the scene
 
     // Trial-Dependent Variables
     private int curTrial;                   // Track the number of the current trial being run
@@ -35,22 +37,6 @@ public class RunExperiment : MonoBehaviour {
     {
         public string dataFile;
         public bool targetCamera;
-    }
-
-    public Config LoadConfig(string configFile)
-    {
-        try
-        {
-            string filepath = configFile.Replace(".json", "");
-            TextAsset jsonString = Resources.Load<TextAsset>(filepath);
-            Config config = JsonUtility.FromJson<Config>(jsonString.ToString());
-            return config;
-        }
-        catch (System.Exception e)
-        {
-            print("Exception: " + e.Message);
-            return null;
-        }
     }
 
     [System.Serializable]
@@ -72,6 +58,23 @@ public class RunExperiment : MonoBehaviour {
         public float rotationSpeed;     // the speed at which the object should rotate each frame
     }
 
+    public Config LoadConfig(string configFile)
+    {
+        try
+        {
+            string filepath = configFile.Replace(".json", "");
+            TextAsset jsonString = Resources.Load<TextAsset>(filepath);
+            Config config = JsonUtility.FromJson<Config>(jsonString.ToString());
+            return config;
+        }
+        catch (System.Exception e)
+        {
+            print("Exception: " + e.Message);
+            return null;
+        }
+    }
+
+
     /**
      * Given a path to a JSON file containing the parameters for each
      * trial in the experiment, creates a Trial object with the correct
@@ -92,8 +95,7 @@ public class RunExperiment : MonoBehaviour {
         }
         catch (System.Exception e)
         {
-            Debug.Log("exception?");
-            print("Exception: " + e.Message);
+            Debug.Log("Exception: " + e.Message);
             return null;
         }
     }
@@ -107,6 +109,8 @@ public class RunExperiment : MonoBehaviour {
         if (curTrial < this.trials.Length)
         {
             Debug.Log("Initializing trial " + curTrial);
+
+            feedbackMsg.text = "";
 
             // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
             targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
@@ -143,8 +147,10 @@ public class RunExperiment : MonoBehaviour {
             trialStart = Time.time;
             curTrial++;
 
-            movementCoroutine = MoveOverTime(endPos, (trial.finalDist / trial.velocity));
-            StartCoroutine(movementCoroutine);
+            //movementCoroutine = MoveOverTime(endPos, (trial.finalDist / trial.velocity));
+            //StartCoroutine(movementCoroutine);
+            float delay = (1.0f / 60.0f);
+            InvokeRepeating("MoveObjByStep", 0f, delay);
         }
         else
         {
@@ -152,6 +158,7 @@ public class RunExperiment : MonoBehaviour {
             if (curTrial == trials.Length)
             {
                 Debug.Log("Experiment complete");
+                feedbackMsg.text = "";
                 dataManager.Save();
                 curTrial++;
             }
@@ -165,11 +172,11 @@ public class RunExperiment : MonoBehaviour {
         if (movingObj && movingObj.gameObject)
         {
             Debug.Log("Deleting moving object for trial " + curTrial);          // remove for testing
-            //Destroy(movingObj.gameObject);                                      // remove for testing
+            Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
             Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
-            rend.enabled = false;
+            //rend.enabled = false;
 
-            //rend.material.color = Color.black;                                // add for testing
+            rend.material.color = Color.black;                                // add for testing
         }
         else
         {
@@ -178,15 +185,41 @@ public class RunExperiment : MonoBehaviour {
     }
 
     /**
+     * Display feedback that shows whether the participant responded too early, too late, or on time.
+     */
+    public void DisplayFeedback(float respTime, float actualTTC)
+    {
+        float diff = (respTime - actualTTC);
+        if (diff == 0)
+        {
+            feedbackMsg.text = "On time";
+        }
+        else if (diff < 0)
+        {
+            diff = -1 * diff;
+            feedbackMsg.text = diff.ToString() + " seconds too fast";
+        }
+        else
+        {
+            feedbackMsg.text = diff.ToString() + " seconds too slow";
+        }
+    }
+
+
+    /**
      * End the given trial.
      */
     public void CompleteTrial(float trialEnd, bool receivedResponse)
     {
         // Delete the existing object in the trial if a button was pressed
         // before the object was hidden from view
-        //HideObj();                          // remove for testing
-        StopCoroutine(movementCoroutine);
-        Destroy(movingObj.gameObject);      // remove for testing
+        HideObj();                          // remove for testing
+        //StopCoroutine(movementCoroutine);
+        //Destroy(movingObj.gameObject);      // remove for testing
+
+        float respTime = (trialEnd - trialStart);
+        float actualTTC = (trials[curTrial - 1].finalDist / trials[curTrial - 1].velocity);
+        DisplayFeedback(respTime, actualTTC);
 
         isRunning = false;
 
@@ -199,6 +232,11 @@ public class RunExperiment : MonoBehaviour {
         //InitializeTrial();
         waiting = true;
         waitTime = 0.0f;
+
+        //HeadPos[] posArr = headTracking.ToArray();
+        //string jsonPos = JsonHelper.ToJson(posArr, true);
+        //Debug.Log(jsonPos);
+        dataManager.WritePosData();
     }
 
     /**
@@ -218,6 +256,9 @@ public class RunExperiment : MonoBehaviour {
      */
     void Start()
     {
+        // Set the target framerate for the application
+        Application.targetFrameRate = 60;
+
         // Load the config file
         this.config = LoadConfig("config.json");
 
@@ -233,6 +274,14 @@ public class RunExperiment : MonoBehaviour {
         waiting = true;
         waitTime = 0.0f;
         isRunning = false;
+
+        // Set the head position transform to track the participant's movements
+        headPos = GameObject.Find("Camera (eye)").transform;
+
+        //IEnumerator testCoroutine = Test();
+        //StartCoroutine(testCoroutine);
+        //float delay = (1.0f / 60.0f);
+        //InvokeRepeating("OutputTime", 0f, delay);
     }
 
     /**
@@ -241,36 +290,77 @@ public class RunExperiment : MonoBehaviour {
      */
     public IEnumerator MoveOverTime(Vector3 finalPos, float seconds)
     {
-        float elapsedTime = 0.0f;
-        float trialTTC = 0.0f;
-        bool objHidden = false;
-        Vector3 adjustment = new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 4.0f));
-        Vector3 startingPos = movingObj.position;
-        while (elapsedTime < seconds)
+        //Vector3 adjTargetPos = finalPos + new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 2.0f));
+
+        /*while (movingObj.position != finalPos)
         {
-            if (movingObj.position.z > adjustment.z)
-            {
-                if (!objHidden && elapsedTime >= trials[curTrial - 1].timeVisible)
-                {
-                    Debug.Log("TIME VISIBLE: " + elapsedTime);
-                    Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
-                    HideObj();
-                    objHidden = true;
-                }
+            while ()
+        }*/
+        yield return null;
+    }
 
-                movingObj.position = Vector3.Lerp(startingPos, finalPos, (elapsedTime / seconds));
-            }
-
-            // Update the rotation of the object every time
-            movingObj.Rotate(-trials[curTrial - 1].rotationSpeed * Time.deltaTime, 0, 0, Space.Self);
-
-            elapsedTime += Time.deltaTime;
-            if (objHidden)
-                trialTTC += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+    public IEnumerator Test()
+    {
+        float seconds = 0.0f;
+        while (true)
+        {
+            yield return new WaitForSeconds(1.0f - Time.deltaTime);
+            //seconds += Time.deltaTime;
+            //Debug.Log("Testing... " + seconds);
+            Debug.Log("Testing... " + Time.time + " " + Time.deltaTime);
         }
-        movingObj.position = finalPos;
-        Debug.Log("ELAPSED TIME: " + elapsedTime);
-        Debug.Log("TTC: " + trialTTC);
+    }
+
+    int stepCounter = 0;
+    string posString = "";
+    float hideTime = 0.0f;
+    void MoveObjByStep()
+    {
+        float stepHidden = (trials[curTrial - 1].timeVisible * 60);
+        float finalStep = ((trials[curTrial - 1].finalDist / trials[curTrial - 1].velocity) * 60);
+        float stepSize = (1.0f / 60.0f);        
+
+        if (stepCounter == stepHidden)
+        {
+            HideObj();
+            posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
+            hideTime = (Time.time - trialStart);
+            Debug.Log("Time Visible: " + hideTime + " | " + posString);
+            stepCounter++;
+        }
+        else
+        {
+            float step = trials[curTrial - 1].velocity * stepSize;
+            movingObj.position -= new Vector3(0.0f, 0.0f, step);
+            stepCounter++;
+
+            if (stepCounter > finalStep)
+            {
+                CancelInvoke();
+                float endTime = (Time.time - trialStart);
+                Debug.Log("TTC: " + (endTime - hideTime) + "  |  POSITION: " + posString);
+                stepCounter = 0;
+                posString = "";
+                hideTime = 0.0f;
+            }
+        }
+
+
+    }
+
+
+    int marker = 0;
+
+    void OutputTime()
+    {
+        marker++;
+        Debug.Log(Time.time);
+        if (marker == 60)
+        {
+            Debug.Log("ayo");
+            CancelInvoke();
+            float delay = (1.0f / 60.0f);
+            InvokeRepeating("OutputTime", 0f, delay);
+        }
     }
 }
