@@ -21,7 +21,7 @@ public class RunExperiment : MonoBehaviour {
     private Transform headPos;              // The location of the camera rig relevant to the scene
 
     // Trial-Dependent Variables
-    private int curTrial;                   // Track the number of the current trial being run
+    private int trialNum;                   // Track the number of the current trial being run
     private bool isRunning;                 // Tracks whether or not a trial is currently active
     private Vector3 targetPos;              // The target that the moving object aims for
     private float trialStart;               // Track the time that the current trial began
@@ -50,12 +50,20 @@ public class RunExperiment : MonoBehaviour {
     [System.Serializable]
     public class Trial
     {
-        public int curTrial;            // the trial number
-        public float finalDist;         // the total distance this object should travel (in meters)
-        public float velocity;          // the speed the object is moving (in meters / second)
-        public float timeVisible;       // the amount of time this object should be visible before disappearing
-        public string[] objects;        // the names of the potential object prefabs that can be instantiated
-        public float rotationSpeed;     // the speed at which the object should rotate each frame
+        public int trialNum;            // the trial number
+        public MovingObj[] objects;     // the moving objects to be presented during the trial
+    }
+
+    [System.Serializable]
+    public class MovingObj
+    {
+        public float startXCoord;       // the initial x-coordinate of the object
+        public float startYCoord;       // the initial y-coordinate of the object
+        public float startZCoord;       // the initial z-coordinate of the object
+        public float velocity;          // the speed (m/s) at which the object will travel
+        public float timeVisible;       // the time (in seconds) for which the object will remain visible
+        public string objectPrefab;     // the name of the prefab object to be instantiated
+        public float rotationSpeed;     // the rate (in m/s) at which the object will rotate
     }
 
     public Config LoadConfig(string configFile)
@@ -103,12 +111,12 @@ public class RunExperiment : MonoBehaviour {
     /**
      * Initialize the given trial.
      */
-    public void InitializeTrial()
+    /*public void InitializeTrial()
     {
         // Check that we still have more trials to run
-        if (curTrial < this.trials.Length)
+        if (trialNum < this.trials.Length)
         {
-            Debug.Log("Initializing trial " + curTrial);
+            Debug.Log("Initializing trial " + trialNum);
 
             feedbackMsg.text = "";
 
@@ -116,7 +124,7 @@ public class RunExperiment : MonoBehaviour {
             targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
       
             // Get the current trial from the data array
-            Trial trial = trials[curTrial];
+            Trial trial = trials[trialNum];
 
             // Set the target position for the moving object
             if (targetCamera)
@@ -145,7 +153,7 @@ public class RunExperiment : MonoBehaviour {
             // Set the start time of this trial so that it can be 
             // recorded by the data manager
             trialStart = Time.time;
-            curTrial++;
+            trialNum++;
 
             //movementCoroutine = MoveOverTime(endPos, (trial.finalDist / trial.velocity));
             //StartCoroutine(movementCoroutine);
@@ -155,23 +163,23 @@ public class RunExperiment : MonoBehaviour {
         else
         {
             // Do this check and then increment the trial num so data is only saved once
-            if (curTrial == trials.Length)
+            if (trialNum == trials.Length)
             {
                 Debug.Log("Experiment complete");
                 feedbackMsg.text = "";
                 dataManager.Save();
-                curTrial++;
+                trialNum++;
             }
         }
-    }
+    }*/
 
-    public void HideObj()
+    /*public void HideObj()
     {
         // Check that a moving object has been initialized and that it's actually
         // a game object to avoid errors
         if (movingObj && movingObj.gameObject)
         {
-            Debug.Log("Deleting moving object for trial " + curTrial);          // remove for testing
+            Debug.Log("Deleting moving object for trial " + trialNum);          // remove for testing
             Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
             Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
             //rend.enabled = false;
@@ -182,12 +190,12 @@ public class RunExperiment : MonoBehaviour {
         {
             Debug.Log("ERROR: Could not delete moving object; object did not exist");
         }
-    }
+    }*/
 
     /**
      * Display feedback that shows whether the participant responded too early, too late, or on time.
      */
-    public void DisplayFeedback(float respTime, float actualTTC)
+    /*public void DisplayFeedback(float respTime, float actualTTC)
     {
         float diff = (respTime - actualTTC);
         if (diff == 0)
@@ -203,13 +211,13 @@ public class RunExperiment : MonoBehaviour {
         {
             feedbackMsg.text = diff.ToString() + " seconds too slow";
         }
-    }
+    }*
 
 
     /**
      * End the given trial.
      */
-    public void CompleteTrial(float trialEnd, bool receivedResponse)
+    /*public void CompleteTrial(float trialEnd, bool receivedResponse)
     {
         // Delete the existing object in the trial if a button was pressed
         // before the object was hidden from view
@@ -218,17 +226,17 @@ public class RunExperiment : MonoBehaviour {
         //Destroy(movingObj.gameObject);      // remove for testing
 
         float respTime = (trialEnd - trialStart);
-        float actualTTC = (trials[curTrial - 1].finalDist / trials[curTrial - 1].velocity);
+        float actualTTC = (trials[trialNum - 1].finalDist / trials[trialNum - 1].velocity);
         DisplayFeedback(respTime, actualTTC);
 
         isRunning = false;
 
         // Add this trial's data to the data manager
-        dataManager.AddTrial(curTrial, trials[curTrial - 1].finalDist, startPos, trials[curTrial - 1].velocity,
-            trials[curTrial - 1].timeVisible, objName, trialStart, trialEnd, receivedResponse);
+        dataManager.AddTrial(trialNum, trials[trialNum - 1].finalDist, startPos, trials[trialNum - 1].velocity,
+            trials[trialNum - 1].timeVisible, objName, trialStart, trialEnd, receivedResponse);
 
         // Increment trial number so we don't run this trial again
-        //curTrial++;
+        //trialNum++;
         //InitializeTrial();
         waiting = true;
         waitTime = 0.0f;
@@ -237,18 +245,7 @@ public class RunExperiment : MonoBehaviour {
         //string jsonPos = JsonHelper.ToJson(posArr, true);
         //Debug.Log(jsonPos);
         dataManager.WritePosData();
-    }
-
-    /**
-     * Checks whether a trial is currently running as a helper method for
-     * communicating with the TrackControllerResponse script. Returns true if
-     * a trial is active or false if no trial is active and we are waiting for
-     * user input to move on.
-     */
-    public bool CheckTrialRunning()
-    {
-        return isRunning;
-    }
+    }*/
 
     /**
      * Initializes all trial data once the experiment begins. Starts
@@ -269,55 +266,38 @@ public class RunExperiment : MonoBehaviour {
         // Load the data from the desired input file
         this.trials = LoadTrialData(inputFile, Time.time);
 
+        Debug.Log("Loaded " + this.trials.Length + " trials");
+        Debug.Log("Loaded " + this.trials[0].objects.Length + " objects");
+
+        for (int i=0; i<2; i++)
+        {
+            MovingObj curObj = this.trials[0].objects[i];
+            Debug.Log(curObj.startXCoord);
+            Debug.Log(curObj.startYCoord);
+            Debug.Log(curObj.startZCoord);
+            Debug.Log(curObj.velocity);
+            Debug.Log(curObj.timeVisible);
+            Debug.Log(curObj.objectPrefab);
+            Debug.Log(curObj.rotationSpeed);
+        }
+
         // Initialize global variables
-        curTrial = 0;
-        waiting = true;
-        waitTime = 0.0f;
-        isRunning = false;
+        trialNum = 0;
+        //waiting = true;
+        //waitTime = 0.0f;
 
         // Set the head position transform to track the participant's movements
-        headPos = GameObject.Find("Camera (eye)").transform;
-
-        //IEnumerator testCoroutine = Test();
-        //StartCoroutine(testCoroutine);
-        //float delay = (1.0f / 60.0f);
-        //InvokeRepeating("OutputTime", 0f, delay);
+        //headPos = GameObject.Find("Camera (eye)").transform;
     }
 
-    /**
-     * Move the object over a fixed period of time (determined by the distance to travel and velocity
-     * of the object). Hide the object after a certain period of time has passed.
-     */
-    public IEnumerator MoveOverTime(Vector3 finalPos, float seconds)
-    {
-        //Vector3 adjTargetPos = finalPos + new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 2.0f));
 
-        /*while (movingObj.position != finalPos)
-        {
-            while ()
-        }*/
-        yield return null;
-    }
-
-    public IEnumerator Test()
-    {
-        float seconds = 0.0f;
-        while (true)
-        {
-            yield return new WaitForSeconds(1.0f - Time.deltaTime);
-            //seconds += Time.deltaTime;
-            //Debug.Log("Testing... " + seconds);
-            Debug.Log("Testing... " + Time.time + " " + Time.deltaTime);
-        }
-    }
-
-    int stepCounter = 0;
+    /*int stepCounter = 0;
     string posString = "";
     float hideTime = 0.0f;
     void MoveObjByStep()
     {
-        float stepHidden = (trials[curTrial - 1].timeVisible * 60);
-        float finalStep = ((trials[curTrial - 1].finalDist / trials[curTrial - 1].velocity) * 60);
+        float stepHidden = (trials[trialNum - 1].timeVisible * 60);
+        float finalStep = ((trials[trialNum - 1].finalDist / trials[trialNum - 1].velocity) * 60);
         float stepSize = (1.0f / 60.0f);        
 
         if (stepCounter == stepHidden)
@@ -330,7 +310,7 @@ public class RunExperiment : MonoBehaviour {
         }
         else
         {
-            float step = trials[curTrial - 1].velocity * stepSize;
+            float step = trials[trialNum - 1].velocity * stepSize;
             movingObj.position -= new Vector3(0.0f, 0.0f, step);
             stepCounter++;
 
@@ -346,21 +326,6 @@ public class RunExperiment : MonoBehaviour {
         }
 
 
-    }
+    }*/
 
-
-    int marker = 0;
-
-    void OutputTime()
-    {
-        marker++;
-        Debug.Log(Time.time);
-        if (marker == 60)
-        {
-            Debug.Log("ayo");
-            CancelInvoke();
-            float delay = (1.0f / 60.0f);
-            InvokeRepeating("OutputTime", 0f, delay);
-        }
-    }
 }
