@@ -6,7 +6,7 @@
         {
           "startXCoord": 1,
           "startYCoord": 1,
-          "startZCoord": 20,
+          "startZCoord": 5,
           "velocity": 4,
           "timeVisible": 3,
           "objectPrefab": "Soccer Ball",
@@ -15,10 +15,10 @@
         {
           "startXCoord": 1,
           "startYCoord": 5,
-          "startZCoord": 20,
+          "startZCoord": 5,
           "velocity": 4,
           "timeVisible": 3,
-          "objectPrefab": "Soccer Ball",
+          "objectPrefab": "Cube",
           "rotationSpeed": 1
         }
       ]

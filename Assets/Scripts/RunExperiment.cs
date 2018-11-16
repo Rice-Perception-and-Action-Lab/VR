@@ -22,21 +22,22 @@ public class RunExperiment : MonoBehaviour {
 
     // Trial-Dependent Variables
     private int trialNum;                   // Track the number of the current trial being run
-    private bool isRunning;                 // Tracks whether or not a trial is currently active
+    private float trialStart;               // The time at which the trial was initialized
+    private Transform[] movingObjs;         // The objects that need to be manipulated during the current trial
+    private Vector3[] targetPos;            // The target positions for each object (targetPos[i] == target position for movingObjs[i])
+
+    /*
     private Vector3 targetPos;              // The target that the moving object aims for
-    private float trialStart;               // Track the time that the current trial began
-    private bool waiting;                   // Boolean to track whether we're waiting between trials
-    private float waitTime;                 // Timer to track how long we've been waiting
-    private string objName;                 // The name of the prefab object used for the given trial
-    private Vector3 startPos;               // The initial position of the moving object for the current trial
     private Transform obj;                  // The prefab object that will be instantiated
     private Transform movingObj;            // The object that will approach the user
+    */
 
     [System.Serializable]
     public class Config
     {
         public string dataFile;
         public bool targetCamera;
+        public float fps;
     }
 
     [System.Serializable]
@@ -111,7 +112,7 @@ public class RunExperiment : MonoBehaviour {
     /**
      * Initialize the given trial.
      */
-    /*public void InitializeTrial()
+    public void InitializeTrial()
     {
         // Check that we still have more trials to run
         if (trialNum < this.trials.Length)
@@ -121,44 +122,45 @@ public class RunExperiment : MonoBehaviour {
             feedbackMsg.text = "";
 
             // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
-            targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
+            //targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
       
             // Get the current trial from the data array
             Trial trial = trials[trialNum];
 
-            // Set the target position for the moving object
-            if (targetCamera)
+            // Initialize the array of transforms for the objects
+            movingObjs = new Transform[trial.objects.Length];
+
+            // Initialize the array of target positions for the objects
+            targetPos = new Vector3[trial.objects.Length];
+
+            // Set the initial target positions for the objects
+            for (int i = 0; i < targetPos.Length; i++)
             {
-                targetPos = viveCamera.position;
+                targetPos[i] = viveCamera.position;
             }
 
-            // Set the inital position of the moving object
-            startPos = new Vector3(targetPos.x, targetPos.y, trial.finalDist);
-            Vector3 endPos = new Vector3(targetPos.x, targetPos.y, targetPos.z);
+            // Instantiate each of the objects
+            for (int i = 0; i < trial.objects.Length; i++)
+            {
+                // Represent the start position as a Vector3 
+                Vector3 startPos = new Vector3(trial.objects[i].startXCoord, trial.objects[i].startYCoord, trial.objects[i].startZCoord);
 
-            // Randomly choose the shape of the object to present
-            System.Random r = new System.Random();
-            int i = r.Next(0, trial.objects.Length);
-            objName = trial.objects[i];
+                // Create the object
+                GameObject obj = Resources.Load("Objects\\" + trial.objects[i].objectPrefab) as GameObject;     // find the correct prefab
+                movingObjs[i] = Instantiate(obj.transform, startPos, Quaternion.identity);                      // make the new object visible
+            }
 
-            // Set the object prefab that will be displayed
-            GameObject newObj = Resources.Load("Objects\\" + objName) as GameObject;
-            obj = newObj.transform;
 
-            // Instantiate the object so that it's visible
-            movingObj = Instantiate(obj, startPos, Quaternion.identity);
 
-            isRunning = true;
-
-            // Set the start time of this trial so that it can be 
-            // recorded by the data manager
+            // Set the start time of this trial so that it can be recorded by the data manager
             trialStart = Time.time;
+
+            // Increment the trial number so the same trial isn't instantiated again
             trialNum++;
 
-            //movementCoroutine = MoveOverTime(endPos, (trial.finalDist / trial.velocity));
-            //StartCoroutine(movementCoroutine);
-            float delay = (1.0f / 60.0f);
-            InvokeRepeating("MoveObjByStep", 0f, delay);
+            // Set the objects to be moved at the framerate specified in the config file
+            float delay = (1.0f / config.fps);
+            InvokeRepeating("MoveObjs", 0f, delay);
         }
         else
         {
@@ -171,7 +173,7 @@ public class RunExperiment : MonoBehaviour {
                 trialNum++;
             }
         }
-    }*/
+    }
 
     /*public void HideObj()
     {
@@ -229,8 +231,6 @@ public class RunExperiment : MonoBehaviour {
         float actualTTC = (trials[trialNum - 1].finalDist / trials[trialNum - 1].velocity);
         DisplayFeedback(respTime, actualTTC);
 
-        isRunning = false;
-
         // Add this trial's data to the data manager
         dataManager.AddTrial(trialNum, trials[trialNum - 1].finalDist, startPos, trials[trialNum - 1].velocity,
             trials[trialNum - 1].timeVisible, objName, trialStart, trialEnd, receivedResponse);
@@ -238,8 +238,6 @@ public class RunExperiment : MonoBehaviour {
         // Increment trial number so we don't run this trial again
         //trialNum++;
         //InitializeTrial();
-        waiting = true;
-        waitTime = 0.0f;
 
         //HeadPos[] posArr = headTracking.ToArray();
         //string jsonPos = JsonHelper.ToJson(posArr, true);
@@ -266,28 +264,19 @@ public class RunExperiment : MonoBehaviour {
         // Load the data from the desired input file
         this.trials = LoadTrialData(inputFile, Time.time);
 
-        Debug.Log("Loaded " + this.trials.Length + " trials");
-        Debug.Log("Loaded " + this.trials[0].objects.Length + " objects");
-
-        for (int i=0; i<2; i++)
-        {
-            MovingObj curObj = this.trials[0].objects[i];
-            Debug.Log(curObj.startXCoord);
-            Debug.Log(curObj.startYCoord);
-            Debug.Log(curObj.startZCoord);
-            Debug.Log(curObj.velocity);
-            Debug.Log(curObj.timeVisible);
-            Debug.Log(curObj.objectPrefab);
-            Debug.Log(curObj.rotationSpeed);
-        }
-
         // Initialize global variables
         trialNum = 0;
-        //waiting = true;
-        //waitTime = 0.0f;
 
         // Set the head position transform to track the participant's movements
-        //headPos = GameObject.Find("Camera (eye)").transform;
+        headPos = GameObject.Find("Camera (eye)").transform;
+
+        InitializeTrial();
+    }
+
+
+    void MoveObjs()
+    {
+        Debug.Log(Time.time);
     }
 
 
