@@ -25,6 +25,8 @@ public class RunExperiment : MonoBehaviour {
     private float trialStart;               // The time at which the trial was initialized
     private Transform[] movingObjs;         // The objects that need to be manipulated during the current trial
     private Vector3[] targetPos;            // The target positions for each object (targetPos[i] == target position for movingObjs[i])
+    private int stepCounter;                // The number of "steps" (i.e., frames) that the object has moved
+    private float stepSize;                 // The distance the object should move in a single frame
 
     /*
     private Vector3 targetPos;              // The target that the moving object aims for
@@ -158,9 +160,12 @@ public class RunExperiment : MonoBehaviour {
             // Increment the trial number so the same trial isn't instantiated again
             trialNum++;
 
-            // Set the objects to be moved at the framerate specified in the config file
-            float delay = (1.0f / config.fps);
-            InvokeRepeating("MoveObjs", 0f, delay);
+            // Initialize all framerate-based variables for the trial
+            float stepSize = (1.0f / config.fps);
+            stepCounter = 0;
+
+            // Schedule the object to be moved at the correct framerate
+            InvokeRepeating("MoveObjs", 0f, stepSize);
         }
         else
         {
@@ -276,7 +281,39 @@ public class RunExperiment : MonoBehaviour {
 
     void MoveObjs()
     {
-        Debug.Log(Time.time);
+        int maxFinalStep = 1;
+
+        // Iterate through each object to update its position
+        for (int i = 0; i < movingObjs.Length; i++)
+        {
+            MovingObj obj = trials[trialNum - 1].objects[i];
+            // Perform object-specific step calculations
+            int stepHidden = obj.timeVisible * config.fps;
+            float finalStep = (obj.startZCoord / obj.velocity) * 60;
+
+            if (finalStep > maxFinalStep)
+            {
+                maxFinalStep = finalStep;
+            }
+            
+            if (stepCounter == stepHidden)
+            {
+                Debug.Log("hide");
+            }
+            else
+            {
+                float step = obj.velocity * stepSize;
+                movingObjs[i].position -= new Vector3(0.0f, 0.0f, step);
+            }
+        }
+        stepCounter++;
+
+        if (stepCounter > maxFinalStep)
+        {
+            CancelInvoke();
+
+            // TODO: Add the rest of the canceling logic
+        }
     }
 
 
