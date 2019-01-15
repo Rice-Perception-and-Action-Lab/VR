@@ -1,4 +1,8 @@
 {
+  "subjNum": 1,
+  "subjSex": 0,
   "dataFile": "~\\..\\Assets\\TrialData\\sample_input.json",
-  "targetCamera":  true
+  "showFeedback": true,
+  "feedbackColor": "black",
+  "targetCamera": true
 }

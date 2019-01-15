@@ -35,7 +35,11 @@ public class RunExperiment : MonoBehaviour {
     [System.Serializable]
     public class Config
     {
+        public int subjNum;
+        public int subjSex;
         public string dataFile;
+        public bool showFeedback;
+        public string feedbackColor;
         public bool targetCamera;
     }
 
@@ -54,7 +58,7 @@ public class RunExperiment : MonoBehaviour {
         public float finalDist;         // the total distance this object should travel (in meters)
         public float velocity;          // the speed the object is moving (in meters / second)
         public float timeVisible;       // the amount of time this object should be visible before disappearing
-        public string[] objects;        // the names of the potential object prefabs that can be instantiated
+        public string objType;        // the names of the potential object prefabs that can be instantiated
         public float rotationSpeed;     // the speed at which the object should rotate each frame
     }
 
@@ -114,7 +118,10 @@ public class RunExperiment : MonoBehaviour {
 
             // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
             targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
-      
+
+
+            Debug.Log("TARGET POSITION: " + viveCamera.position.x + " " + viveCamera.position.y + " " + viveCamera.position.z);
+
             // Get the current trial from the data array
             Trial trial = trials[curTrial];
 
@@ -128,13 +135,8 @@ public class RunExperiment : MonoBehaviour {
             startPos = new Vector3(targetPos.x, targetPos.y, trial.finalDist);
             Vector3 endPos = new Vector3(targetPos.x, targetPos.y, targetPos.z);
 
-            // Randomly choose the shape of the object to present
-            System.Random r = new System.Random();
-            int i = r.Next(0, trial.objects.Length);
-            objName = trial.objects[i];
-
             // Set the object prefab that will be displayed
-            GameObject newObj = Resources.Load("Objects\\" + objName) as GameObject;
+            GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
             obj = newObj.transform;
 
             // Instantiate the object so that it's visible
@@ -194,7 +196,7 @@ public class RunExperiment : MonoBehaviour {
         float diff = (respTime - actualTTC);
         if (diff == 0)
         {
-            feedbackMsg.text = "On time";
+            feedbackMsg.text = "Perfect timing";
         }
         else if (diff < 0)
         {
@@ -222,7 +224,9 @@ public class RunExperiment : MonoBehaviour {
 
         float respTime = (trialEnd - trialStart);
         float actualTTC = (trials[curTrial - 1].finalDist / trials[curTrial - 1].velocity);
-        DisplayFeedback(respTime, actualTTC);
+
+        // Display response time feedback to the participant
+        if (config.showFeedback) DisplayFeedback(respTime, actualTTC);
 
         isRunning = false;
 
@@ -230,15 +234,10 @@ public class RunExperiment : MonoBehaviour {
         dataManager.AddTrial(curTrial, trials[curTrial - 1].finalDist, startPos, trials[curTrial - 1].velocity,
             trials[curTrial - 1].timeVisible, objName, trialStart, trialEnd, receivedResponse, respTime);
 
-        // Increment trial number so we don't run this trial again
-        //curTrial++;
-        //InitializeTrial();
+        // Wait to start the next trial
         waiting = true;
         waitTime = 0.0f;
 
-        //HeadPos[] posArr = headTracking.ToArray();
-        //string jsonPos = JsonHelper.ToJson(posArr, true);
-        //Debug.Log(jsonPos);
         dataManager.WritePosData();
     }
 
@@ -251,6 +250,34 @@ public class RunExperiment : MonoBehaviour {
     public bool CheckTrialRunning()
     {
         return isRunning;
+    }
+
+    public void SetFeedbackColor(string color)
+    {
+        // All named color values supported by Unity
+        Dictionary<string, Color> colorDict = new Dictionary<string, Color>
+        {
+            {"black", Color.black},
+            {"blue", Color.blue},
+            {"clear", Color.clear},
+            {"cyan", Color.cyan},
+            {"gray", Color.gray},
+            {"green", Color.green},
+            {"grey", Color.grey},
+            {"magenta", Color.magenta},
+            {"red", Color.red},
+            {"white", Color.white},
+            {"yellow", Color.yellow}
+        };
+
+        if (!colorDict.ContainsKey(color))
+        {
+            feedbackMsg.color = Color.black;    // default to black if color doesn't exist
+        }
+        else
+        {
+            feedbackMsg.color = colorDict[color];
+        }
     }
 
     /**
@@ -268,6 +295,7 @@ public class RunExperiment : MonoBehaviour {
         // Set the configurations based on the config file
         inputFile = config.dataFile;
         targetCamera = config.targetCamera;
+        SetFeedbackColor(config.feedbackColor);
 
         // Load the data from the desired input file
         this.trials = LoadTrialData(inputFile, Time.time);
@@ -280,11 +308,6 @@ public class RunExperiment : MonoBehaviour {
 
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
-
-        //IEnumerator testCoroutine = Test();
-        //StartCoroutine(testCoroutine);
-        //float delay = (1.0f / 60.0f);
-        //InvokeRepeating("OutputTime", 0f, delay);
     }
 
     /**
@@ -330,12 +353,12 @@ public class RunExperiment : MonoBehaviour {
             hideTime = (Time.time - trialStart);
             Debug.Log("Time Visible: " + hideTime + " | " + posString);
             stepCounter++;
-            
         }
         else
         {
             float step = trials[curTrial - 1].velocity * stepSize;
             movingObj.position -= new Vector3(0.0f, 0.0f, step);
+            movingObj.Rotate(-step * trials[curTrial - 1].velocity, 0.0f, 0.0f);
             stepCounter++;
 
             if (stepCounter > finalStep)
@@ -361,7 +384,6 @@ public class RunExperiment : MonoBehaviour {
         Debug.Log(Time.time);
         if (marker == 120)
         {
-            Debug.Log("ayo");
             CancelInvoke();
             float delay = (1.0f / 120.0f);
             InvokeRepeating("OutputTime", 0f, delay);

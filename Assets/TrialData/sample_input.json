@@ -5,7 +5,7 @@
       "finalDist": 30,
       "velocity": 5,
       "timeVisible": 5,
-      "objects": [ "Cube" ],
+      "objType": "Cube",
       "rotationSpeed": 1
     },
     {
@@ -13,7 +13,7 @@
       "finalDist": 30,
       "velocity": 5,
       "timeVisible": 5,
-      "objects": [ "Cube" ],
+      "objType": "Cube",
       "rotationSpeed": 1
     },
     {
@@ -21,7 +21,7 @@
       "finalDist": 30,
       "velocity": 5,
       "timeVisible": 5,
-      "objects": [ "Cube" ],
+      "objType": "Cube",
       "rotationSpeed": 1
     },
     {
@@ -29,7 +29,7 @@
       "finalDist": 30,
       "velocity": 5,
       "timeVisible": 5,
-      "objects": [ "Cube" ],
+      "objType": "Cube",
       "rotationSpeed": 1
     }
   ]
