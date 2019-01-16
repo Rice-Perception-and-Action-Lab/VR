@@ -58,7 +58,7 @@ public class RunExperiment : MonoBehaviour {
         public float finalDist;         // the total distance this object should travel (in meters)
         public float velocity;          // the speed the object is moving (in meters / second)
         public float timeVisible;       // the amount of time this object should be visible before disappearing
-        public string objType;        // the names of the potential object prefabs that can be instantiated
+        public string objType;          // the names of the potential object prefabs that can be instantiated
         public float rotationSpeed;     // the speed at which the object should rotate each frame
     }
 
@@ -144,13 +144,10 @@ public class RunExperiment : MonoBehaviour {
 
             isRunning = true;
 
-            // Set the start time of this trial so that it can be 
-            // recorded by the data manager
+            // Set the start time of this trial so that it can be recorded by the data manager
             trialStart = Time.time;
             curTrial++;
 
-            //movementCoroutine = MoveOverTime(endPos, (trial.finalDist / trial.velocity));
-            //StartCoroutine(movementCoroutine);
             float delay = (1.0f / 120.0f);
             InvokeRepeating("MoveObjByStep", 0f, delay);
             InvokeRepeating("HeadTracking", 0f, delay);
@@ -297,6 +294,9 @@ public class RunExperiment : MonoBehaviour {
         targetCamera = config.targetCamera;
         SetFeedbackColor(config.feedbackColor);
 
+        // Add the config info to the data manager
+        dataManager.SetConfigInfo(config.subjNum, config.subjSex, config.dataFile, config.showFeedback, config.feedbackColor, config.targetCamera);
+
         // Load the data from the desired input file
         this.trials = LoadTrialData(inputFile, Time.time);
 
@@ -308,33 +308,6 @@ public class RunExperiment : MonoBehaviour {
 
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
-    }
-
-    /**
-     * Move the object over a fixed period of time (determined by the distance to travel and velocity
-     * of the object). Hide the object after a certain period of time has passed.
-     */
-    public IEnumerator MoveOverTime(Vector3 finalPos, float seconds)
-    {
-        //Vector3 adjTargetPos = finalPos + new Vector3(0.0f, 0.0f, (movingObj.localScale.z / 2.0f));
-
-        /*while (movingObj.position != finalPos)
-        {
-            while ()
-        }*/
-        yield return null;
-    }
-
-    public IEnumerator Test()
-    {
-        float seconds = 0.0f;
-        while (true)
-        {
-            yield return new WaitForSeconds(1.0f - Time.deltaTime);
-            //seconds += Time.deltaTime;
-            //Debug.Log("Testing... " + seconds);
-            Debug.Log("Testing... " + Time.time + " " + Time.deltaTime);
-        }
     }
 
     int stepCounter = 0;

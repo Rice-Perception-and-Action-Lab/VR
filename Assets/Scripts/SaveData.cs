@@ -15,6 +15,14 @@ public class SaveData : MonoBehaviour
     private float expStart;         // the start time of the experiment (all trial times are relative to this value)
     private string datetime;        // the date/time that this experiment started
 
+    /* Config-Specified Fields */
+    private int subjNum;
+    private int subjSex;
+    private string dataFile;
+    private bool showFeedback;
+    private string feedbackColor;
+    private bool targetCamera;
+    
     /**
      * This class holds all data for an individual trial. It includes all 
      * information given in the JSON object for the trial as well as all
@@ -32,11 +40,11 @@ public class SaveData : MonoBehaviour
         public float timeVisible;       // the amount of time this object should be visible before disappearing
         public string objType;          // the type of object presented to the participant (e.g., "Cube", "Sphere", etc.)
         public float trialStart;        // the time at which the trial began
-        public float trialEnd;      // the time at which the participant responded via Vive controller button press
+        public float trialEnd;          // the time at which the participant responded via Vive controller button press
         public bool receivedResponse;   // tracks whether a participant responsed (true) or the trial timed out (false)
         public float respTime;          // the time during the simulation when the participant responded (trialEnd - trialStart)
         public float ttcEstimate;       // the participants actual TTC estimate (respTime - timeVisible);
-        public float ttcActual;               // the time to contact based on when the object disappeared
+        public float ttcActual;         // the time to contact based on when the object disappeared
 
         /**
          * A constructor for the TrialData object
@@ -88,38 +96,57 @@ public class SaveData : MonoBehaviour
         public static T[] FromJson<T>(string json)
         {
             Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
-            return wrapper.Items;
+            return wrapper.Trials;
         }
 
         public static string ToJson<T>(T[] array)
         {
             Wrapper<T> wrapper = new Wrapper<T>();
-            wrapper.Items = array;
+            wrapper.Trials = array;
             return JsonUtility.ToJson(wrapper);
         }
 
         public static string ToJson<T>(T[] array, bool prettyPrint)
         {
             Wrapper<T> wrapper = new Wrapper<T>();
-            wrapper.Items = array;
+            wrapper.Trials = array;
             return JsonUtility.ToJson(wrapper, prettyPrint);
         }
 
         [System.Serializable]
         private class Wrapper<T>
         {
-            public T[] Items;
+            public int subjNum = SaveData.subjNum;
+            public int subjSex = SaveData.subjSex;
+            public string dataFile = SaveData.dataFile;
+            public bool showFeedback = SaveData.showFeedback;
+            public string feedbackColor = SaveData.feedbackColor;
+            public bool targetCamera = SaveData.targetCamera;
+            public T[] Trials;
         }
-
     }
 
     /**
-     * This method is called by the dataManager object in the RunExperiment script
-     * when the experiment is initialized and the data for the experiment has
-     * been read in. This tells us how many trials the experiment contains 
-     * (i.e., how long our array should be).
+     * This method is called by the dataManager object in the RunExperiment script in order to set
+     * the appropriate experiment-level variables specified by the config file.
      */
-    public void InitDataArray(int numTrials, float startTime)
+    public void SetConfigInfo(int subjNum, int subjSex, string dataFile, bool showFeedback, string feedbackColor, bool targetCamera)
+    {
+        this.subjNum = subjNum;
+        this.subjSex = subjSex;
+        this.dataFile = dataFile;
+        this.showFeedback = showFeedback;
+        this.feedbackColor = feedbackColor;
+        this.targetCamera = targetCamera;
+    }
+
+/**
+ * This method is called by the dataManager object in the RunExperiment script
+ * when the experiment is initialized and the data for the experiment has
+ * been read in. This tells us how many trials the experiment contains 
+ * (i.e., how long our array should be).
+ */
+public void InitDataArray(int numTrials, float startTime)
     {
         this.data = new TrialData[numTrials];
         this.i = 0;     // place the first trial in the first position in the array
@@ -159,7 +186,6 @@ public class SaveData : MonoBehaviour
         {
             Debug.Log("All trials completed; can't add new trial");
         }
-
     }
 
     public void AddHeadPos(float timestamp, Vector3 curPos)
