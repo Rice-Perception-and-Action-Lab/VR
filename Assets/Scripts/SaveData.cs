@@ -99,29 +99,41 @@ public class SaveData : MonoBehaviour
             return wrapper.Trials;
         }
 
-        public static string ToJson<T>(T[] array)
+        public static string ToJson<T>(SaveData dataObj, T[] array)
         {
             Wrapper<T> wrapper = new Wrapper<T>();
             wrapper.Trials = array;
+            wrapper.subjNum = dataObj.subjNum;
+            wrapper.subjSex = dataObj.subjSex;
+            wrapper.dataFile = dataObj.dataFile;
+            wrapper.showFeedback = dataObj.showFeedback;
+            wrapper.feedbackColor = dataObj.feedbackColor;
+            wrapper.targetCamera = dataObj.targetCamera;
             return JsonUtility.ToJson(wrapper);
         }
 
-        public static string ToJson<T>(T[] array, bool prettyPrint)
+        public static string ToJson<T>(SaveData dataObj, T[] array, bool prettyPrint)
         {
             Wrapper<T> wrapper = new Wrapper<T>();
             wrapper.Trials = array;
+            wrapper.subjNum = dataObj.subjNum;
+            wrapper.subjSex = dataObj.subjSex;
+            wrapper.dataFile = dataObj.dataFile;
+            wrapper.showFeedback = dataObj.showFeedback;
+            wrapper.feedbackColor = dataObj.feedbackColor;
+            wrapper.targetCamera = dataObj.targetCamera;
             return JsonUtility.ToJson(wrapper, prettyPrint);
         }
 
         [System.Serializable]
         private class Wrapper<T>
         {
-            public int subjNum = SaveData.subjNum;
-            public int subjSex = SaveData.subjSex;
-            public string dataFile = SaveData.dataFile;
-            public bool showFeedback = SaveData.showFeedback;
-            public string feedbackColor = SaveData.feedbackColor;
-            public bool targetCamera = SaveData.targetCamera;
+            public int subjNum;
+            public int subjSex;
+            public string dataFile;
+            public bool showFeedback;
+            public string feedbackColor;
+            public bool targetCamera;
             public T[] Trials;
         }
     }
@@ -146,7 +158,7 @@ public class SaveData : MonoBehaviour
  * been read in. This tells us how many trials the experiment contains 
  * (i.e., how long our array should be).
  */
-public void InitDataArray(int numTrials, float startTime)
+    public void InitDataArray(int numTrials, float startTime)
     {
         this.data = new TrialData[numTrials];
         this.i = 0;     // place the first trial in the first position in the array
@@ -196,7 +208,7 @@ public void InitDataArray(int numTrials, float startTime)
     public void WritePosData()
     {
         HeadPos[] posArr = posData.ToArray();
-        string jsonData = JsonHelper.ToJson(posArr, true);
+        string jsonData = JsonHelper.ToJson(this, posArr, true);
         string dir = Application.dataPath + "/../Results/HeadPos/";
 
         // Create the directory if it hasn't already been created
@@ -230,7 +242,7 @@ public void InitDataArray(int numTrials, float startTime)
      */
     public void Save()
     {
-        string jsonData = JsonHelper.ToJson(data, true);
+        string jsonData = JsonHelper.ToJson(this, data, true);
         string dir = Application.dataPath + "/../Results/ParticipantResponse/";
 
         // Create the directory if it hasn't already been created
