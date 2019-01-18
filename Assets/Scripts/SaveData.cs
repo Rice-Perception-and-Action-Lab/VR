@@ -22,6 +22,7 @@ public class SaveData : MonoBehaviour
     private bool showFeedback;
     private string feedbackColor;
     private bool targetCamera;
+    private bool trackHeadPos;
     
     /**
      * This class holds all data for an individual trial. It includes all 
@@ -117,6 +118,7 @@ public class SaveData : MonoBehaviour
             wrapper.showFeedback = dataObj.showFeedback;
             wrapper.feedbackColor = dataObj.feedbackColor;
             wrapper.targetCamera = dataObj.targetCamera;
+            wrapper.trackHeadPos = dataObj.trackHeadPos;
             return JsonUtility.ToJson(wrapper);
         }
 
@@ -130,6 +132,7 @@ public class SaveData : MonoBehaviour
             wrapper.showFeedback = dataObj.showFeedback;
             wrapper.feedbackColor = dataObj.feedbackColor;
             wrapper.targetCamera = dataObj.targetCamera;
+            wrapper.trackHeadPos = dataObj.trackHeadPos;
             return JsonUtility.ToJson(wrapper, prettyPrint);
         }
 
@@ -142,6 +145,7 @@ public class SaveData : MonoBehaviour
             public bool showFeedback;
             public string feedbackColor;
             public bool targetCamera;
+            public bool trackHeadPos;
             public T[] Trials;
         }
     }
@@ -150,7 +154,7 @@ public class SaveData : MonoBehaviour
      * This method is called by the dataManager object in the RunExperiment script in order to set
      * the appropriate experiment-level variables specified by the config file.
      */
-    public void SetConfigInfo(int subjNum, int subjSex, string dataFile, bool showFeedback, string feedbackColor, bool targetCamera)
+    public void SetConfigInfo(int subjNum, int subjSex, string dataFile, bool showFeedback, string feedbackColor, bool targetCamera, bool trackHeadPos)
     {
         this.subjNum = subjNum;
         this.subjSex = subjSex;
@@ -158,6 +162,7 @@ public class SaveData : MonoBehaviour
         this.showFeedback = showFeedback;
         this.feedbackColor = feedbackColor;
         this.targetCamera = targetCamera;
+        this.trackHeadPos = trackHeadPos;
     }
 
 /**
@@ -192,10 +197,8 @@ public class SaveData : MonoBehaviour
         {
             Debug.Log("Adding trial " + trialNum + " to data array.");
 
-            Debug.Log("ROTATION ? " + rotationRate);
-
             // Create a new object with the appropriate data
-            TrialData trial = new TrialData(trialNum, dist, startPos, velocity, rotationRate, timeVisible,
+            TrialData trial = new TrialData(trialNum, dist, startPos, velocity, timeVisible, rotationRate,
                 objType, trialStart, trialEnd, receivedResponse, respTime);
 
             // Place this trial's data in the next available slot in the data array

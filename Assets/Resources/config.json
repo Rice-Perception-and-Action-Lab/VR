@@ -4,5 +4,6 @@
   "dataFile": "~\\..\\Assets\\TrialData\\sample_input.json",
   "showFeedback": true,
   "feedbackColor": "black",
-  "targetCamera": true
+  "targetCamera": true,
+  "trackHeadPos":  true
 }

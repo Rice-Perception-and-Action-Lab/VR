@@ -41,6 +41,7 @@ public class RunExperiment : MonoBehaviour {
         public bool showFeedback;
         public string feedbackColor;
         public bool targetCamera;
+        public bool trackHeadPos;
     }
 
     [System.Serializable]
@@ -236,7 +237,7 @@ public class RunExperiment : MonoBehaviour {
         waiting = true;
         waitTime = 0.0f;
 
-        dataManager.WritePosData();
+        if (config.trackHeadPos) dataManager.WritePosData();
     }
 
     /**
@@ -296,7 +297,7 @@ public class RunExperiment : MonoBehaviour {
         SetFeedbackColor(config.feedbackColor);
 
         // Add the config info to the data manager
-        dataManager.SetConfigInfo(config.subjNum, config.subjSex, config.dataFile, config.showFeedback, config.feedbackColor, config.targetCamera);
+        dataManager.SetConfigInfo(config.subjNum, config.subjSex, config.dataFile, config.showFeedback, config.feedbackColor, config.targetCamera, config.trackHeadPos);
 
         // Load the data from the desired input file
         this.trials = LoadTrialData(inputFile, Time.time);
@@ -309,6 +310,8 @@ public class RunExperiment : MonoBehaviour {
 
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
+
+        //UnityEngine.VR.InputTracking
     }
 
     int stepCounter = 0;

@@ -31,6 +31,22 @@
       "timeVisible": 5,
       "objType": "Cube",
       "rotationSpeed": 1
+    },
+    {
+      "trialNum": 3,
+      "finalDist": 30,
+      "velocity": 5,
+      "timeVisible": 5,
+      "objType": "Cube",
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 4,
+      "finalDist": 30,
+      "velocity": 5,
+      "timeVisible": 5,
+      "objType": "Cube",
+      "rotationSpeed": 1
     }
   ]
 }
