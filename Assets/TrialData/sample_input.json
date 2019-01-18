@@ -2,17 +2,17 @@
   "trials": [
     {
       "trialNum": 1,
-      "finalDist": 30,
-      "velocity": 5,
+      "finalDist": 12,
+      "velocity": 2,
       "timeVisible": 5,
-      "objType": "Cube",
+      "objType": "Soccer Ball",
       "rotationSpeed": 1
     },
     {
       "trialNum": 2,
-      "finalDist": 30,
-      "velocity": 5,
-      "timeVisible": 5,
+      "finalDist": 18,
+      "velocity": 3,
+      "timeVisible": 3,
       "objType": "Cube",
       "rotationSpeed": 1
     },

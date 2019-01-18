@@ -136,6 +136,7 @@ public class RunExperiment : MonoBehaviour {
             Vector3 endPos = new Vector3(targetPos.x, targetPos.y, targetPos.z);
 
             // Set the object prefab that will be displayed
+            objName = trial.objType;
             GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
             obj = newObj.transform;
 
@@ -228,7 +229,7 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
 
         // Add this trial's data to the data manager
-        dataManager.AddTrial(curTrial, trials[curTrial - 1].finalDist, startPos, trials[curTrial - 1].velocity,
+        dataManager.AddTrial(curTrial, trials[curTrial - 1].finalDist, startPos, trials[curTrial - 1].velocity, trials[curTrial - 1].rotationSpeed,
             trials[curTrial - 1].timeVisible, objName, trialStart, trialEnd, receivedResponse, respTime);
 
         // Wait to start the next trial
@@ -365,6 +366,6 @@ public class RunExperiment : MonoBehaviour {
 
     void HeadTracking()
     {
-        dataManager.AddHeadPos(Time.time, headPos.position);
+        dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
     }
 }

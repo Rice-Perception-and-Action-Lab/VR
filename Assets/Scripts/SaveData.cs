@@ -37,6 +37,7 @@ public class SaveData : MonoBehaviour
         public float startYCoord;       // the y-coord of the location where the object was first placed into view 
         public float startZCoord;       // the z-coord of the location where the object was first placed into view 
         public float velocity;          // the speed the object is moving (in meters / second)
+        public float rotationRate;      // the rate at which the object rotates forwards (use a negative number for backwards rotation)
         public float timeVisible;       // the amount of time this object should be visible before disappearing
         public string objType;          // the type of object presented to the participant (e.g., "Cube", "Sphere", etc.)
         public float trialStart;        // the time at which the trial began
@@ -49,7 +50,7 @@ public class SaveData : MonoBehaviour
         /**
          * A constructor for the TrialData object
          */
-        public TrialData(int trialNum, float dist, Vector3 startPos, float velocity, float timeVisible,
+        public TrialData(int trialNum, float dist, Vector3 startPos, float velocity, float timeVisible, float rotationRate,
             string objType, float trialStart, float trialEnd, bool receivedResponse, float respTime)
         {
             this.trialNum = trialNum;
@@ -58,6 +59,7 @@ public class SaveData : MonoBehaviour
             this.startYCoord = startPos.y;
             this.startZCoord = startPos.z;
             this.velocity = velocity;
+            this.rotationRate = rotationRate;
             this.timeVisible = timeVisible;
             this.objType = objType;
             this.trialStart = trialStart;
@@ -75,16 +77,22 @@ public class SaveData : MonoBehaviour
         public float x;             // The x-coordinate of the camera rig at the given point in time
         public float y;             // The x-coordinate of the camera rig at the given point in time
         public float z;             // The x-coordinate of the camera rig at the given point in time
+        public float eulerX;
+        public float eulerY;
+        public float eulerZ;
 
         /**
          * A constructor for the HeadPos object
          */
-        public HeadPos(float timestamp, Vector3 pos)
+        public HeadPos(float timestamp, Vector3 pos, Vector3 euler)
         {
             this.timestamp = timestamp;
             this.x = pos.x;
             this.y = pos.y;
             this.z = pos.z;
+            this.eulerX = euler.x;
+            this.eulerY = euler.y;
+            this.eulerZ = euler.z;
         }
     }
 
@@ -176,7 +184,7 @@ public class SaveData : MonoBehaviour
      * a given trial is completed so that the trial's data can be added
      * to the data array.
      */
-    public void AddTrial(int trialNum, float dist, Vector3 startPos, float velocity, float timeVisible,
+    public void AddTrial(int trialNum, float dist, Vector3 startPos, float velocity, float rotationRate, float timeVisible,
            string objType, float trialStart, float trialEnd, bool receivedResponse, float respTime)
     {
         // Ensure that you aren't trying to index into a non-existant position in the array
@@ -184,8 +192,10 @@ public class SaveData : MonoBehaviour
         {
             Debug.Log("Adding trial " + trialNum + " to data array.");
 
+            Debug.Log("ROTATION ? " + rotationRate);
+
             // Create a new object with the appropriate data
-            TrialData trial = new TrialData(trialNum, dist, startPos, velocity, timeVisible,
+            TrialData trial = new TrialData(trialNum, dist, startPos, velocity, rotationRate, timeVisible,
                 objType, trialStart, trialEnd, receivedResponse, respTime);
 
             // Place this trial's data in the next available slot in the data array
@@ -200,9 +210,9 @@ public class SaveData : MonoBehaviour
         }
     }
 
-    public void AddHeadPos(float timestamp, Vector3 curPos)
+    public void AddHeadPos(float timestamp, Vector3 curPos, Vector3 curEuler)
     {
-        posData.Add(new HeadPos(timestamp, curPos));
+        posData.Add(new HeadPos(timestamp, curPos, curEuler));
     }
 
     public void WritePosData()
