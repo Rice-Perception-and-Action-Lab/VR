@@ -1,4 +1,9 @@
 {
-  "dataFile": "U:\\vr_experiment\\VR\\Assets\\TrialData\\sample_input.json",
-  "targetCamera":  true
+  "subjNum": 1,
+  "subjSex": 0,
+  "dataFile": "~\\..\\Assets\\TrialData\\sample_input.json",
+  "showFeedback": true,
+  "feedbackColor": "black",
+  "targetCamera": true,
+  "trackHeadPos":  true
 }

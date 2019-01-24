@@ -2,34 +2,50 @@
   "trials": [
     {
       "trialNum": 1,
-      "finalDist": 10,
-      "velocity": 2,
-      "timeVisible": 5,
-      "objects": [ "Soccer Ball" ],
-      "rotationSpeed": 10
-    },
-    {
-      "trialNum": 1,
-      "finalDist": 90,
-      "velocity": 3,
-      "timeVisible": 20,
-      "objects": [ "Soccer Ball" ],
-      "rotationSpeed": 1
-    },
-    {
-      "trialNum": 1,
-      "finalDist": 39,
-      "velocity": 3,
+      "startDist": 21,
+      "velocity": 3.5,
       "timeVisible": 3,
-      "objects": [ "Soccer Ball" ],
+      "objType": "Sphere",
       "rotationSpeed": 1
     },
     {
-      "trialNum": 1,
-      "finalDist": 10,
-      "velocity": 2,
-      "timeVisible": 5,
-      "objects": [ "Soccer Ball" ],
+      "trialNum": 2,
+      "startDist": 31.5,
+      "velocity": 7,
+      "timeVisible": 3,
+      "objType": "Sphere",
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 3,
+      "startDist": 52.5,
+      "velocity": 14,
+      "timeVisible": 3,
+      "objType": "Sphere",
+      "rotationSpeed": 1
+    },
+	{
+      "trialNum": 4,
+      "startDist": 63,
+      "velocity": 10.5,
+      "timeVisible": 3,
+      "objType": "Sphere",
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 5,
+      "startDist": 94.5,
+      "velocity": 21,
+      "timeVisible": 3,
+      "objType": "Sphere",
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 6,
+      "startDist": 157.5,
+      "velocity": 42,
+      "timeVisible": 3,
+      "objType": "Sphere",
       "rotationSpeed": 1
     }
   ]
