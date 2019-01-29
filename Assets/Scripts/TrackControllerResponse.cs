@@ -36,12 +36,12 @@ public class TrackControllerResponse : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
+        //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
         //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
         //Debug.Log(device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
 
         float threshold = 0.3f;
-        float val = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
+        //float val = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
         
 
         bool runningTrial = script.CheckTrialRunning();
@@ -55,13 +55,14 @@ public class TrackControllerResponse : MonoBehaviour {
             respTime = Time.time;
         } else
         {
-            if (!runningTrial && val > threshold)
+            //if (!runningTrial && val > threshold)
+            if (!runningTrial && Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x > threshold)
             //if (!runningTrial && Controller.GetHairTriggerDown())
             {
                 //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
                 //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
                 //Debug.Log("HAIR TRIGGER LOCATION: " + device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
-                Debug.Log("Hair trigger pressed; launch next trial " + val);
+                Debug.Log("Hair trigger pressed; launch next trial ");
                 script.InitializeTrial();
             }
         }
