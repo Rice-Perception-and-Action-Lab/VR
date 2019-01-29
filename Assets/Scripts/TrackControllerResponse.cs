@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 
 public class TrackControllerResponse : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class TrackControllerResponse : MonoBehaviour {
     private RunExperiment script;               // a reference to the RunExperiment script so we can call its methods
 
     private float respTime;
+
 
     private SteamVR_Controller.Device Controller
     {
@@ -28,25 +30,38 @@ public class TrackControllerResponse : MonoBehaviour {
         script = movingObj.GetComponent<RunExperiment>();
 
         waiting = false;
+    
     }
 	
 	// Update is called once per frame
 	void Update () {
 
+        SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
+        //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
+        //Debug.Log(device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
+
+        float threshold = 0.3f;
+        float val = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
+        
+
         bool runningTrial = script.CheckTrialRunning();
+
 
         if (runningTrial && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
             Debug.Log("Touchpad button pressed; end current trial");
-
             // End the current trial
             script.CompleteTrial(Time.time, true);
             respTime = Time.time;
         } else
         {
-            if (!runningTrial && Controller.GetHairTriggerDown())
+            if (!runningTrial && val > threshold)
+            //if (!runningTrial && Controller.GetHairTriggerDown())
             {
-                Debug.Log("Hair trigger pressed; launch next trial");
+                //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
+                //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
+                //Debug.Log("HAIR TRIGGER LOCATION: " + device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
+                Debug.Log("Hair trigger pressed; launch next trial " + val);
                 script.InitializeTrial();
             }
         }

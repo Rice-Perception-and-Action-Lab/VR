@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -31,6 +32,11 @@ public class RunExperiment : MonoBehaviour {
     private Vector3 startPos;               // The initial position of the moving object for the current trial
     private Transform obj;                  // The prefab object that will be instantiated
     private Transform movingObj;            // The object that will approach the user
+
+
+    private int stepCounter;
+    private string posString;
+    private float hideTime;
 
     [System.Serializable]
     public class Config
@@ -146,9 +152,15 @@ public class RunExperiment : MonoBehaviour {
 
             isRunning = true;
 
+
+
             // Set the start time of this trial so that it can be recorded by the data manager
             trialStart = Time.time;
             curTrial++;
+
+            stepCounter = 0;
+            posString = "";
+            hideTime = 0.0f;
 
             float delay = (1.0f / 75.0f);
             InvokeRepeating("MoveObjByStep", 0f, delay);
@@ -166,6 +178,7 @@ public class RunExperiment : MonoBehaviour {
             }
         }
     }
+
 
     public void HideObj()
     {
@@ -192,12 +205,17 @@ public class RunExperiment : MonoBehaviour {
      */
     public void DisplayFeedback(float respTime, float actualTTC)
     {
-        float diff = (respTime - actualTTC);
-        if (diff == 0) //never evaluates due to floating point precision - Adam hit 0.00 too slow
+        //float diff = (respTime - actualTTC);
+        //double roundValue = Math.Round(diff, 2, MidpointRounding.AwayFromZero);
+        //Debug.Log("UNROUNDED: " + diff + " ROUNDED: " + roundValue);
+        double diff = Math.Round((respTime - actualTTC), 2, MidpointRounding.AwayFromZero);
+
+
+        if (diff == 0.0d) //never evaluates due to floating point precision - Adam hit 0.00 too slow
         {
             feedbackMsg.text = "Perfect timing";
         }
-        else if (diff < 0)
+        else if (diff < 0.0d)
         {
             diff = -1 * diff;
             feedbackMsg.text = diff.ToString("F2") + " seconds too fast";
@@ -314,9 +332,6 @@ public class RunExperiment : MonoBehaviour {
         //UnityEngine.VR.InputTracking
     }
 
-    int stepCounter = 0;
-    string posString = "";
-    float hideTime = 0.0f;
     void MoveObjByStep()
     {
         float stepHidden = (trials[curTrial - 1].timeVisible * 75);
