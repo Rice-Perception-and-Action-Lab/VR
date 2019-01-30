@@ -138,6 +138,10 @@ public class RunExperiment : MonoBehaviour {
                 targetPos = viveCamera.position;
             }
 
+            /*GameObject cameraParent = new GameObject();
+            viveCamera.parent = cameraParent.transform;
+            cameraParent.transform.position = new Vector3(viveCamera.position.x, viveCamera.position.y, 15.0f);*/
+
             // Set the inital position of the moving object
             startPos = new Vector3(targetPos.x, targetPos.y, trial.startDist);
             Vector3 endPos = new Vector3(targetPos.x, targetPos.y, targetPos.z);
@@ -232,6 +236,7 @@ public class RunExperiment : MonoBehaviour {
      */
     public void CompleteTrial(float trialEnd, bool receivedResponse)
     {
+        CancelInvoke("MoveObjByStep");
         CancelInvoke("HeadTracking");
         // Delete the existing object in the trial if a button was pressed
         // before the object was hidden from view
@@ -254,6 +259,9 @@ public class RunExperiment : MonoBehaviour {
         // Wait to start the next trial
         waiting = true;
         waitTime = 0.0f;
+
+        //viveCamera.position = new Vector3(-viveCamera.position.x, viveCamera.position.y, 15.0f);
+
 
         if (config.trackHeadPos) dataManager.WritePosData();
     }
@@ -343,6 +351,7 @@ public class RunExperiment : MonoBehaviour {
             HideObj();
             posString = " " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
             hideTime = (Time.time - trialStart);
+            Debug.Log("TESTING --- Time.time = " + Time.time + " trialStart = " + trialStart + " stepHidden: " + stepHidden + " stepCounter: " + stepCounter);
             Debug.Log("Time Visible: " + hideTime + " | " + posString);
             stepCounter++;
         }
@@ -363,8 +372,6 @@ public class RunExperiment : MonoBehaviour {
                 hideTime = 0.0f;
             }
         }
-
-
     }
 
 
