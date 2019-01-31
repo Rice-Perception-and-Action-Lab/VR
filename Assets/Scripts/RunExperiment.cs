@@ -10,6 +10,7 @@ public class RunExperiment : MonoBehaviour {
     public SaveData dataManager;            // The GameObject responsible for tracking trial responses
     public UnityEngine.UI.Text feedbackMsg; // The text displayed on the scene's canvas when the participant responds with their TTC guess
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
+    public Transform cameraManager;
 
     // The Config options
     private Config config;                  // The configuration file specifying certain experiment-wide parameters
@@ -250,6 +251,13 @@ public class RunExperiment : MonoBehaviour {
         // Display response time feedback to the participant
         if (config.showFeedback) DisplayFeedback(respTime, actualTTC);
 
+
+        Debug.Log("Moving camera ...");
+        //GameObject cameraManager = viveCamera.parent.gameObject;
+        cameraManager.position = new Vector3(100.0f, 100.0f, 100.0f);
+        Debug.Log("CAMERA POSITION: " + cameraManager.position + " VIVE POSITION: " + viveCamera.position);
+
+
         isRunning = false;
 
         // Add this trial's data to the data manager
@@ -351,7 +359,6 @@ public class RunExperiment : MonoBehaviour {
             HideObj();
             posString = " " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
             hideTime = (Time.time - trialStart);
-            Debug.Log("TESTING --- Time.time = " + Time.time + " trialStart = " + trialStart + " stepHidden: " + stepHidden + " stepCounter: " + stepCounter);
             Debug.Log("Time Visible: " + hideTime + " | " + posString);
             stepCounter++;
         }
