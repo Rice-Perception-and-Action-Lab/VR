@@ -62,11 +62,14 @@ public class RunExperiment : MonoBehaviour {
     [System.Serializable]
     public class Trial
     {
-        public int curTrial;            // the trial number
+        public int trialNum;            // the trial number
         public float startDist;         // the starting distance of the object (in meters)
         public float velocity;          // the speed the object is moving (in meters / second)
         public float timeVisible;       // the amount of time this object should be visible before disappearing
         public string objType;          // the names of the potential object prefabs that can be instantiated
+        public float objScaleX;
+        public float objScaleY;
+        public float objScaleZ;
         public float rotationSpeed;     // the speed at which the object should rotate each frame
     }
 
@@ -151,6 +154,9 @@ public class RunExperiment : MonoBehaviour {
             objName = trial.objType;
             GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
             obj = newObj.transform;
+
+            // Set the scale of the object
+            obj.localScale = new Vector3(trial.objScaleX, trial.objScaleY, trial.objScaleZ);
 
             // Instantiate the object so that it's visible
             movingObj = Instantiate(obj, startPos, Quaternion.identity);
@@ -254,8 +260,8 @@ public class RunExperiment : MonoBehaviour {
 
         Debug.Log("Moving camera ...");
         //GameObject cameraManager = viveCamera.parent.gameObject;
-        cameraManager.position = new Vector3(100.0f, 100.0f, 100.0f);
-        Debug.Log("CAMERA POSITION: " + cameraManager.position + " VIVE POSITION: " + viveCamera.position);
+        //cameraManager.position = new Vector3(100.0f, 100.0f, 100.0f);
+        //Debug.Log("CAMERA POSITION: " + cameraManager.position + " VIVE POSITION: " + viveCamera.position);
 
 
         isRunning = false;
