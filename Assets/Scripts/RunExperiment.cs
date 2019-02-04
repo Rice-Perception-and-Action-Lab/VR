@@ -49,6 +49,9 @@ public class RunExperiment : MonoBehaviour {
         public string feedbackColor;
         public bool targetCamera;
         public bool trackHeadPos;
+        public float initCameraX;
+        public float initCameraY;
+        public float initCameraZ;
     }
 
     [System.Serializable]
@@ -142,9 +145,8 @@ public class RunExperiment : MonoBehaviour {
                 targetPos = viveCamera.position;
             }
 
-            /*GameObject cameraParent = new GameObject();
-            viveCamera.parent = cameraParent.transform;
-            cameraParent.transform.position = new Vector3(viveCamera.position.x, viveCamera.position.y, 15.0f);*/
+            //cameraManager.position = new Vector3(100.0f, 100.0f, 100.0f);
+
 
             // Set the inital position of the moving object
             startPos = new Vector3(targetPos.x, targetPos.y, trial.startDist);
@@ -257,13 +259,6 @@ public class RunExperiment : MonoBehaviour {
         // Display response time feedback to the participant
         if (config.showFeedback) DisplayFeedback(respTime, actualTTC);
 
-
-        Debug.Log("Moving camera ...");
-        //GameObject cameraManager = viveCamera.parent.gameObject;
-        //cameraManager.position = new Vector3(100.0f, 100.0f, 100.0f);
-        //Debug.Log("CAMERA POSITION: " + cameraManager.position + " VIVE POSITION: " + viveCamera.position);
-
-
         isRunning = false;
 
         // Add this trial's data to the data manager
@@ -273,9 +268,6 @@ public class RunExperiment : MonoBehaviour {
         // Wait to start the next trial
         waiting = true;
         waitTime = 0.0f;
-
-        //viveCamera.position = new Vector3(-viveCamera.position.x, viveCamera.position.y, 15.0f);
-
 
         if (config.trackHeadPos) dataManager.WritePosData();
     }
@@ -348,10 +340,11 @@ public class RunExperiment : MonoBehaviour {
         waitTime = 0.0f;
         isRunning = false;
 
+        // Set the initial position of the participant
+        cameraManager.position = new Vector3(config.initCameraX, config.initCameraY, config.initCameraZ);
+
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
-
-        //UnityEngine.VR.InputTracking
     }
 
     void MoveObjByStep()
