@@ -5,5 +5,8 @@
   "showFeedback": true,
   "feedbackColor": "black",
   "targetCamera": true,
-  "trackHeadPos":  true
+  "trackHeadPos": true,
+  "initCameraX": 0,
+  "initCameraY": 0,
+  "initCameraZ": 0
 }

@@ -10,6 +10,7 @@ public class RunExperiment : MonoBehaviour {
     public SaveData dataManager;            // The GameObject responsible for tracking trial responses
     public UnityEngine.UI.Text feedbackMsg; // The text displayed on the scene's canvas when the participant responds with their TTC guess
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
+    public Transform cameraManager;
 
     // The Config options
     private Config config;                  // The configuration file specifying certain experiment-wide parameters
@@ -48,6 +49,9 @@ public class RunExperiment : MonoBehaviour {
         public string feedbackColor;
         public bool targetCamera;
         public bool trackHeadPos;
+        public float initCameraX;
+        public float initCameraY;
+        public float initCameraZ;
     }
 
     [System.Serializable]
@@ -61,11 +65,14 @@ public class RunExperiment : MonoBehaviour {
     [System.Serializable]
     public class Trial
     {
-        public int curTrial;            // the trial number
+        public int trialNum;            // the trial number
         public float startDist;         // the starting distance of the object (in meters)
         public float velocity;          // the speed the object is moving (in meters / second)
         public float timeVisible;       // the amount of time this object should be visible before disappearing
         public string objType;          // the names of the potential object prefabs that can be instantiated
+        public float objScaleX;
+        public float objScaleY;
+        public float objScaleZ;
         public float rotationSpeed;     // the speed at which the object should rotate each frame
     }
 
@@ -138,9 +145,8 @@ public class RunExperiment : MonoBehaviour {
                 targetPos = viveCamera.position;
             }
 
-            /*GameObject cameraParent = new GameObject();
-            viveCamera.parent = cameraParent.transform;
-            cameraParent.transform.position = new Vector3(viveCamera.position.x, viveCamera.position.y, 15.0f);*/
+            //cameraManager.position = new Vector3(100.0f, 100.0f, 100.0f);
+
 
             // Set the inital position of the moving object
             startPos = new Vector3(targetPos.x, targetPos.y, trial.startDist);
@@ -150,6 +156,9 @@ public class RunExperiment : MonoBehaviour {
             objName = trial.objType;
             GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
             obj = newObj.transform;
+
+            // Set the scale of the object
+            obj.localScale = new Vector3(trial.objScaleX, trial.objScaleY, trial.objScaleZ);
 
             // Instantiate the object so that it's visible
             movingObj = Instantiate(obj, startPos, Quaternion.identity);
@@ -260,9 +269,6 @@ public class RunExperiment : MonoBehaviour {
         waiting = true;
         waitTime = 0.0f;
 
-        //viveCamera.position = new Vector3(-viveCamera.position.x, viveCamera.position.y, 15.0f);
-
-
         if (config.trackHeadPos) dataManager.WritePosData();
     }
 
@@ -334,10 +340,11 @@ public class RunExperiment : MonoBehaviour {
         waitTime = 0.0f;
         isRunning = false;
 
+        // Set the initial position of the participant
+        cameraManager.position = new Vector3(config.initCameraX, config.initCameraY, config.initCameraZ);
+
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
-
-        //UnityEngine.VR.InputTracking
     }
 
     void MoveObjByStep()
@@ -351,7 +358,6 @@ public class RunExperiment : MonoBehaviour {
             HideObj();
             posString = " " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
             hideTime = (Time.time - trialStart);
-            Debug.Log("TESTING --- Time.time = " + Time.time + " trialStart = " + trialStart + " stepHidden: " + stepHidden + " stepCounter: " + stepCounter);
             Debug.Log("Time Visible: " + hideTime + " | " + posString);
             stepCounter++;
         }

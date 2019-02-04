@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 
-public class TrackControllerResponse : MonoBehaviour {
+public class TrackControllerResponse : MonoBehaviour
+{
 
     private float timer;                        // a timer to pause between receiving input and initializing a new trial
     private bool waiting;                       // true if we're waiting to initialize a new trial; false otherwise
@@ -17,7 +18,7 @@ public class TrackControllerResponse : MonoBehaviour {
     private SteamVR_Controller.Device Controller
     {
         // Finds the index of the controller from all tracked objects; allows us to easily track controller input
-        get { return SteamVR_Controller.Input((int) controller.index); }
+        get { return SteamVR_Controller.Input((int)controller.index); }
     }
 
     void Awake()
@@ -30,19 +31,20 @@ public class TrackControllerResponse : MonoBehaviour {
         script = movingObj.GetComponent<RunExperiment>();
 
         waiting = false;
-    
-    }
-	
-	// Update is called once per frame
-	void Update () {
 
-        SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
         //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
         //Debug.Log(device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
 
         float threshold = 0.3f;
-        float val = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
-        
+        //float val = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
+
 
         bool runningTrial = script.CheckTrialRunning();
 
@@ -53,15 +55,17 @@ public class TrackControllerResponse : MonoBehaviour {
             // End the current trial
             script.CompleteTrial(Time.time, true);
             respTime = Time.time;
-        } else
+        }
+        else
         {
-            if (!runningTrial && val > threshold)
+            //if (!runningTrial && val > threshold)
+            if (!runningTrial && Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x > threshold)
             //if (!runningTrial && Controller.GetHairTriggerDown())
             {
                 //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
                 //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
                 //Debug.Log("HAIR TRIGGER LOCATION: " + device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
-                Debug.Log("Hair trigger pressed; launch next trial " + val);
+                Debug.Log("Hair trigger pressed; launch next trial ");
                 script.InitializeTrial();
             }
         }

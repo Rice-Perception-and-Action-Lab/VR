@@ -2,50 +2,57 @@
   "trials": [
     {
       "trialNum": 1,
-      "startDist": 21,
-      "velocity": 3.5,
+      "startDist": 36,
+      "velocity": 8,
       "timeVisible": 3,
       "objType": "Sphere",
+      "objScaleX": 1,
+      "objScaleY": 1,
+      "objScaleZ": 1,
       "rotationSpeed": 1
     },
     {
       "trialNum": 2,
-      "startDist": 31.5,
-      "velocity": 7,
+      "startDist": 60,
+      "velocity": 16,
       "timeVisible": 3,
       "objType": "Sphere",
+      "objScaleX": 0.3,
+      "objScaleY": 0.3,
+      "objScaleZ": 0.3,
       "rotationSpeed": 1
     },
     {
       "trialNum": 3,
-      "startDist": 52.5,
-      "velocity": 14,
+      "startDist": 36,
+      "velocity": 8,
       "timeVisible": 3,
       "objType": "Sphere",
+      "objScaleX": 3,
+      "objScaleY": 3,
+      "objScaleZ": 3,
       "rotationSpeed": 1
     },
-	{
+    {
       "trialNum": 4,
-      "startDist": 63,
-      "velocity": 10.5,
+      "startDist": 30,
+      "velocity": 8,
       "timeVisible": 3,
       "objType": "Sphere",
+      "objScaleX": 1,
+      "objScaleY": 1,
+      "objScaleZ": 1,
       "rotationSpeed": 1
     },
     {
       "trialNum": 5,
-      "startDist": 94.5,
-      "velocity": 21,
+      "startDist": 60,
+      "velocity": 16,
       "timeVisible": 3,
       "objType": "Sphere",
-      "rotationSpeed": 1
-    },
-    {
-      "trialNum": 6,
-      "startDist": 157.5,
-      "velocity": 42,
-      "timeVisible": 3,
-      "objType": "Sphere",
+      "objScaleX": 0.3,
+      "objScaleY": 0.3,
+      "objScaleZ": 0.3,
       "rotationSpeed": 1
     }
   ]
