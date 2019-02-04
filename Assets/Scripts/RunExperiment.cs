@@ -8,7 +8,7 @@ public class RunExperiment : MonoBehaviour {
 
     // Set via the Unity editor
     public SaveData dataManager;            // The GameObject responsible for tracking trial responses
-    public UnityEngine.UI.Text feedbackMsg; // The text displayed on the scene's canvas when the participant responds with their TTC guess
+    public ManageUI uiManager;             // The GameObject responsible for handling any changes to the UI
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
     public Transform cameraManager;
 
@@ -45,13 +45,16 @@ public class RunExperiment : MonoBehaviour {
         public int subjNum;
         public int subjSex;
         public string dataFile;
-        public bool showFeedback;
-        public string feedbackColor;
         public bool targetCamera;
         public bool trackHeadPos;
         public float initCameraX;
         public float initCameraY;
         public float initCameraZ;
+        public float canvasX;
+        public float canvasY;
+        public float canvasZ;
+        public bool showFeedback;
+        public string feedbackColor;
     }
 
     [System.Serializable]
@@ -128,7 +131,7 @@ public class RunExperiment : MonoBehaviour {
         {
             Debug.Log("Initializing trial " + curTrial);
 
-            feedbackMsg.text = "";
+            uiManager.ResetFeedbackMsg();
 
             // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
             targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
@@ -144,9 +147,6 @@ public class RunExperiment : MonoBehaviour {
             {
                 targetPos = viveCamera.position;
             }
-
-            //cameraManager.position = new Vector3(100.0f, 100.0f, 100.0f);
-
 
             // Set the inital position of the moving object
             startPos = new Vector3(targetPos.x, targetPos.y, trial.startDist);
@@ -164,8 +164,6 @@ public class RunExperiment : MonoBehaviour {
             movingObj = Instantiate(obj, startPos, Quaternion.identity);
 
             isRunning = true;
-
-
 
             // Set the start time of this trial so that it can be recorded by the data manager
             trialStart = Time.time;
@@ -185,7 +183,7 @@ public class RunExperiment : MonoBehaviour {
             if (curTrial == trials.Length)
             {
                 Debug.Log("Experiment complete");
-                feedbackMsg.text = "Experiment complete";
+                uiManager.DisplayCompletedMsg();
                 dataManager.Save();
                 curTrial++;
             }
@@ -197,7 +195,6 @@ public class RunExperiment : MonoBehaviour {
     {
         // Check that a moving object has been initialized and that it's actually
         // a game object to avoid errors
-
         if (movingObj && movingObj.gameObject)
         {
             Debug.Log("Deleting moving object for trial " + curTrial);          // remove for testing
@@ -210,32 +207,6 @@ public class RunExperiment : MonoBehaviour {
         else
         {
             Debug.Log("ERROR: Could not delete moving object; object did not exist");
-        }
-    }
-
-    /**
-     * Display feedback that shows whether the participant responded too early, too late, or on time.
-     */
-    public void DisplayFeedback(float respTime, float actualTTC)
-    {
-        //float diff = (respTime - actualTTC);
-        //double roundValue = Math.Round(diff, 2, MidpointRounding.AwayFromZero);
-        //Debug.Log("UNROUNDED: " + diff + " ROUNDED: " + roundValue);
-        double diff = Math.Round((respTime - actualTTC), 2, MidpointRounding.AwayFromZero);
-
-
-        if (diff == 0.0d) //never evaluates due to floating point precision - Adam hit 0.00 too slow
-        {
-            feedbackMsg.text = "Perfect timing";
-        }
-        else if (diff < 0.0d)
-        {
-            diff = -1 * diff;
-            feedbackMsg.text = diff.ToString("F2") + " seconds too fast";
-        }
-        else
-        {
-           feedbackMsg.text = diff.ToString("F2") + " seconds too slow";
         }
     }
 
@@ -257,7 +228,7 @@ public class RunExperiment : MonoBehaviour {
         float actualTTC = (trials[curTrial - 1].startDist / trials[curTrial - 1].velocity);
 
         // Display response time feedback to the participant
-        if (config.showFeedback) DisplayFeedback(respTime, actualTTC);
+        if (config.showFeedback) uiManager.DisplayFeedback(respTime, actualTTC);
 
         isRunning = false;
 
@@ -283,38 +254,12 @@ public class RunExperiment : MonoBehaviour {
         return isRunning;
     }
 
-    public void SetFeedbackColor(string color)
-    {
-        // All named color values supported by Unity
-        Dictionary<string, Color> colorDict = new Dictionary<string, Color>
-        {
-            {"black", Color.black},
-            {"blue", Color.blue},
-            {"clear", Color.clear},
-            {"cyan", Color.cyan},
-            {"gray", Color.gray},
-            {"green", Color.green},
-            {"grey", Color.grey},
-            {"magenta", Color.magenta},
-            {"red", Color.red},
-            {"white", Color.white},
-            {"yellow", Color.yellow}
-        };
-
-        if (!colorDict.ContainsKey(color))
-        {
-            feedbackMsg.color = Color.black;    // default to black if color doesn't exist
-        }
-        else
-        {
-            feedbackMsg.color = colorDict[color];
-        }
-    }
 
     /**
      * Initializes all trial data once the experiment begins. Starts
      * tracking the time that events are occurring.
      */
+    
     void Start()
     {
         // Set the target framerate for the application
@@ -326,7 +271,8 @@ public class RunExperiment : MonoBehaviour {
         // Set the configurations based on the config file
         inputFile = config.dataFile;
         targetCamera = config.targetCamera;
-        SetFeedbackColor(config.feedbackColor);
+        uiManager.SetFeedbackColor(config.feedbackColor);
+        uiManager.SetCanvasPosition(config.canvasX, config.canvasY, config.canvasZ);
 
         // Add the config info to the data manager
         dataManager.SetConfigInfo(config.subjNum, config.subjSex, config.dataFile, config.showFeedback, config.feedbackColor, config.targetCamera, config.trackHeadPos);
@@ -345,6 +291,7 @@ public class RunExperiment : MonoBehaviour {
 
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
+
     }
 
     void MoveObjByStep()
