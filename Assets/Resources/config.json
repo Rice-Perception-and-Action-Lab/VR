@@ -7,9 +7,10 @@
   "initCameraX": 0,
   "initCameraY": 0,
   "initCameraZ": 0,
+  "showFeedback": true,
   "canvasX": 0,
   "canvasY": 6,
   "canvasZ": 100,
-  "showFeedback": true,
+  "feedbackSize": 75,
   "feedbackColor": "red"
 }

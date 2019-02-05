@@ -18,6 +18,17 @@ public class ManageUI : MonoBehaviour {
 
 
     /**
+     * Sets the font size of the feedback message.
+     */
+    public void SetFeedbackSize(int size)
+    {
+        Debug.Log("Old font size was " + feedbackMsg.fontSize);
+        feedbackMsg.fontSize = size;
+        Debug.Log("New font size is " + feedbackMsg.fontSize);
+    }
+
+
+    /**
      * Sets the text color of the feedback that is presented to the participant.
      */
     public void SetFeedbackColor(string color)
@@ -53,9 +64,9 @@ public class ManageUI : MonoBehaviour {
      * Initializes the feedback message to empty at the beginning of a trial.
      */
      public void ResetFeedbackMsg()
-    {
+     {
         feedbackMsg.text = "";
-    }
+     }
 
 
     /**
@@ -85,7 +96,7 @@ public class ManageUI : MonoBehaviour {
      * Displays a message telling the participant that the experiment is complete.
      */
      public void DisplayCompletedMsg()
-    {
+     {
         feedbackMsg.text = "Experiment complete";
-    }
+     }
 }

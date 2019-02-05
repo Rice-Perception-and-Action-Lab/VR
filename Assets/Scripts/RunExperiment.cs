@@ -50,10 +50,11 @@ public class RunExperiment : MonoBehaviour {
         public float initCameraX;
         public float initCameraY;
         public float initCameraZ;
+        public bool showFeedback;
         public float canvasX;
         public float canvasY;
         public float canvasZ;
-        public bool showFeedback;
+        public int feedbackSize;
         public string feedbackColor;
     }
 
@@ -273,6 +274,7 @@ public class RunExperiment : MonoBehaviour {
         targetCamera = config.targetCamera;
         uiManager.SetFeedbackColor(config.feedbackColor);
         uiManager.SetCanvasPosition(config.canvasX, config.canvasY, config.canvasZ);
+        uiManager.SetFeedbackSize(config.feedbackSize);
 
         // Add the config info to the data manager
         dataManager.SetConfigInfo(config.subjNum, config.subjSex, config.dataFile, config.showFeedback, config.feedbackColor, config.targetCamera, config.trackHeadPos);
@@ -293,6 +295,7 @@ public class RunExperiment : MonoBehaviour {
         headPos = GameObject.Find("Camera (eye)").transform;
 
     }
+
 
     void MoveObjByStep()
     {
