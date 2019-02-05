@@ -22,9 +22,7 @@ public class ManageUI : MonoBehaviour {
      */
     public void SetFeedbackSize(int size)
     {
-        Debug.Log("Old font size was " + feedbackMsg.fontSize);
         feedbackMsg.fontSize = size;
-        Debug.Log("New font size is " + feedbackMsg.fontSize);
     }
 
 
