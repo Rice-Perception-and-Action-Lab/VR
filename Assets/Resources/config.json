@@ -12,5 +12,7 @@
   "canvasY": 6,
   "canvasZ": 100,
   "feedbackSize": 75,
-  "feedbackColor": "black"
+  "feedbackColor": "black",
+  "setObjX": false,
+  "setObjY": false
 }

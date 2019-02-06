@@ -9,13 +9,16 @@ public class ManageTrials : MonoBehaviour {
     public class Trial
     {
         public int trialNum;            // the number of the current trial
-        public float startDist;         // the initial distance in front of the participant at which the object appears
-        public float velocity;          // the speed that the object is moving
-        public float timeVisible;       // the amount of time that the object is visible before disappearing
         public string objType;          // the name of the prefab that the object should be instantiated as
         public float objScaleX;         // the x-coordinate for the scale of the object
         public float objScaleY;         // the y-coordinate for the scale of the object
         public float objScaleZ;         // the z-coordinate for the scale of the object
+        public float startXCoord;       
+        public float startYCoord;       
+        public float startZCoord;
+        public float startDist;
+        public float velocity;          // the speed that the object is moving
+        public float timeVisible;       // the amount of time that the object is visible before disappearing
         public float rotationSpeed;     // the speed at which the object should rotate
     }
 
@@ -42,7 +45,6 @@ public class ManageTrials : MonoBehaviour {
             StreamReader sr = new StreamReader(path);
             string jsonString = sr.ReadToEnd();
             TrialArray trialData = JsonUtility.FromJson<TrialArray>(jsonString);
-            Debug.Log("quick check");
             return trialData.trials;
         }
         catch (System.Exception e)

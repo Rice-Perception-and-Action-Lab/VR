@@ -21,6 +21,8 @@ public class ReadConfig : MonoBehaviour {
         public float canvasZ;
         public int feedbackSize;
         public string feedbackColor;
+        public bool setObjX;
+        public bool setObjY;
     }
 
     public Config LoadConfig(string configFile)
