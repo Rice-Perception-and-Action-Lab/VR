@@ -30,8 +30,6 @@ public class RunExperiment : MonoBehaviour {
     private Vector3 startPos;               // The initial position of the moving object for the current trial
     private Transform obj;                  // The prefab object that will be instantiated
     private Transform movingObj;            // The object that will approach the user
-
-
     private int stepCounter;
     private string posString;
     private float hideTime;
@@ -59,12 +57,11 @@ public class RunExperiment : MonoBehaviour {
         trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile, Time.time);
         //this.trials = LoadTrialData(inputFile, Time.time);
 
-        // Initialize the TrialData array to be the correct size in 
-        // the experiment's data manager
+        // Initialize the TrialData array to be the correct size in the experiment's data manager
         dataManager.InitDataArray(trials.Length, Time.time);
 
         // Add the config info to the data manager
-        dataManager.SetConfigInfo(config.subjNum, config.subjSex, config.dataFile, config.showFeedback, config.feedbackColor, config.targetCamera, config.trackHeadPos);
+        dataManager.SetConfigInfo(config);
 
         // Initialize global variables
         curTrial = 0;
@@ -92,21 +89,22 @@ public class RunExperiment : MonoBehaviour {
             uiManager.ResetFeedbackMsg();
 
             // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
-            targetPos = new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z);
+            targetPos = viveCamera.position;
             Debug.Log("TARGET POSITION: " + viveCamera.position.x + " " + viveCamera.position.y + " " + viveCamera.position.z);
 
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
 
-            // Set the target position for the moving object
-            if (targetCamera)
-            {
-                targetPos = viveCamera.position;
-            }
-
             // Set the inital position of the moving object
-            startPos = new Vector3(targetPos.x, targetPos.y, trial.startDist);
-            Vector3 endPos = new Vector3(targetPos.x, targetPos.y, targetPos.z);
+            if (config.setObjX && config.setObjY)
+            {
+                startPos = new Vector3(trial.startXCoord, trial.startYCoord, trial.startZCoord);
+            }
+            else
+            {
+                startPos = new Vector3(targetPos.x, targetPos.y, trial.startZCoord);  // uses the height of the vive instead
+            }
+            
 
             // Set the object prefab that will be displayed
             objName = trial.objType;
@@ -153,12 +151,10 @@ public class RunExperiment : MonoBehaviour {
         // a game object to avoid errors
         if (movingObj && movingObj.gameObject)
         {
-            Debug.Log("Deleting moving object for trial " + curTrial);          // remove for testing
+            Debug.Log("Deleting moving object for trial " + curTrial);
             Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
             Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
             rend.enabled = false;
-
-            //rend.material.color = Color.black;                                // add for testing
         }
         else
         {
@@ -174,32 +170,23 @@ public class RunExperiment : MonoBehaviour {
     {
         CancelInvoke("MoveObjByStep");
         CancelInvoke("HeadTracking");
-        // Delete the existing object in the trial if a button was pressed
-        // before the object was hidden from view
-        HideObj();                          // remove for testing
-        //StopCoroutine(movementCoroutine);
-        //Destroy(movingObj.gameObject);      // remove for testing
-
-        float respTime = (trialEnd - trialStart);
-        float actualTTC = (trials[curTrial - 1].startDist / trials[curTrial - 1].velocity);
+        HideObj();
 
         // Display response time feedback to the participant
+        float respTime = (trialEnd - trialStart);
+        float actualTTC = (trials[curTrial - 1].startDist / trials[curTrial - 1].velocity);
         if (config.showFeedback) uiManager.DisplayFeedback(respTime, actualTTC);
 
         isRunning = false;
 
         // Add this trial's data to the data manager
-        dataManager.AddTrial(curTrial, trials[curTrial - 1].startDist, startPos, trials[curTrial - 1].velocity, trials[curTrial - 1].rotationSpeed,
-            trials[curTrial - 1].timeVisible, objName, trialStart, trialEnd, receivedResponse, respTime);
+        dataManager.AddTrial(trials[curTrial - 1], targetPos, trialStart, trialEnd);
 
         if (config.trackHeadPos) dataManager.WritePosData();
     }
 
     /**
-     * Checks whether a trial is currently running as a helper method for
-     * communicating with the TrackControllerResponse script. Returns true if
-     * a trial is active or false if no trial is active and we are waiting for
-     * user input to move on.
+     * Communicates with the controller script to determine if a trial is currently active.
      */
     public bool CheckTrialRunning()
     {

@@ -16,14 +16,24 @@ public class SaveData : MonoBehaviour
     private string datetime;        // the date/time that this experiment started
 
     /* Config-Specified Fields */
-    private int subjNum;
-    private int subjSex;
-    private string dataFile;
-    private bool showFeedback;
-    private string feedbackColor;
-    private bool targetCamera;
-    private bool trackHeadPos;
-    
+    public int subjNum;
+    public int subjSex;
+    public string dataFile;
+    public bool targetCamera;
+    public bool trackHeadPos;
+    public float initCameraX;
+    public float initCameraY;
+    public float initCameraZ;
+    public bool showFeedback;
+    public float canvasX;
+    public float canvasY;
+    public float canvasZ;
+    public int feedbackSize;
+    public string feedbackColor;
+    public bool setObjX;
+    public bool setObjY;
+
+
     /**
      * This class holds all data for an individual trial. It includes all 
      * information given in the JSON object for the trial as well as all
@@ -32,43 +42,45 @@ public class SaveData : MonoBehaviour
     [System.Serializable]
     public class TrialData
     {
-        public int trialNum;            // the number of the corresponding trial
-        public float startDist;         // the starting distance of the object (in meters)
-        public float startXCoord;       // the x-coord of the location where the object was first placed into view 
-        public float startYCoord;       // the y-coord of the location where the object was first placed into view 
-        public float startZCoord;       // the z-coord of the location where the object was first placed into view 
-        public float velocity;          // the speed the object is moving (in meters / second)
-        public float rotationRate;      // the rate at which the object rotates forwards (use a negative number for backwards rotation)
-        public float timeVisible;       // the amount of time this object should be visible before disappearing
-        public string objType;          // the type of object presented to the participant (e.g., "Cube", "Sphere", etc.)
-        public float trialStart;        // the time at which the trial began
-        public float trialEnd;          // the time at which the participant responded via Vive controller button press
-        public bool receivedResponse;   // tracks whether a participant responsed (true) or the trial timed out (false)
-        public float respTime;          // the time during the simulation when the participant responded (trialEnd - trialStart)
-        public float ttcEstimate;       // the participants actual TTC estimate (respTime - timeVisible);
-        public float ttcActual;         // the time to contact based on when the object disappeared
+        public int trialNum;
+        public string objType;
+        public float objScaleX;
+        public float objScaleY;
+        public float objScaleZ;
+        public float startXCoord;
+        public float startYCoord;
+        public float startZCoord;
+        public float startDist;
+        public float velocity;
+        public float timeVisible;
+        public float rotationSpeed;
+        public float trialStart;
+        public float trialEnd;
+        public float respTime;
+        public float ttcEstimate;
+        public float ttcActual;
 
         /**
          * A constructor for the TrialData object
          */
-        public TrialData(int trialNum, float dist, Vector3 startPos, float velocity, float timeVisible, float rotationRate,
-            string objType, float trialStart, float trialEnd, bool receivedResponse, float respTime)
+        public TrialData(ManageTrials.Trial trial, float trialStart, float trialEnd, float ttcActual, float ttcEstimate)
         {
-            this.trialNum = trialNum;
-            this.startDist = dist;
-            this.startXCoord = startPos.x;
-            this.startYCoord = startPos.y;
-            this.startZCoord = startPos.z;
-            this.velocity = velocity;
-            this.rotationRate = rotationRate;
-            this.timeVisible = timeVisible;
-            this.objType = objType;
+            this.trialNum = trial.trialNum;
+            this.objType = trial.objType;
+            this.objScaleX = trial.objScaleX;
+            this.objScaleY = trial.objScaleY;
+            this.objScaleZ = trial.objScaleZ;
+            this.startXCoord = trial.startXCoord;
+            this.startYCoord = trial.startYCoord;
+            this.startZCoord = trial.startZCoord;
+            this.startDist = trial.startDist;
+            this.velocity = trial.velocity;
+            this.rotationSpeed = trial.rotationSpeed;
             this.trialStart = trialStart;
             this.trialEnd = trialEnd;
-            this.receivedResponse = receivedResponse;
-            this.respTime = respTime;
-            this.ttcEstimate = respTime - timeVisible;
-            this.ttcActual = (dist - (velocity * timeVisible)) / velocity;
+            this.respTime = trialEnd - trialStart;
+            this.ttcEstimate = ttcEstimate;
+            this.ttcActual = ttcActual;
         }
     }
 
@@ -151,20 +163,33 @@ public class SaveData : MonoBehaviour
         }
     }
 
+   
     /**
-     * This method is called by the dataManager object in the RunExperiment script in order to set
-     * the appropriate experiment-level variables specified by the config file.
+     * This method is called by the dataManager object in the RunExperiment script. It sets the 
+     * appropriate experiment-level variables specified in the config file. It is necessary to set
+     * all the config fields in the SaveData class so that Unity's JsonUtility will correctly
+     * convert the data to JSON.
      */
-    public void SetConfigInfo(int subjNum, int subjSex, string dataFile, bool showFeedback, string feedbackColor, bool targetCamera, bool trackHeadPos)
+    public void SetConfigInfo(ReadConfig.Config config)
     {
-        this.subjNum = subjNum;
-        this.subjSex = subjSex;
-        this.dataFile = dataFile;
-        this.showFeedback = showFeedback;
-        this.feedbackColor = feedbackColor;
-        this.targetCamera = targetCamera;
-        this.trackHeadPos = trackHeadPos;
-    }
+        this.subjNum = config.subjNum;
+        this.subjSex = config.subjSex;
+        this.dataFile = config.dataFile;
+        this.targetCamera = config.targetCamera;
+        this.trackHeadPos = config.trackHeadPos;
+        this.initCameraX = config.initCameraX;
+        this.initCameraY = config.initCameraY;
+        this.initCameraZ = config.initCameraZ;
+        this.showFeedback = config.showFeedback;
+        this.canvasX = config.canvasX;
+        this.canvasY = config.canvasY;
+        this.canvasZ = config.canvasZ;
+        this.feedbackSize = config.feedbackSize;
+        this.feedbackColor = config.feedbackColor;
+        this.setObjX = config.setObjX;
+        this.setObjY = config.setObjY;
+}
+
 
 /**
  * This method is called by the dataManager object in the RunExperiment script
@@ -172,7 +197,7 @@ public class SaveData : MonoBehaviour
  * been read in. This tells us how many trials the experiment contains 
  * (i.e., how long our array should be).
  */
-    public void InitDataArray(int numTrials, float startTime)
+public void InitDataArray(int numTrials, float startTime)
     {
         this.data = new TrialData[numTrials];
         this.i = 0;     // place the first trial in the first position in the array
@@ -186,26 +211,23 @@ public class SaveData : MonoBehaviour
     }
 
     /**
-     * Called by the dataManager object in the RunExperiment script whenever
-     * a given trial is completed so that the trial's data can be added
-     * to the data array.
+     * Called by the dataManager object in the RunExperiment script whenever a given trial is 
+     * completed so that the trial's data can be added to the data array.
      */
-    public void AddTrial(int trialNum, float dist, Vector3 startPos, float velocity, float rotationRate, float timeVisible,
-           string objType, float trialStart, float trialEnd, bool receivedResponse, float respTime)
-    {
-        // Ensure that you aren't trying to index into a non-existant position in the array
+     public void AddTrial(ManageTrials.Trial trial, Vector3 subjPos, float startTime, float endTime)
+     {
+        // Ensure that you don't index past the end of the array
         if (i < data.Length)
         {
-            Debug.Log("Adding trial " + trialNum + " to data array.");
+            Debug.Log("Adding trial " + trial.trialNum + " to data array.");
 
-            // Create a new object with the appropriate data
-            TrialData trial = new TrialData(trialNum, dist, startPos, velocity, timeVisible, rotationRate,
-                objType, trialStart, trialEnd, receivedResponse, respTime);
+            // Calculate the actual and estimated TTCs
+            float dist = trial.startZCoord - subjPos.z;
+            float ttcActual = (dist - (trial.velocity * trial.timeVisible)) / trial.velocity;
+            float ttcEstimate = (endTime - startTime) - trial.timeVisible;    // response time - time visible
 
-            // Place this trial's data in the next available slot in the data array
-            data[i] = trial;
-
-            // Increment the array pointer for the next trial
+            // Add the new trial data to the next available position in the data array
+            data[i] = new TrialData(trial, startTime, endTime, ttcActual, ttcEstimate);
             i++;
         }
         else
@@ -213,6 +235,7 @@ public class SaveData : MonoBehaviour
             Debug.Log("All trials completed; can't add new trial");
         }
     }
+
 
     public void AddHeadPos(float timestamp, Vector3 curPos, Vector3 curEuler)
     {
