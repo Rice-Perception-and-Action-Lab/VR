@@ -2,11 +2,15 @@
   "subjNum": 1,
   "subjSex": 0,
   "dataFile": "~\\..\\Assets\\TrialData\\sample_input.json",
-  "showFeedback": true,
-  "feedbackColor": "black",
   "targetCamera": true,
   "trackHeadPos": true,
   "initCameraX": 0,
   "initCameraY": 0,
-  "initCameraZ": 0
+  "initCameraZ": 0,
+  "showFeedback": true,
+  "canvasX": 0,
+  "canvasY": 6,
+  "canvasZ": 100,
+  "feedbackSize": 75,
+  "feedbackColor": "black"
 }
