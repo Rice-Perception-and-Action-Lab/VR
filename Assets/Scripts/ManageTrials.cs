@@ -10,13 +10,9 @@ public class ManageTrials : MonoBehaviour {
     {
         public int trialNum;            // the number of the current trial
         public string objType;          // the name of the prefab that the object should be instantiated as
-        public float objScaleX;         // the x-coordinate for the scale of the object
-        public float objScaleY;         // the y-coordinate for the scale of the object
-        public float objScaleZ;         // the z-coordinate for the scale of the object
-        public float startXCoord;       
-        public float startYCoord;       
-        public float startZCoord;
-        public float startDist;
+        public float[] objScale;         // the x,y,z-coordinates for the scale of the object
+        public float[] startPos;
+        public float[] endPos;
         public float velocity;          // the speed that the object is moving
         public float timeVisible;       // the amount of time that the object is visible before disappearing
         public float rotationSpeed;     // the speed at which the object should rotate

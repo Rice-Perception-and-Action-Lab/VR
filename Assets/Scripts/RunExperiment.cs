@@ -14,25 +14,29 @@ public class RunExperiment : MonoBehaviour {
     // The Config options
     private ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
     private string inputFile;               // A JSON file holding the information for every trial to be run
-    private bool targetCamera;              // A boolean to determine if the object follows the user's head or not
 
     // Experiment-Dependent Variables
+    private float rate;                    // The framerate that we're moving the object at
     private ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
-    private IEnumerator movementCoroutine;  // The coroutine responsible for moving the object in the world
     private Transform headPos;              // The location of the camera rig relevant to the scene
 
     // Trial-Dependent Variables
     private int curTrial;                   // Track the number of the current trial being run
     private bool isRunning;                 // Tracks whether or not a trial is currently active
-    private Vector3 targetPos;              // The target that the moving object aims for
     private float trialStart;               // Track the time that the current trial began
     private string objName;                 // The name of the prefab object used for the given trial
     private Vector3 startPos;               // The initial position of the moving object for the current trial
+    private Vector3 endPos;                 // The final position of the moving object for the current trial
+    private float dist;                     // The distance between the start and end positions
     private Transform obj;                  // The prefab object that will be instantiated
     private Transform movingObj;            // The object that will approach the user
     private int stepCounter;
     private string posString;
     private float hideTime;
+    private float stepHidden;
+    private float finalStep;
+    private float stepSize;
+    float step;
 
 
     /**
@@ -43,19 +47,18 @@ public class RunExperiment : MonoBehaviour {
     {
         // Set the target framerate for the application
         Application.targetFrameRate = 75;
+        rate = 75.0f;
 
         // Load the config file
         config = GetComponent<ReadConfig>().LoadConfig("config.json");
 
-        // Set the configurations based on the config file
-        targetCamera = config.targetCamera;
+        // Set the feedback display configurations based on the config file
         uiManager.SetFeedbackColor(config.feedbackColor);
-        uiManager.SetCanvasPosition(config.canvasX, config.canvasY, config.canvasZ);
+        uiManager.SetCanvasPosition(config.canvasPos[0], config.canvasPos[1], config.canvasPos[2]);
         uiManager.SetFeedbackSize(config.feedbackSize);
 
         // Load the data from the desired input file
         trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile, Time.time);
-        //this.trials = LoadTrialData(inputFile, Time.time);
 
         // Initialize the TrialData array to be the correct size in the experiment's data manager
         dataManager.InitDataArray(trials.Length, Time.time);
@@ -68,8 +71,10 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
 
         // Set the initial position of the participant
-        cameraManager.position = new Vector3(config.initCameraX, config.initCameraY, config.initCameraZ);
-
+        Debug.Log("INITIAL CAMERA POSITION " + cameraManager.position);
+        cameraManager.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
+        Debug.Log("NEW CAMERA POSITION " + cameraManager.position);
+        
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
     }
@@ -88,23 +93,21 @@ public class RunExperiment : MonoBehaviour {
             // Stop displaying the feedback text
             uiManager.ResetFeedbackMsg();
 
-            // Set the target for this trial (will be updated each iteration of Update function if targetCamera is true)
-            targetPos = viveCamera.position;
-            Debug.Log("TARGET POSITION: " + viveCamera.position.x + " " + viveCamera.position.y + " " + viveCamera.position.z);
-
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
 
-            // Set the inital position of the moving object
-            if (config.setObjX && config.setObjY)
+            // Set the inital and final positions of the moving object
+            startPos = new Vector3(trial.startPos[0], trial.startPos[1], trial.startPos[2]);
+            endPos = new Vector3(trial.endPos[0], trial.endPos[1], trial.endPos[2]);
+
+            // Change the end position if the object should end at the camera's position at the start of the trial
+            if (config.objMoveMode == 0)
             {
-                startPos = new Vector3(trial.startXCoord, trial.startYCoord, trial.startZCoord);
+                endPos = viveCamera.position;
             }
-            else
-            {
-                startPos = new Vector3(targetPos.x, targetPos.y, trial.startZCoord);  // uses the height of the vive instead
-            }
-            
+
+            // Calculate the distance that the object must travel
+            dist = Vector3.Distance(startPos, endPos);
 
             // Set the object prefab that will be displayed
             objName = trial.objType;
@@ -112,24 +115,29 @@ public class RunExperiment : MonoBehaviour {
             obj = newObj.transform;
 
             // Set the scale of the object
-            obj.localScale = new Vector3(trial.objScaleX, trial.objScaleY, trial.objScaleZ);
+            obj.localScale = new Vector3(trial.objScale[0], trial.objScale[1], trial.objScale[2]);
 
             // Instantiate the object so that it's visible
             movingObj = Instantiate(obj, startPos, Quaternion.identity);
-
-            isRunning = true;
 
             // Set the start time of this trial so that it can be recorded by the data manager
             trialStart = Time.time;
             curTrial++;
 
+            // Reset the variables used in the repeating methods
             stepCounter = 0;
             posString = "";
             hideTime = 0.0f;
+            stepHidden = (trials[curTrial - 1].timeVisible * rate);
+            finalStep = ((dist / trials[curTrial - 1].velocity) * rate);
+            stepSize = (1.0f / rate);
+            step = trials[curTrial - 1].velocity * stepSize;
 
-            float delay = (1.0f / 75.0f);
+            // Start calling the methods that will move the object and record head position
+            float delay = (1.0f / rate);
             InvokeRepeating("MoveObjByStep", 0f, delay);
             InvokeRepeating("HeadTracking", 0f, delay);
+            isRunning = true;
         }
         else
         {
@@ -174,13 +182,13 @@ public class RunExperiment : MonoBehaviour {
 
         // Display response time feedback to the participant
         float respTime = (trialEnd - trialStart);
-        float actualTTC = (trials[curTrial - 1].startDist / trials[curTrial - 1].velocity);
+        float actualTTC = (dist / trials[curTrial - 1].velocity);
         if (config.showFeedback) uiManager.DisplayFeedback(respTime, actualTTC);
 
         isRunning = false;
 
         // Add this trial's data to the data manager
-        dataManager.AddTrial(trials[curTrial - 1], targetPos, trialStart, trialEnd);
+        dataManager.AddTrial(trials[curTrial - 1], endPos, trialStart, trialEnd, dist);
 
         if (config.trackHeadPos) dataManager.WritePosData();
     }
@@ -196,10 +204,6 @@ public class RunExperiment : MonoBehaviour {
 
     void MoveObjByStep()
     {
-        float stepHidden = (trials[curTrial - 1].timeVisible * 75);
-        float finalStep = ((trials[curTrial - 1].startDist / trials[curTrial - 1].velocity) * 75);
-        float stepSize = (1.0f / 75.0f);        
-
         if (stepCounter == stepHidden)
         {
             HideObj();
@@ -210,8 +214,8 @@ public class RunExperiment : MonoBehaviour {
         }
         else
         {
-            float step = trials[curTrial - 1].velocity * stepSize;
-            movingObj.position -= new Vector3(0.0f, 0.0f, step);
+            float fracTraveled = stepCounter / finalStep;
+            movingObj.position = Vector3.Lerp(startPos, endPos, fracTraveled);
             movingObj.Rotate(-step * trials[curTrial - 1].velocity, 0.0f, 0.0f);
             stepCounter++;
 
@@ -229,7 +233,6 @@ public class RunExperiment : MonoBehaviour {
 
 
     int marker = 0;
-
     void OutputTime()
     {
         marker++;

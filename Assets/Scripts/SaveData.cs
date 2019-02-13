@@ -19,15 +19,10 @@ public class SaveData : MonoBehaviour
     public int subjNum;
     public int subjSex;
     public string dataFile;
-    public bool targetCamera;
     public bool trackHeadPos;
-    public float initCameraX;
-    public float initCameraY;
-    public float initCameraZ;
+    public float[] initCameraPos;
     public bool showFeedback;
-    public float canvasX;
-    public float canvasY;
-    public float canvasZ;
+    public float[] canvasPos;
     public int feedbackSize;
     public string feedbackColor;
     public bool setObjX;
@@ -44,13 +39,10 @@ public class SaveData : MonoBehaviour
     {
         public int trialNum;
         public string objType;
-        public float objScaleX;
-        public float objScaleY;
-        public float objScaleZ;
-        public float startXCoord;
-        public float startYCoord;
-        public float startZCoord;
-        public float startDist;
+        public float[] objScale;
+        public float[] startPos;
+        public float[] endPos;
+        public float distTraveled;
         public float velocity;
         public float timeVisible;
         public float rotationSpeed;
@@ -63,17 +55,14 @@ public class SaveData : MonoBehaviour
         /**
          * A constructor for the TrialData object
          */
-        public TrialData(ManageTrials.Trial trial, float trialStart, float trialEnd, float ttcActual, float ttcEstimate)
+        public TrialData(ManageTrials.Trial trial, float trialStart, float trialEnd, float ttcActual, float ttcEstimate, float dist)
         {
             this.trialNum = trial.trialNum;
             this.objType = trial.objType;
-            this.objScaleX = trial.objScaleX;
-            this.objScaleY = trial.objScaleY;
-            this.objScaleZ = trial.objScaleZ;
-            this.startXCoord = trial.startXCoord;
-            this.startYCoord = trial.startYCoord;
-            this.startZCoord = trial.startZCoord;
-            this.startDist = trial.startDist;
+            this.objScale = trial.objScale;
+            this.startPos = trial.startPos;
+            this.endPos = trial.endPos;
+            this.distTraveled = dist;
             this.velocity = trial.velocity;
             this.rotationSpeed = trial.rotationSpeed;
             this.trialStart = trialStart;
@@ -130,7 +119,6 @@ public class SaveData : MonoBehaviour
             wrapper.dataFile = dataObj.dataFile;
             wrapper.showFeedback = dataObj.showFeedback;
             wrapper.feedbackColor = dataObj.feedbackColor;
-            wrapper.targetCamera = dataObj.targetCamera;
             wrapper.trackHeadPos = dataObj.trackHeadPos;
             return JsonUtility.ToJson(wrapper);
         }
@@ -144,7 +132,6 @@ public class SaveData : MonoBehaviour
             wrapper.dataFile = dataObj.dataFile;
             wrapper.showFeedback = dataObj.showFeedback;
             wrapper.feedbackColor = dataObj.feedbackColor;
-            wrapper.targetCamera = dataObj.targetCamera;
             wrapper.trackHeadPos = dataObj.trackHeadPos;
             return JsonUtility.ToJson(wrapper, prettyPrint);
         }
@@ -157,7 +144,6 @@ public class SaveData : MonoBehaviour
             public string dataFile;
             public bool showFeedback;
             public string feedbackColor;
-            public bool targetCamera;
             public bool trackHeadPos;
             public T[] Trials;
         }
@@ -175,29 +161,24 @@ public class SaveData : MonoBehaviour
         this.subjNum = config.subjNum;
         this.subjSex = config.subjSex;
         this.dataFile = config.dataFile;
-        this.targetCamera = config.targetCamera;
         this.trackHeadPos = config.trackHeadPos;
-        this.initCameraX = config.initCameraX;
-        this.initCameraY = config.initCameraY;
-        this.initCameraZ = config.initCameraZ;
+        this.initCameraPos = config.initCameraPos;
         this.showFeedback = config.showFeedback;
-        this.canvasX = config.canvasX;
-        this.canvasY = config.canvasY;
-        this.canvasZ = config.canvasZ;
+        this.canvasPos = config.canvasPos;
         this.feedbackSize = config.feedbackSize;
         this.feedbackColor = config.feedbackColor;
         this.setObjX = config.setObjX;
         this.setObjY = config.setObjY;
-}
+    }
 
 
-/**
- * This method is called by the dataManager object in the RunExperiment script
- * when the experiment is initialized and the data for the experiment has
- * been read in. This tells us how many trials the experiment contains 
- * (i.e., how long our array should be).
- */
-public void InitDataArray(int numTrials, float startTime)
+    /**
+     * This method is called by the dataManager object in the RunExperiment script
+     * when the experiment is initialized and the data for the experiment has
+     * been read in. This tells us how many trials the experiment contains 
+     * (i.e., how long our array should be).
+     */
+    public void InitDataArray(int numTrials, float startTime)
     {
         this.data = new TrialData[numTrials];
         this.i = 0;     // place the first trial in the first position in the array
@@ -214,7 +195,7 @@ public void InitDataArray(int numTrials, float startTime)
      * Called by the dataManager object in the RunExperiment script whenever a given trial is 
      * completed so that the trial's data can be added to the data array.
      */
-     public void AddTrial(ManageTrials.Trial trial, Vector3 subjPos, float startTime, float endTime)
+     public void AddTrial(ManageTrials.Trial trial, Vector3 subjPos, float startTime, float endTime, float dist)
      {
         // Ensure that you don't index past the end of the array
         if (i < data.Length)
@@ -222,12 +203,11 @@ public void InitDataArray(int numTrials, float startTime)
             Debug.Log("Adding trial " + trial.trialNum + " to data array.");
 
             // Calculate the actual and estimated TTCs
-            float dist = trial.startZCoord - subjPos.z;
             float ttcActual = (dist - (trial.velocity * trial.timeVisible)) / trial.velocity;
             float ttcEstimate = (endTime - startTime) - trial.timeVisible;    // response time - time visible
 
             // Add the new trial data to the next available position in the data array
-            data[i] = new TrialData(trial, startTime, endTime, ttcActual, ttcEstimate);
+            data[i] = new TrialData(trial, startTime, endTime, ttcActual, ttcEstimate, dist);
             i++;
         }
         else
