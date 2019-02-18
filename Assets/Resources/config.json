@@ -4,7 +4,7 @@
   "dataFile": "~\\..\\Assets\\TrialData\\sample_input.json",
   "objMoveMode": 1,
   "trackHeadPos": true,
-  "initCameraPos": [ 100, 0, 0 ],
+  "initCameraPos": [ 0, 5, 0 ],
   "showFeedback": true,
   "canvasPos": [ 0, 6, 100 ],
   "feedbackSize": 75,

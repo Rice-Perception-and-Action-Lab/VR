@@ -4,8 +4,8 @@
       "trialNum": 1,
       "objType": "Sphere",
       "objScale": [ 1, 1, 1],
-      "startPos": [ 10, 6, 36 ],
-      "endPos": [ 10, 6, 0 ],
+      "startPos": [ 0, 6, 36 ],
+      "endPos": [ 0, 6, 0 ],
       "velocity": 8,
       "timeVisible": 3,
       "rotationSpeed": 1

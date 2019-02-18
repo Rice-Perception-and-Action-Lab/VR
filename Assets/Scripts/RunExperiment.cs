@@ -7,9 +7,10 @@ public class RunExperiment : MonoBehaviour {
 
     // Set via the Unity editor
     public SaveData dataManager;            // The GameObject responsible for tracking trial responses
-    public ManageUI uiManager;             // The GameObject responsible for handling any changes to the UI
+    public ManageUI uiManager;              // The GameObject responsible for handling any changes to the UI
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
     public Transform cameraManager;
+    public Transform subject;
 
     // The Config options
     private ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
@@ -70,10 +71,9 @@ public class RunExperiment : MonoBehaviour {
         curTrial = 0;
         isRunning = false;
 
-        // Set the initial position of the participant
-        Debug.Log("INITIAL CAMERA POSITION " + cameraManager.position);
+        // Set the initial position of the participant 
         cameraManager.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
-        Debug.Log("NEW CAMERA POSITION " + cameraManager.position);
+        subject.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
         
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
