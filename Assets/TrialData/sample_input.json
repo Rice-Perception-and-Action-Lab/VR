@@ -3,7 +3,7 @@
     {
       "trialNum": 1,
       "objType": "Sphere",
-      "objScale": [ 1, 1, 1],
+      "objScale": [ 1, 1, 1 ],
       "startPos": [ 0, 6, 36 ],
       "endPos": [ 0, 6, 0 ],
       "velocity": 8,
@@ -14,8 +14,8 @@
       "trialNum": 2,
       "objType": "Sphere",
       "objScale": [ 0.3, 0.3, 0.3 ],
-      "startPos": [ 0, 6, 60 ],
-      "endPos": [ 0, 6, 0 ],
+      "startPos": [ 0.165, 5.835, 60 ],
+      "endPos": [ 0.165, 5.835, 0 ],
       "velocity": 16,
       "timeVisible": 3,
       "rotationSpeed": 1
