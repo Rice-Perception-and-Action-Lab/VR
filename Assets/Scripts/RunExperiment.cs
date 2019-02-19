@@ -128,10 +128,20 @@ public class RunExperiment : MonoBehaviour {
             stepCounter = 0;
             posString = "";
             hideTime = 0.0f;
-            stepHidden = (trials[curTrial - 1].timeVisible * rate);
             finalStep = ((dist / trials[curTrial - 1].velocity) * rate);
             stepSize = (1.0f / rate);
             step = trials[curTrial - 1].velocity * stepSize;
+
+            // timeVisible is a negative number if the object should never disappear
+            if (trials[curTrial - 1].timeVisible < 0)
+            {
+                stepHidden = -1;    // set stepHidden to be a step value that never occurs so the object will never be hidden
+            }
+            else
+            {
+                stepHidden = (trials[curTrial - 1].timeVisible * rate);
+            }
+
 
             // Start calling the methods that will move the object and record head position
             float delay = (1.0f / rate);
