@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class RunExperiment : MonoBehaviour {
@@ -51,7 +53,8 @@ public class RunExperiment : MonoBehaviour {
         rate = 75.0f;
 
         // Load the config file
-        config = GetComponent<ReadConfig>().LoadConfig("config.json");
+        string configFilepath = Application.dataPath + "/../config.json";
+        config = GetComponent<ReadConfig>().LoadConfig(configFilepath.Replace("/", "\\"));
 
         // Set the feedback display configurations based on the config file
         uiManager.SetFeedbackColor(config.feedbackColor);
@@ -59,7 +62,8 @@ public class RunExperiment : MonoBehaviour {
         uiManager.SetFeedbackSize(config.feedbackSize);
 
         // Load the data from the desired input file
-        trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile, Time.time);
+        //uiManager.ShowMessage("Trial data file path is " + Application.dataPath + "/" + config.dataFile);
+        trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile.Replace("/", "\\"), Time.time);
 
         // Initialize the TrialData array to be the correct size in the experiment's data manager
         dataManager.InitDataArray(trials.Length, Time.time);

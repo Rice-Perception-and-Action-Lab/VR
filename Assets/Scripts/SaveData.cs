@@ -226,7 +226,7 @@ public class SaveData : MonoBehaviour
     {
         HeadPos[] posArr = posData.ToArray();
         string jsonData = JsonHelper.ToJson(this, posArr, true);
-        string dir = Application.dataPath + "/../Results/HeadPos/";
+        string dir = Application.dataPath + "/../Results/Subj" + subjNum + "/HeadPos/";
 
         // Create the directory if it hasn't already been created
         if (!Directory.Exists(dir))
@@ -236,11 +236,11 @@ public class SaveData : MonoBehaviour
         }
 
         // Add the time of the experiment and create that directory, if needed
-        dir += datetime + "/";
+        /*dir += datetime + "/";
         if (!Directory.Exists(dir))
         {
             Directory.CreateDirectory(dir);
-        }
+        }*/
 
         string trialDataFile = "Trial" + (i) + ".json";
         string filepath = Path.Combine(dir, trialDataFile);
@@ -260,7 +260,8 @@ public class SaveData : MonoBehaviour
     public void Save()
     {
         string jsonData = JsonHelper.ToJson(this, data, true);
-        string dir = Application.dataPath + "/../Results/ParticipantResponse/";
+        //string dir = Application.dataPath + "/../Results/Subj" + subjNum + "/ParticipantResponse/";
+        string dir = Application.dataPath + "/../Results/Subj" + subjNum;
 
         // Create the directory if it hasn't already been created
         if (!Directory.Exists(dir))
@@ -269,7 +270,8 @@ public class SaveData : MonoBehaviour
         }
 
 
-        string dataFile = System.DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss") + "_data.json";
+        //string dataFile = System.DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss") + "_data.json";
+        string dataFile = "response_data.json";
         string filepath = Path.Combine(dir, dataFile);
         Debug.Log("Saving data to " + filepath);
 

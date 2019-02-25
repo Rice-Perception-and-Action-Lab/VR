@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class ReadConfig : MonoBehaviour {
@@ -21,14 +22,30 @@ public class ReadConfig : MonoBehaviour {
         public bool setObjY;
     }
 
-    public Config LoadConfig(string configFile)
+    public Config LoadConfig(string configFilepath)
     {
         try
         {
-            string filepath = configFile.Replace(".json", "");
-            TextAsset jsonString = Resources.Load<TextAsset>(filepath);
-            Config config = JsonUtility.FromJson<Config>(jsonString.ToString());
-            return config;
+            if (File.Exists(configFilepath))
+            {
+                string jsonString = File.ReadAllText(configFilepath);
+                Config config = JsonUtility.FromJson<Config>(jsonString.ToString());
+                return config;
+            }
+            // hard-coded for development
+            /*else if (File.Exists(Application.dataPath + "/Resources/config.json"))
+            {
+                configFilepath = Application.dataPath + "/Resources/config.json";
+                string jsonString = File.ReadAllText(configFilepath);
+                Config config = JsonUtility.FromJson<Config>(jsonString.ToString());
+                return config;
+            }*/
+            else
+            {
+                Debug.Log("ERROR: Couldn't open file at: " + configFilepath);
+                return null;
+            }
+
         }
         catch (System.Exception e)
         {

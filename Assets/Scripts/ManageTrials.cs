@@ -34,12 +34,14 @@ public class ManageTrials : MonoBehaviour {
      * Given a path to a JSON file containing the parameters for each trial in the experiment,
      * creates a Trial object that has the correct values for each entry in the input file.
      */
-    public Trial[] LoadTrialData(string path, float time)
+    public Trial[] LoadTrialData(string filepath, float time)
     {
         try
         {
-            StreamReader sr = new StreamReader(path);
-            string jsonString = sr.ReadToEnd();
+            string jsonString = File.ReadAllText(filepath);
+
+            //StreamReader sr = new StreamReader(filepath);
+            //string jsonString = sr.ReadToEnd();
             TrialArray trialData = JsonUtility.FromJson<TrialArray>(jsonString);
             return trialData.trials;
         }
