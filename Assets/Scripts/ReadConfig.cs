@@ -18,8 +18,6 @@ public class ReadConfig : MonoBehaviour {
         public float[] canvasPos;
         public int feedbackSize;
         public string feedbackColor;
-        public bool setObjX;
-        public bool setObjY;
     }
 
     public Config LoadConfig(string configFilepath)
@@ -33,13 +31,13 @@ public class ReadConfig : MonoBehaviour {
                 return config;
             }
             // hard-coded for development
-            /*else if (File.Exists(Application.dataPath + "/Resources/config.json"))
+            else if (File.Exists(Application.dataPath + "/Resources/config.json"))
             {
                 configFilepath = Application.dataPath + "/Resources/config.json";
                 string jsonString = File.ReadAllText(configFilepath);
                 Config config = JsonUtility.FromJson<Config>(jsonString.ToString());
                 return config;
-            }*/
+            }
             else
             {
                 Debug.Log("ERROR: Couldn't open file at: " + configFilepath);

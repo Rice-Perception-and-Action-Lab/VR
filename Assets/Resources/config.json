@@ -8,7 +8,5 @@
   "showFeedback": true,
   "canvasPos": [ 0, 6, 100 ],
   "feedbackSize": 75,
-  "feedbackColor": "black",
-  "setObjX": false,
-  "setObjY": false
+  "feedbackColor": "black"
 }

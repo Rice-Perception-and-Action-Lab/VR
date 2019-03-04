@@ -25,9 +25,6 @@ public class SaveData : MonoBehaviour
     public float[] canvasPos;
     public int feedbackSize;
     public string feedbackColor;
-    public bool setObjX;
-    public bool setObjY;
-
 
     /**
      * This class holds all data for an individual trial. It includes all 
@@ -167,8 +164,6 @@ public class SaveData : MonoBehaviour
         this.canvasPos = config.canvasPos;
         this.feedbackSize = config.feedbackSize;
         this.feedbackColor = config.feedbackColor;
-        this.setObjX = config.setObjX;
-        this.setObjY = config.setObjY;
     }
 
 
