@@ -107,6 +107,8 @@ public class RunExperiment : MonoBehaviour {
             // Change the end position if the object should end at the camera's position at the start of the trial
             if (config.objMoveMode == 0)
             {
+                Debug.Log("SETTING VIVE POSITION");
+                Debug.Log("VIVE POSITION " + viveCamera.position);
                 endPos = viveCamera.position;
             }
 
@@ -128,11 +130,15 @@ public class RunExperiment : MonoBehaviour {
             trialStart = Time.time;
             curTrial++;
 
+            posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
+            Debug.Log("INITIAL POSITION: " + posString);
+
             // Reset the variables used in the repeating methods
             stepCounter = 0;
             posString = "";
             hideTime = 0.0f;
             finalStep = ((dist / trials[curTrial - 1].velocity) * rate);
+            Debug.Log("FINAL STEP: " + finalStep);
             stepSize = (1.0f / rate);
             step = trials[curTrial - 1].velocity * stepSize;
 
@@ -233,8 +239,12 @@ public class RunExperiment : MonoBehaviour {
             movingObj.Rotate(-step * trials[curTrial - 1].velocity, 0.0f, 0.0f);
             stepCounter++;
 
-            if (stepCounter > finalStep)
+            //if (stepCounter > finalStep)
+            if (fracTraveled >= 1)
             {
+                posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
+                Debug.Log("FINAL STEP pt2: " + finalStep);
+                Debug.Log("ENDING PERCENTAGE: " + fracTraveled + " CURRENT STEP: " + (stepCounter - 1) + " FINAL STEP: " + finalStep);
                 CancelInvoke("MoveObjByStep");
                 float endTime = (Time.time - trialStart);
                 Debug.Log("TTC: " + (endTime - hideTime) + "  |  POSITION: " + posString);
