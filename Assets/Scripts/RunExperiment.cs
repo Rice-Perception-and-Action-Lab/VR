@@ -100,6 +100,9 @@ public class RunExperiment : MonoBehaviour {
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
 
+            // Set the scale of the object
+            obj.localScale = new Vector3(trial.objScale[0], trial.objScale[1], trial.objScale[2]);
+
             // Set the inital and final positions of the moving object
             startPos = new Vector3(trial.startPos[0], trial.startPos[1], trial.startPos[2]);
             endPos = new Vector3(trial.endPos[0], trial.endPos[1], trial.endPos[2]);
@@ -107,9 +110,11 @@ public class RunExperiment : MonoBehaviour {
             // Change the end position if the object should end at the camera's position at the start of the trial
             if (config.objMoveMode == 0)
             {
-                Debug.Log("SETTING VIVE POSITION");
-                Debug.Log("VIVE POSITION " + viveCamera.position);
                 endPos = viveCamera.position;
+
+                // Adjust the start/end positions of the object to account for the object's scale
+                startPos[2] += (trial.objScale[2] / 2.0f) + 0.05f;
+                endPos[2] += (trial.objScale[2] / 2.0f) + 0.05f;
             }
 
             // Calculate the distance that the object must travel
@@ -119,9 +124,6 @@ public class RunExperiment : MonoBehaviour {
             objName = trial.objType;
             GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
             obj = newObj.transform;
-
-            // Set the scale of the object
-            obj.localScale = new Vector3(trial.objScale[0], trial.objScale[1], trial.objScale[2]);
 
             // Instantiate the object so that it's visible
             movingObj = Instantiate(obj, startPos, Quaternion.identity);

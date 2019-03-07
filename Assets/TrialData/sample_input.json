@@ -10,13 +10,13 @@
             ],
             "startPos": [
                 0,
-                5,
+                0,
                 26.5
             ],
             "endPos": [
                 0,
-                5,
-                0.1665
+                0,
+                0
             ],
             "velocity": 35.333,
             "timeVisible": -1,
@@ -32,13 +32,13 @@
             ],
             "startPos": [
                 0,
-                5,
+                0,
                 26.5
             ],
             "endPos": [
                 0,
-                5,
-                0.1665
+                0,
+                1
             ],
             "velocity": 17.667,
             "timeVisible": -1,
@@ -52,15 +52,15 @@
                 0.333,
                 0.333
             ],
-          "startPos": [
-            0,
-            5,
-            26.5
-          ],
+            "startPos": [
+                0,
+                0,
+                26.5
+            ],
             "endPos": [
                 0,
-                5,
-                0.1665
+                0,
+                0
             ],
             "velocity": 8.833,
             "timeVisible": -1,
@@ -76,13 +76,13 @@
             ],
             "startPos": [
                 0,
-                5,
+                0,
                 45.1
             ],
             "endPos": [
                 0,
-                5,
-                0.5
+                0,
+                0
             ],
             "velocity": 60.133,
             "timeVisible": -1,
@@ -98,39 +98,39 @@
             ],
             "startPos": [
                 0,
-                5,
+                0,
                 45.1
             ],
             "endPos": [
                 0,
-                5,
-                0.5
+                0,
+                0
             ],
             "velocity": 30.067,
             "timeVisible": -1,
             "rotationSpeed": 1
         },
         {
-            "trialNum": 6,
-            "objType": "Sphere",
-            "objScale": [
-                1,
-                1,
-                1
-            ],
-            "startPos": [
-                0,
-                5,
-                45.1
-            ],
-            "endPos": [
-                0,
-                5,
-                0.5
-            ],
-            "velocity": 15.033,
-            "timeVisible": -1,
-            "rotationSpeed": 1
+          "trialNum": 6,
+          "objType": "Sphere",
+          "objScale": [
+            1,
+            1,
+            1
+          ],
+          "startPos": [
+            0,
+            0,
+            45.1
+          ],
+          "endPos": [
+            0,
+            0,
+            0
+          ],
+          "velocity": 15.033,
+          "timeVisible": -1,
+          "rotationSpeed": 1
         }
     ]
 }
