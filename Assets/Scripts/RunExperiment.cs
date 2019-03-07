@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class RunExperiment : MonoBehaviour {
@@ -51,7 +53,8 @@ public class RunExperiment : MonoBehaviour {
         rate = 75.0f;
 
         // Load the config file
-        config = GetComponent<ReadConfig>().LoadConfig("config.json");
+        string configFilepath = Application.dataPath + "/../config.json";
+        config = GetComponent<ReadConfig>().LoadConfig(configFilepath.Replace("/", "\\"));
 
         // Set the feedback display configurations based on the config file
         uiManager.SetFeedbackColor(config.feedbackColor);
@@ -59,7 +62,8 @@ public class RunExperiment : MonoBehaviour {
         uiManager.SetFeedbackSize(config.feedbackSize);
 
         // Load the data from the desired input file
-        trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile, Time.time);
+        //uiManager.ShowMessage("Trial data file path is " + Application.dataPath + "/" + config.dataFile);
+        trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile.Replace("/", "\\"), Time.time);
 
         // Initialize the TrialData array to be the correct size in the experiment's data manager
         dataManager.InitDataArray(trials.Length, Time.time);
@@ -103,6 +107,8 @@ public class RunExperiment : MonoBehaviour {
             // Change the end position if the object should end at the camera's position at the start of the trial
             if (config.objMoveMode == 0)
             {
+                Debug.Log("SETTING VIVE POSITION");
+                Debug.Log("VIVE POSITION " + viveCamera.position);
                 endPos = viveCamera.position;
             }
 
@@ -124,11 +130,15 @@ public class RunExperiment : MonoBehaviour {
             trialStart = Time.time;
             curTrial++;
 
+            posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
+            Debug.Log("INITIAL POSITION: " + posString);
+
             // Reset the variables used in the repeating methods
             stepCounter = 0;
             posString = "";
             hideTime = 0.0f;
             finalStep = ((dist / trials[curTrial - 1].velocity) * rate);
+            Debug.Log("FINAL STEP: " + finalStep);
             stepSize = (1.0f / rate);
             step = trials[curTrial - 1].velocity * stepSize;
 
@@ -229,8 +239,12 @@ public class RunExperiment : MonoBehaviour {
             movingObj.Rotate(-step * trials[curTrial - 1].velocity, 0.0f, 0.0f);
             stepCounter++;
 
-            if (stepCounter > finalStep)
+            //if (stepCounter > finalStep)
+            if (fracTraveled >= 1)
             {
+                posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
+                Debug.Log("FINAL STEP pt2: " + finalStep);
+                Debug.Log("ENDING PERCENTAGE: " + fracTraveled + " CURRENT STEP: " + (stepCounter - 1) + " FINAL STEP: " + finalStep);
                 CancelInvoke("MoveObjByStep");
                 float endTime = (Time.time - trialStart);
                 Debug.Log("TTC: " + (endTime - hideTime) + "  |  POSITION: " + posString);

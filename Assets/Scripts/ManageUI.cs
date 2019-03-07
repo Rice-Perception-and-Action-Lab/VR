@@ -97,4 +97,16 @@ public class ManageUI : MonoBehaviour {
      {
         feedbackMsg.text = "Experiment complete";
      }
+
+
+    public void ShowMessage(string msg)
+    {
+        feedbackMsg.text = msg;
+    }
+
+
+    public void ClearMessage()
+    {
+        feedbackMsg.text = "";
+    }
 }
