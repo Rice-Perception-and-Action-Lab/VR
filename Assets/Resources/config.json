@@ -7,7 +7,7 @@
         0,
         0
     ],
-    "objMoveMode": 0,
+    "objMoveMode": 1,
     "trackHeadPos": true,
     "showFeedback": true,
     "feedbackColor": "black",

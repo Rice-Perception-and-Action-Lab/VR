@@ -100,6 +100,11 @@ public class RunExperiment : MonoBehaviour {
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
 
+            // Set the object prefab that will be displayed
+            objName = trial.objType;
+            GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
+            obj = newObj.transform;
+
             // Set the scale of the object
             obj.localScale = new Vector3(trial.objScale[0], trial.objScale[1], trial.objScale[2]);
 
@@ -113,17 +118,12 @@ public class RunExperiment : MonoBehaviour {
                 endPos = viveCamera.position;
 
                 // Adjust the start/end positions of the object to account for the object's scale
-                startPos[2] += (trial.objScale[2] / 2.0f) + 0.05f;
+                startPos[2] += (trial.objScale[2] / 2.0f) + 0.05f;  // .05 is the size of the HMD
                 endPos[2] += (trial.objScale[2] / 2.0f) + 0.05f;
             }
 
             // Calculate the distance that the object must travel
             dist = Vector3.Distance(startPos, endPos);
-
-            // Set the object prefab that will be displayed
-            objName = trial.objType;
-            GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
-            obj = newObj.transform;
 
             // Instantiate the object so that it's visible
             movingObj = Instantiate(obj, startPos, Quaternion.identity);
@@ -177,13 +177,14 @@ public class RunExperiment : MonoBehaviour {
 
     public void HideObj()
     {
+        Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
         // Check that a moving object has been initialized and that it's actually
         // a game object to avoid errors
-        if (movingObj && movingObj.gameObject)
+        if (movingObj && movingObj.gameObject && rend.enabled)
         {
             Debug.Log("Deleting moving object for trial " + curTrial);
             Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
-            Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
+            
             rend.enabled = false;
         }
         else
@@ -226,7 +227,8 @@ public class RunExperiment : MonoBehaviour {
 
     void MoveObjByStep()
     {
-        if (stepCounter == stepHidden)
+        Debug.Log("Step Counter: " + stepCounter + " Step Hidden: " + stepHidden);
+        if (stepCounter >= stepHidden)
         {
             HideObj();
             posString = " " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
@@ -234,7 +236,9 @@ public class RunExperiment : MonoBehaviour {
             Debug.Log("Time Visible: " + hideTime + " | " + posString);
             stepCounter++;
         }
-        else
+        //else
+
+        if (true)
         {
             float fracTraveled = stepCounter / finalStep;
             movingObj.position = Vector3.Lerp(startPos, endPos, fracTraveled);
@@ -244,6 +248,7 @@ public class RunExperiment : MonoBehaviour {
             //if (stepCounter > finalStep)
             if (fracTraveled >= 1)
             {
+                HideObj();
                 posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
                 Debug.Log("FINAL STEP pt2: " + finalStep);
                 Debug.Log("ENDING PERCENTAGE: " + fracTraveled + " CURRENT STEP: " + (stepCounter - 1) + " FINAL STEP: " + finalStep);
