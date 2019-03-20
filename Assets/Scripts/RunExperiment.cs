@@ -13,6 +13,7 @@ public class RunExperiment : MonoBehaviour {
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
     public Transform cameraManager;
     public Transform subject;
+    private Camera mainCamera;
 
     // The Config options
     private ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
@@ -52,6 +53,8 @@ public class RunExperiment : MonoBehaviour {
         Application.targetFrameRate = 75;
         rate = 75.0f;
 
+        mainCamera = Camera.main;
+
         // Load the config file
         string configFilepath = Application.dataPath + "/../config.json";
         config = GetComponent<ReadConfig>().LoadConfig(configFilepath.Replace("/", "\\"));
@@ -76,6 +79,7 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
 
         // Set the initial position of the participant 
+        Debug.Log("VIVE " + viveCamera.position);
         cameraManager.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
         subject.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
         
@@ -109,18 +113,28 @@ public class RunExperiment : MonoBehaviour {
             obj.localScale = new Vector3(trial.objScale[0], trial.objScale[1], trial.objScale[2]);
 
             // Set the inital and final positions of the moving object
-            startPos = new Vector3(trial.startPos[0], trial.startPos[1], trial.startPos[2]);
-            endPos = new Vector3(trial.endPos[0], trial.endPos[1], trial.endPos[2]);
-
-            // Change the end position if the object should end at the camera's position at the start of the trial
+            //startPos = viveCamera.TransformDirection(new Vector3(trial.startPos[0] - (trial.objScale[0] / 2.0f), trial.startPos[1], trial.startPos[2]));
+             Debug.Log("Input Start Pos: " + trial.startPos[0] + " " + trial.startPos[1] + " " + trial.startPos[2]);
+             //startPos = viveCamera.TransformDirection(new Vector3(trial.startPos[0] - (trial.objScale[0] / 2.0f), trial.startPos[2], trial.startPos[2] + (trial.objScale[2] / 2.0f) + 0.05f));
+             startPos = viveCamera.TransformDirection(new Vector3(trial.startPos[0] - (trial.objScale[0] / 2.0f), trial.startPos[1], trial.startPos[2] + (trial.objScale[2] / 2.0f) + 0.05f));
+             Debug.Log("Actual Start Pos: " + startPos);
+             Debug.Log("Input End Pos: " + trial.endPos[0] + " " + trial.endPos[1] + " " + trial.endPos[2]);
+             //endPos = viveCamera.TransformDirection(new Vector3(trial.endPos[0] - (trial.objScale[0] / 2.0f), trial.endPos[1], trial.endPos[2] + (trial.objScale[2] / 2.0f) + 0.05f));
+             endPos = viveCamera.TransformDirection(new Vector3(trial.endPos[0] - (trial.objScale[0] / 2.0f), trial.endPos[1], trial.endPos[2] + (trial.objScale[2] / 2.0f) + 0.05f));
+             Debug.Log("Actual End Pos: " + endPos);
+             Debug.Log("Input Start/End Dist: " + Vector3.Distance(new Vector3(trial.startPos[0], trial.startPos[1], trial.startPos[2]), new Vector3(trial.endPos[0], trial.endPos[1], trial.endPos[2])));
+             Debug.Log("Actual Start/End Dist: " + Vector3.Distance(startPos, endPos));
+         
             if (config.objMoveMode == 0)
             {
                 endPos = viveCamera.position;
-
-                // Adjust the start/end positions of the object to account for the object's scale
-                startPos[2] += (trial.objScale[2] / 2.0f) + 0.05f;  // .05 is the size of the HMD
-                endPos[2] += (trial.objScale[2] / 2.0f) + 0.05f;
+                endPos.x += (trial.objScale[0] / 2.0f);
+                startPos.y = viveCamera.position.y;
             }
+
+            // Adjust the start/end positions of the object to account for the object's scale
+            //startPos[2] -= (trial.objScale[2] / 2.0f) + 0.05f;  // .05 is approx. the size of the HMD
+            //endPos[2] -= (trial.objScale[2] / 2.0f) + 0.05f;
 
             // Calculate the distance that the object must travel
             dist = Vector3.Distance(startPos, endPos);
@@ -174,6 +188,16 @@ public class RunExperiment : MonoBehaviour {
         }
     }
 
+    private Vector3 CorrectPosition(Vector3 originalPos, float degree)
+    {
+        float radian = Mathf.Deg2Rad * degree;
+
+        float cos = Mathf.Cos(radian);
+        float sin = Mathf.Sin(radian);
+        float newX = originalPos.x * cos - originalPos.z * sin;
+        float newZ = originalPos.x * sin + originalPos.z * cos;
+        return new Vector3(newX, 0, newZ);
+    }
 
     public void HideObj()
     {
@@ -227,7 +251,7 @@ public class RunExperiment : MonoBehaviour {
 
     void MoveObjByStep()
     {
-        Debug.Log("Step Counter: " + stepCounter + " Step Hidden: " + stepHidden);
+        //Debug.Log("Step Counter: " + stepCounter + " Step Hidden: " + stepHidden);
         if (stepCounter >= stepHidden)
         {
             HideObj();
