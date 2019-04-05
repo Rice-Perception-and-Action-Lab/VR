@@ -195,7 +195,7 @@ public class SaveData : MonoBehaviour
         // Ensure that you don't index past the end of the array
         if (i < data.Length)
         {
-            Debug.Log("Adding trial " + trial.trialNum + " to data array.");
+            //Debug.Log("Adding trial " + trial.trialNum + " to data array.");
 
             // Calculate the actual and estimated TTCs
             float ttcActual = (dist - (trial.velocity * trial.timeVisible)) / trial.velocity;
@@ -207,7 +207,7 @@ public class SaveData : MonoBehaviour
         }
         else
         {
-            Debug.Log("All trials completed; can't add new trial");
+            //Debug.Log("All trials completed; can't add new trial");
         }
     }
 
@@ -226,7 +226,7 @@ public class SaveData : MonoBehaviour
         // Create the directory if it hasn't already been created
         if (!Directory.Exists(dir))
         {
-            Debug.Log("creating dir " + dir);
+            //Debug.Log("creating dir " + dir);
             Directory.CreateDirectory(dir);
         }
 

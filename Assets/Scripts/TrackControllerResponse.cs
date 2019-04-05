@@ -51,7 +51,7 @@ public class TrackControllerResponse : MonoBehaviour
 
         if (runningTrial && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            Debug.Log("Touchpad button pressed; end current trial");
+            //Debug.Log("Touchpad button pressed; end current trial");
             // End the current trial
             script.CompleteTrial(Time.time, true);
             respTime = Time.time;
@@ -65,7 +65,7 @@ public class TrackControllerResponse : MonoBehaviour
                 //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
                 //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
                 //Debug.Log("HAIR TRIGGER LOCATION: " + device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
-                Debug.Log("Hair trigger pressed; launch next trial ");
+                //Debug.Log("Hair trigger pressed; launch next trial ");
                 script.InitializeTrial();
             }
         }
