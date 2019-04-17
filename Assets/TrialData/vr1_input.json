@@ -1,0 +1,1852 @@
+{
+  "trials": [
+    {
+      "trialNum": -1,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": -2,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 5.077,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": -3,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 10.103,
+      "timeVisible": 3.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": -4,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 1,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 5.077,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 2,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 10.154,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 3,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 4,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 7.615,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 5,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 6.736,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 6,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 7,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 5.077,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 8,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 20.207,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 9,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 10,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 7.615,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 11,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 2.538,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 12,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 13,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 14,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 15,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 10.103,
+      "timeVisible": 3.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 16,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 17,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 18,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 10.103,
+      "timeVisible": 3.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 19,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 10.154,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 20,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 21,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 7.615,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 22,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 7.615,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 23,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 10.154,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 24,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 25,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 5.077,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 26,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 27,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 10.154,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 28,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 5.052,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 29,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 30,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 31,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 32,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 33,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 2.538,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 34,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 6.736,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 35,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 36,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 2.538,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 37,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 38,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 6.736,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 39,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 7.615,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 40,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 20.207,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 41,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 2.538,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 42,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 43,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 44,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 5.077,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 45,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 20.207,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 46,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 47,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 20.207,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 48,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 5.052,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 49,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 5.052,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 50,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 10.103,
+      "timeVisible": 3.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 51,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 52,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 10.154,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 53,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 5.077,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 54,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 55,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 20.207,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 56,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 57,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 58,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 59,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 60,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 61,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 62,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 63,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 5.052,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 64,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 65,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 66,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 67,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 5.052,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 68,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 69,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 6.736,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 70,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 6.736,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 71,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 10.103,
+      "timeVisible": 3.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 72,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 73,
+      "objType": "Sphere",
+      "objScale": [
+        2.973,
+        2.973,
+        2.973
+      ],
+      "startPos": [
+        0,
+        0,
+        45.100
+      ],
+      "endPos": [
+        -1.487,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 2.538,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 74,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 75,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 76,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 5.922,
+      "timeVisible": 4.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 77,
+      "objType": "Sphere",
+      "objScale": [
+        1.998,
+        1.998,
+        1.998
+      ],
+      "startPos": [
+        0,
+        0,
+        30.310
+      ],
+      "endPos": [
+        -0.999,
+        0,
+        0
+      ],
+      "velocity": 10.103,
+      "timeVisible": 3.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 78,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 17.767,
+      "timeVisible": 1.500,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 79,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 4.442,
+      "timeVisible": 6.000,
+      "rotationSpeed": 1
+    },
+    {
+      "trialNum": 80,
+      "objType": "Sphere",
+      "objScale": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "startPos": [
+        0,
+        0,
+        26.650
+      ],
+      "endPos": [
+        -0.167,
+        0,
+        0
+      ],
+      "velocity": 8.883,
+      "timeVisible": 3,
+      "rotationSpeed": 1
+    }
+  ]
+}

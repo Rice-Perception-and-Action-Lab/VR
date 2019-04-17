@@ -7,6 +7,7 @@ public class ManageUI : MonoBehaviour {
 
     public GameObject canvas;                   // the canvas where the feedback message is displayed
     public UnityEngine.UI.Text feedbackMsg;     // the feedback message that is displayed to the participant at the end of a trial
+    public Transform viveCamera;                // the vive camera so the UI canvas can be positioned based on the direction the user is facing
 
     /**
      * Sets the position of the canvas in the world. ( 0, 6, 100) is the default position.
@@ -14,6 +15,12 @@ public class ManageUI : MonoBehaviour {
     public void SetCanvasPosition(float x, float y, float z)
     {
         canvas.transform.position = new Vector3(x, y, z);
+        //canvas.transform.position = viveCamera.TransformDirection(new Vector3(x, y, z));
+
+        canvas.transform.position = viveCamera.position + (viveCamera.forward * z);
+        //canvas.transform.eulerAngles = new Vector3(0, 0, 0);
+        canvas.transform.position = new Vector3(canvas.transform.position.x, y, canvas.transform.position.z);
+        canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - viveCamera.position);
     }
 
 

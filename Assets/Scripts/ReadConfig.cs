@@ -11,9 +11,10 @@ public class ReadConfig : MonoBehaviour {
         public int subjNum;
         public int subjSex;
         public string dataFile;
+        public float[] initCameraPos;
         public int objMoveMode;
         public bool trackHeadPos;
-        public float[] initCameraPos;
+        public bool offsetObj;
         public bool showFeedback;
         public float[] canvasPos;
         public int feedbackSize;

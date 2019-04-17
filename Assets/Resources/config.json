@@ -1,20 +1,21 @@
 {
-  "subjNum": 1,
-  "subjSex": 1,
-  "dataFile": "~\\..\\Assets\\TrialData\\sample_input.json",
-  "initCameraPos": [
-    0,
-    0,
-    0
-  ],
-  "objMoveMode": 0,
-  "trackHeadPos": true,
-  "showFeedback": true,
-  "feedbackColor": "black",
-  "feedbackSize": 75,
-  "canvasPos": [
-    0,
-    6,
-    100
-  ]
+    "subjNum": 2,
+    "subjSex": 1,
+    "dataFile": "~\\..\\Assets\\TrialData\\vr1_input.json",
+    "initCameraPos": [
+        0,
+        0,
+        0
+    ],
+    "objMoveMode": 0,
+    "trackHeadPos": true,
+    "offsetObj": true,
+    "showFeedback": false,
+    "feedbackColor": "black",
+    "feedbackSize": 75,
+    "canvasPos": [
+      0,
+      6,
+      100
+    ]
 }
