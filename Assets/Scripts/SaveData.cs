@@ -67,6 +67,7 @@ public class SaveData : MonoBehaviour
             this.respTime = trialEnd - trialStart;
             this.ttcEstimate = ttcEstimate;
             this.ttcActual = ttcActual;
+            this.timeVisible = trial.timeVisible;
         }
     }
 
