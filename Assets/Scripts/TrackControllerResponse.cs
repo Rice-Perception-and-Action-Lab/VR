@@ -12,9 +12,6 @@ public class TrackControllerResponse : MonoBehaviour
     private GameObject movingObj;               // a reference to the MovingObj GameObject so we can call methods from the RunExperiment script attached to it
     private RunExperiment script;               // a reference to the RunExperiment script so we can call its methods
 
-    private float respTime;
-
-
     private SteamVR_Controller.Device Controller
     {
         // Finds the index of the controller from all tracked objects; allows us to easily track controller input
@@ -37,35 +34,20 @@ public class TrackControllerResponse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
-        //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
-        //Debug.Log(device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
-
+        // Hair trigger can sometimes be sensitive; set a threshold so that it has to be pushed down slightly further before it registers as a trigger press
         float threshold = 0.3f;
-        //float val = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
-
-
         bool runningTrial = script.CheckTrialRunning();
 
-
+        // End the trial if there is a trial running and the touchpad button is pressed
         if (runningTrial && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            //Debug.Log("Touchpad button pressed; end current trial");
-            // End the current trial
             script.CompleteTrial(Time.time, true);
-            respTime = Time.time;
         }
         else
         {
-            //if (!runningTrial && val > threshold)
+            // Start the next trial if there isn't a currently running trial and the hair trigger button is pressed
             if (!runningTrial && Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x > threshold)
-            //if (!runningTrial && Controller.GetHairTriggerDown())
             {
-                //SteamVR_Controller.Device device = SteamVR_Controller.Input((int)controller.index);
-                //Debug.Log(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
-                //Debug.Log("HAIR TRIGGER LOCATION: " + device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger));
-                //Debug.Log("Hair trigger pressed; launch next trial ");
                 script.InitializeTrial();
             }
         }

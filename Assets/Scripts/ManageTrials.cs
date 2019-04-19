@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class ManageTrials : MonoBehaviour {
 
+    /**
+     * This class defines a Trial, which is defined by the input file. The trialStart and trialEnd fields
+     * aren't defined in the input file but are set when they occur during the experiment.
+     */
     [System.Serializable]
     public class Trial
     {
@@ -13,7 +17,6 @@ public class ManageTrials : MonoBehaviour {
         public float trialStart;            // the time at which the trial began
         public float trialEnd;              // the time at which the trial ended
     }
-
 
     /**
      * This wrapper class is a workaround for how Unity's JsonUtility class handles
@@ -24,7 +27,6 @@ public class ManageTrials : MonoBehaviour {
     {
         public Trial[] trials;
     }
-
 
     /**
      * Given a path to a JSON file containing the parameters for each trial in the experiment,

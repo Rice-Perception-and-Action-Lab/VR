@@ -11,16 +11,15 @@ public class RunExperiment : MonoBehaviour {
     public SaveData dataManager;            // The GameObject responsible for tracking trial responses
     public ManageUI uiManager;              // The GameObject responsible for handling any changes to the UI
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
-    public Transform cameraManager;
-    public Transform subject;
-    private Camera mainCamera;
+    public Transform cameraManager;         // Used to reposition the Vive's world location at the beginning of the experiment
+    public Transform subject;               // Used to reposition the Vive's world location at the beginning of the experiment
 
     // The Config options
     private ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
     private string inputFile;               // A JSON file holding the information for every trial to be run
 
     // Experiment-Dependent Variables
-    private float rate;                    // The framerate that we're moving the object at
+    private float rate;                     // The framerate that we're moving the object at
     private ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
     private Transform headPos;              // The location of the camera rig relevant to the scene
 
@@ -29,21 +28,12 @@ public class RunExperiment : MonoBehaviour {
     private bool isRunning;                 // Tracks whether or not a trial is currently active
     private float trialStart;               // Track the time that the current trial began
     private string objName;                 // The name of the prefab object used for the given trial
-    private Vector3 startPos;               // The initial position of the moving object for the current trial
-    private Vector3[] startPosArr;
-
-    private Vector3 endPos;                 // The final position of the moving object for the current trial
-    private Vector3[] endPosArr;
-
-    private Transform[] objs;                  // The prefab object that will be instantiated
-    private Transform[] movingObjs;
-
-    private int stepCounter;
-    private float stepSize;
-    private float step;
-
-    private int numObjs;              // the number of objects that are part of a trial
-
+    private Vector3[] startPosArr;          // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Vector3[] endPosArr;            // The ending positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Transform[] objs;               // The prefab objects that will be instantiated for a trial
+    private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
+    private int numObjs;                    // the number of objects that are part of a trial
+    private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -57,8 +47,6 @@ public class RunExperiment : MonoBehaviour {
 
         // Set the step size for the objects' motion based on the rate
         stepSize = (1.0f / rate);
-
-        mainCamera = Camera.main;
 
         // Load the config file
         string configFilepath = Application.dataPath + "/../config.json";
@@ -83,15 +71,12 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
 
         // Set the initial position of the participant 
-        //cameraManager.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
         cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-        //subject.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
         subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
     }
-
 
     /**
      * Initialize the current trial.
@@ -101,12 +86,6 @@ public class RunExperiment : MonoBehaviour {
         // Check that we still have more trials to run
         if (curTrial < this.trials.Length)
         {
-            //Debug.Log("Initializing trial " + (curTrial + 1));
-
-            //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-            //subject.position = new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]);
-            //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-
             // Stop displaying the feedback text
             uiManager.ResetFeedbackMsg();
 
@@ -134,9 +113,8 @@ public class RunExperiment : MonoBehaviour {
                 // Set the initial and final positions of the object
                 Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y, curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
                 startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
-
                 Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y, curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                endPosArr[i] = viveCamera.TransformPoint(inputEndPos);      // orient the start position based on the rotation/direction of the Vive
+                endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
 
                 // Adjust the height of the object to match the height of the camera
                 startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y, startPosArr[i].z);
@@ -164,7 +142,6 @@ public class RunExperiment : MonoBehaviour {
                     curObj.stepHidden = curObj.timeVisible * rate;
                 }
             }
-
 
             // Set the start time of this trial so that it can be recorded by the data manager
             trial.trialStart = Time.time;
@@ -197,6 +174,8 @@ public class RunExperiment : MonoBehaviour {
      public void HideObj(Transform movingObj)
     {
         Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
+
+        // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
             rend.enabled = false;
@@ -204,20 +183,17 @@ public class RunExperiment : MonoBehaviour {
     }
 
     /**
-     * End the given trial.
+     * End the given trial by cancelling the repeating methods and saving the data.
      */
     public void CompleteTrial(float trialEnd, bool receivedResponse)
     {
         CancelInvoke("MoveObjsByStep");
         CancelInvoke("HeadTracking");
-
         trials[curTrial - 1].trialEnd = trialEnd;
-
-
         dataManager.AddTrial(trials[curTrial - 1]);
-        trials[curTrial - 1].trialEnd = Time.time;
         isRunning = false;
 
+        // Only save the head tracking data if that flag was set in the config file
         if (config.trackHeadPos) dataManager.WritePosData();
     }
 
@@ -227,18 +203,22 @@ public class RunExperiment : MonoBehaviour {
      void MoveObjsByStep()
      {
         ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
+    
         for (int i = 0; i < objs.Length; i++)
         {
             ManageObjs.Obj curObj = objs[i];
 
+            // Once an object has become inactive we no longer need to move it
             if (curObj.objActive)
             {
+                // Hide the object once it has been visible for its defined timeVisible
                 if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
                 {
                     HideObj(movingObjs[i]);
                     curObj.objVisible = false;
                 }
 
+                // Move the object forward another step
                 float fracTraveled = curObj.stepCounter / curObj.finalStep;
                 movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
                 movingObjs[i].Rotate(-curObj.step * curObj.velocity, 0.0f, 0.0f);
@@ -276,6 +256,10 @@ public class RunExperiment : MonoBehaviour {
         return isRunning;
     }
 
+    /**
+     * Gets the position of the Vive headset at a predefined interval and adds that data point to the
+     * head position data file for the current trial.
+     */
     void HeadTracking()
     {
         dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);

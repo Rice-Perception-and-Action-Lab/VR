@@ -1,0 +1,141 @@
+{
+    "subjNum": 1,
+    "subjSex": 1,
+    "dataFile": "~\\..\\Assets\\TrialData\\mult_obj_input.json",
+    "showFeedback": false,
+    "feedbackColor": "black",
+    "trackHeadPos": true,
+    "Trials": [
+        {
+            "trialNum": 1,
+            "objData": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        0.3330000042915344,
+                        0.3330000042915344,
+                        0.3330000042915344
+                    ],
+                    "startPos": [
+                        0.16699999570846559,
+                        0.0,
+                        26.649999618530275
+                    ],
+                    "endPos": [
+                        0.16699999570846559,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 26.63075828552246,
+                    "velocity": 8.883000373840332,
+                    "timeVisible": 3.0,
+                    "rotationSpeed": 1.0
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Sphere",
+                    "objScale": [
+                        2.9730000495910646,
+                        2.9730000495910646,
+                        2.9730000495910646
+                    ],
+                    "startPos": [
+                        -1.4869999885559083,
+                        0.0,
+                        45.099998474121097
+                    ],
+                    "endPos": [
+                        -1.4869999885559083,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 45.067440032958987,
+                    "velocity": 8.883000373840332,
+                    "timeVisible": 5.077000141143799,
+                    "rotationSpeed": 1.0
+                },
+                {
+                    "objNum": 3,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1.9980000257492066,
+                        1.9980000257492066,
+                        1.9980000257492066
+                    ],
+                    "startPos": [
+                        0.0,
+                        0.0,
+                        30.309999465942384
+                    ],
+                    "endPos": [
+                        -0.9990000128746033,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 30.305255889892579,
+                    "velocity": 10.102999687194825,
+                    "timeVisible": 3.0,
+                    "rotationSpeed": 1.0
+                }
+            ],
+            "trialStart": 1.4280813932418824,
+            "trialEnd": 6.84224271774292,
+            "respTime": 5.414161205291748
+        },
+        {
+            "trialNum": 2,
+            "objData": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1.9980000257492066,
+                        1.9980000257492066,
+                        1.9980000257492066
+                    ],
+                    "startPos": [
+                        0.0,
+                        0.0,
+                        30.309999465942384
+                    ],
+                    "endPos": [
+                        -0.9990000128746033,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 30.305622100830079,
+                    "velocity": 10.102999687194825,
+                    "timeVisible": 3.0,
+                    "rotationSpeed": 1.0
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Sphere",
+                    "objScale": [
+                        0.3330000042915344,
+                        0.3330000042915344,
+                        0.3330000042915344
+                    ],
+                    "startPos": [
+                        0.0,
+                        0.0,
+                        26.649999618530275
+                    ],
+                    "endPos": [
+                        -0.16699999570846559,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 26.6317195892334,
+                    "velocity": 8.883000373840332,
+                    "timeVisible": 3.0,
+                    "rotationSpeed": 1.0
+                }
+            ],
+            "trialStart": 7.4816083908081059,
+            "trialEnd": 11.195637702941895,
+            "respTime": 3.714029312133789
+        }
+    ]
+}

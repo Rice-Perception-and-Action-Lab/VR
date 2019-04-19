@@ -57,9 +57,6 @@ public class SaveData : MonoBehaviour
         }
     }
 
-
-
-
     /**
 	 * The TrialData class holds all data for an individual trial. This includes all information about the
 	 * parameters specified for the trial as well as information about the participant's responses
