@@ -37,9 +37,6 @@ public class ManageTrials : MonoBehaviour {
         try
         {
             string jsonString = File.ReadAllText(filepath);
-
-            //StreamReader sr = new StreamReader(filepath);
-            //string jsonString = sr.ReadToEnd();
             TrialArray trialData = JsonUtility.FromJson<TrialArray>(jsonString);
             return trialData.trials;
         }

@@ -189,6 +189,17 @@ public class RunExperiment : MonoBehaviour {
     {
         CancelInvoke("MoveObjsByStep");
         CancelInvoke("HeadTracking");
+
+        // Hide any objects that haven't already been hidden
+        ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
+        for (int i = 0; i < objs.Length; i++)
+        {
+            if (objs[i].objVisible)
+            {
+                HideObj(movingObjs[i]);
+            }
+        }
+
         trials[curTrial - 1].trialEnd = trialEnd;
         dataManager.AddTrial(trials[curTrial - 1]);
         isRunning = false;
