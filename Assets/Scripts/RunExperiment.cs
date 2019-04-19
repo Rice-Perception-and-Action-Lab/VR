@@ -30,17 +30,19 @@ public class RunExperiment : MonoBehaviour {
     private float trialStart;               // Track the time that the current trial began
     private string objName;                 // The name of the prefab object used for the given trial
     private Vector3 startPos;               // The initial position of the moving object for the current trial
+    private Vector3[] startPosArr;
+
     private Vector3 endPos;                 // The final position of the moving object for the current trial
-    private float dist;                     // The distance between the start and end positions
-    private Transform obj;                  // The prefab object that will be instantiated
-    private Transform movingObj;            // The object that will approach the user
+    private Vector3[] endPosArr;
+
+    private Transform[] objs;                  // The prefab object that will be instantiated
+    private Transform[] movingObjs;
+
     private int stepCounter;
-    private string posString;
-    private float hideTime;
-    private float stepHidden;
-    private float finalStep;
     private float stepSize;
-    float step;
+    private float step;
+
+    private int numObjs;              // the number of objects that are part of a trial
 
 
     /**
@@ -52,6 +54,9 @@ public class RunExperiment : MonoBehaviour {
         // Set the target framerate for the application
         Application.targetFrameRate = 75;
         rate = 75.0f;
+
+        // Set the step size for the objects' motion based on the rate
+        stepSize = (1.0f / rate);
 
         mainCamera = Camera.main;
 
@@ -65,7 +70,6 @@ public class RunExperiment : MonoBehaviour {
         uiManager.SetFeedbackSize(config.feedbackSize);
 
         // Load the data from the desired input file
-        //uiManager.ShowMessage("Trial data file path is " + Application.dataPath + "/" + config.dataFile);
         trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile.Replace("/", "\\"), Time.time);
 
         // Initialize the TrialData array to be the correct size in the experiment's data manager
@@ -109,104 +113,69 @@ public class RunExperiment : MonoBehaviour {
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
 
-            // Set the object prefab that will be displayed
-            objName = trial.objType;
-            GameObject newObj = Resources.Load("Objects\\" + trial.objType) as GameObject;
-            obj = newObj.transform;
+            // Initialize all of the arrays for the objects in the trial
+            numObjs = trial.objects.Length;
+            objs = new Transform[numObjs];
+            startPosArr = new Vector3[numObjs];
+            endPosArr = new Vector3[numObjs];
+            movingObjs = new Transform[numObjs];
 
-            // Set the scale of the object
-            obj.localScale = new Vector3(trial.objScale[0], trial.objScale[1], trial.objScale[2]);
-
-            // Set the inital and final positions of the moving object
-            // starts in the center
-            //startPos = viveCamera.TransformDirection(new Vector3(trial.startPos[0], trial.startPos[1], trial.startPos[2] + (trial.objScale[2] / 2.0f) + 0.05f));
-            Vector3 inputStartPos = new Vector3(trial.startPos[0], viveCamera.position.y, trial.startPos[2] + (trial.objScale[2] / 2.0f) + 0.05f);
-            //inputStartPos.y = viveCamera.position.y;
-            startPos = viveCamera.TransformPoint(inputStartPos);
-
-
-            // starts to the side
-            //startPos = viveCamera.TransformDirection(new Vector3(trial.startPos[0] - (trial.objScale[0] / 2.0f), trial.startPos[1], trial.startPos[2] + (trial.objScale[2] / 2.0f) + 0.05f));
-
-            //endPos = viveCamera.TransformDirection(new Vector3(trial.endPos[0] - (trial.objScale[0] / 2.0f), trial.endPos[1], trial.endPos[2] + (trial.objScale[2] / 2.0f) + 0.05f));
-
-            //Debug.Log("TESTING: " + trial.endPos[0] + " " + trial.objScale[0] + " " + (trial.objScale[0] / 2.0f) + " " + (trial.endPos[0] - (trial.objScale[0] / 2.0f)));
-            //Vector3 inputEndPos2 = new Vector3(0 - (trial.objScale[0] / 2.0f), trial.endPos[1], trial.endPos[2] + (trial.objScale[2] / 2.0f) + 0.05f);
-            //Vector3 inputEndPos2 = new Vector3(trial.endPos[0] - (trial.objScale[0] / 2.0f), trial.endPos[1], trial.endPos[2] + (trial.objScale[2] / 2.0f) + 0.05f);
-            //Vector3 endPos2 = viveCamera.TransformPoint(inputEndPos2);
-
-            Vector3 inputEndPos = new Vector3(trial.endPos[0], trial.endPos[1], trial.endPos[2] + (trial.objScale[2] / 2.0f) + 0.05f);
-            //inputEndPos.y = viveCamera.position.y;
-            endPos = viveCamera.TransformPoint(inputEndPos);
-
-
-            //Debug.Log("AUTO ADJUST END: " + endPos2);
-            //Debug.Log("MANUAL END POS: " + endPos);
-
-
-            /*if (config.objMoveMode == 0)
+            for (int i = 0; i < numObjs; i++)
             {
-                endPos = viveCamera.position;
-                endPos.x += (trial.objScale[0] / 2.0f);
-                startPos.y = viveCamera.position.y;
-            }*/
+                ManageObjs.Obj curObj = trial.objects[i];
 
+                // Set the object prefab that will be displayed
+                GameObject newObj = Resources.Load("Objects\\" + curObj.objType) as GameObject;
+                objs[i] = newObj.transform;
 
-            
+                // Set the scale of the object
+                objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
-            startPos.y = viveCamera.position.y;
-            endPos.y = viveCamera.position.y;
+                // Set the initial and final positions of the object
+                Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y, curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
 
-            Vector3 linePos = viveCamera.TransformPoint(new Vector3(viveCamera.position.x, viveCamera.position.y, viveCamera.position.z + 200));
-            linePos.y = viveCamera.position.y;
+                Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y, curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                endPosArr[i] = viveCamera.TransformPoint(inputEndPos);      // orient the start position based on the rotation/direction of the Vive
 
-            //Debug.DrawLine(viveCamera.position, linePos, Color.red, 500f, false);
+                // Adjust the height of the object to match the height of the camera
+                startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y, startPosArr[i].z);
+                endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y, endPosArr[i].z);
 
-            //Debug.Log("CAMERA POSITION: " + viveCamera.position.x + " " + viveCamera.position.y + " " + viveCamera.position.z);
-            //Debug.Log("START POS: " + startPos.x + " " + startPos.y + " " + startPos.z);
-            //Debug.Log("END POS: " + endPos.x + " " + endPos.y + " " + endPos.z);
+                // Calculate the distance that the object must travel
+                curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
 
-            // Adjust the start/end positions of the object to account for the object's scale
-            //startPos[2] -= (trial.objScale[2] / 2.0f) + 0.05f;  // .05 is approx. the size of the HMD
-            //endPos[2] -= (trial.objScale[2] / 2.0f) + 0.05f;
+                // Instantiate the object so that it's visible
+                movingObjs[i] = Instantiate(objs[i], startPosArr[i], Quaternion.identity);
+                curObj.objVisible = true;
+                curObj.objActive = true;
 
-            // Calculate the distance that the object must travel
-            dist = Vector3.Distance(startPos, endPos);
+                // Set the variables that need to be used in the repeating method to move the objects
+                curObj.step = curObj.velocity * stepSize;
+                curObj.finalStep = ((curObj.dist / curObj.velocity) * rate);
 
-            // Instantiate the object so that it's visible
-            movingObj = Instantiate(obj, startPos, Quaternion.identity);
+                // If timeVisible is negative, the object should never disappear
+                if (curObj.timeVisible < 0)
+                {
+                    curObj.stepHidden = -1;     // set stepHidden to be a step value that can never occur so that HideObject will never be called
+                }
+                else
+                {
+                    curObj.stepHidden = curObj.timeVisible * rate;
+                }
+            }
+
 
             // Set the start time of this trial so that it can be recorded by the data manager
-            trialStart = Time.time;
+            trial.trialStart = Time.time;
             curTrial++;
 
-            posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
-            //Debug.Log("INITIAL POSITION: " + posString);
-
-            // Reset the variables used in the repeating methods
-            stepCounter = 0;
-            posString = "";
-            hideTime = 0.0f;
-            finalStep = ((dist / trials[curTrial - 1].velocity) * rate);
-            //Debug.Log("FINAL STEP: " + finalStep);
-            stepSize = (1.0f / rate);
-            step = trials[curTrial - 1].velocity * stepSize;
-
-            // timeVisible is a negative number if the object should never disappear
-            if (trials[curTrial - 1].timeVisible < 0)
-            {
-                stepHidden = -1;    // set stepHidden to be a step value that never occurs so the object will never be hidden
-            }
-            else
-            {
-                stepHidden = (trials[curTrial - 1].timeVisible * rate);
-            }
-
-
-            // Start calling the methods that will move the object and record head position
+            // Call the repeating methods to move the objects and track head position
             float delay = (1.0f / rate);
-            InvokeRepeating("MoveObjByStep", 0f, delay);
-            InvokeRepeating("HeadTracking", 0f, delay);
+            InvokeRepeating("MoveObjsByStep", 0.0f, delay);
+            InvokeRepeating("HeadTracking", 0.0f, delay);
+
+            // Set the trial as running
             isRunning = true;
         }
         else
@@ -222,47 +191,82 @@ public class RunExperiment : MonoBehaviour {
         }
     }
 
-    
-    public void HideObj()
+    /**
+     * Hide an object so that it is no longer visible but still exists in the world.
+     */
+     public void HideObj(Transform movingObj)
     {
         Renderer rend = movingObj.gameObject.GetComponent<Renderer>();
-        // Check that a moving object has been initialized and that it's actually
-        // a game object to avoid errors
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            //Debug.Log("Deleting moving object for trial " + curTrial);
-            //Debug.Log("POSITION: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
-            
             rend.enabled = false;
         }
-        else
-        {
-            //Debug.Log("ERROR: Could not delete moving object; object did not exist");
-        }
     }
-
 
     /**
      * End the given trial.
      */
     public void CompleteTrial(float trialEnd, bool receivedResponse)
     {
-        CancelInvoke("MoveObjByStep");
+        CancelInvoke("MoveObjsByStep");
         CancelInvoke("HeadTracking");
-        HideObj();
 
-        // Display response time feedback to the participant
-        float respTime = (trialEnd - trialStart);
-        float actualTTC = (dist / trials[curTrial - 1].velocity);
-        if (config.showFeedback) uiManager.DisplayFeedback(respTime, actualTTC);
+        trials[curTrial - 1].trialEnd = trialEnd;
 
+
+        dataManager.AddTrial(trials[curTrial - 1]);
+        trials[curTrial - 1].trialEnd = Time.time;
         isRunning = false;
-
-        // Add this trial's data to the data manager
-        dataManager.AddTrial(trials[curTrial - 1], endPos, trialStart, trialEnd, dist);
 
         if (config.trackHeadPos) dataManager.WritePosData();
     }
+
+    /**
+     * Move each object in the current trial based on the object's parameters.
+     */
+     void MoveObjsByStep()
+     {
+        ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
+        for (int i = 0; i < objs.Length; i++)
+        {
+            ManageObjs.Obj curObj = objs[i];
+
+            if (curObj.objActive)
+            {
+                if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
+                {
+                    HideObj(movingObjs[i]);
+                    curObj.objVisible = false;
+                }
+
+                float fracTraveled = curObj.stepCounter / curObj.finalStep;
+                movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
+                movingObjs[i].Rotate(-curObj.step * curObj.velocity, 0.0f, 0.0f);
+                curObj.stepCounter++;
+
+                // If the object has traveled the entire distance, it should no longer be moving
+                if (fracTraveled >= 1)
+                {
+                    // Hide the object if it hasn't been hidden already
+                    if (curObj.objVisible)
+                    {
+                        HideObj(movingObjs[i]);
+                        curObj.objVisible = false;
+                    }
+
+                    // Set the object to inactive and decrement numObjs
+                    curObj.objActive = false;
+                    numObjs = numObjs - 1;
+                }
+            }
+        }
+
+        // Once numObjs reaches 0, all objects have finished moving and the repeating method can be canceled
+        if (numObjs == 0)
+        {
+            CancelInvoke("MoveObjsByStep");
+        }
+     }
 
     /**
      * Communicates with the controller script to determine if a trial is currently active.
@@ -272,62 +276,9 @@ public class RunExperiment : MonoBehaviour {
         return isRunning;
     }
 
-
-    void MoveObjByStep()
-    {
-        //Debug.Log("Object Position: " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z);
-        //Debug.Log("Step Counter: " + stepCounter + " Step Hidden: " + stepHidden);
-        //if (stepCounter >= stepHidden)
-        if (stepCounter > stepHidden)
-        {
-            HideObj();
-            posString = " " + movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
-            hideTime = (Time.time - trialStart);
-            //Debug.Log("Time Visible: " + hideTime + " | " + posString);
-            //Debug.Log("Trial " + (curTrial) + " | Time Visible: " + hideTime + " | Distance Traveled: " + Vector3.Distance(movingObj.position, startPos));
-            stepCounter++;
-        }
-        //else
-
-        if (true)
-        {
-            float fracTraveled = stepCounter / finalStep;
-            movingObj.position = Vector3.Lerp(startPos, endPos, fracTraveled);
-            movingObj.Rotate(-step * trials[curTrial - 1].velocity, 0.0f, 0.0f);
-            stepCounter++;
-
-            //if (stepCounter > finalStep)
-            if (fracTraveled >= 1)
-            {
-                Debug.Log("Trial " + (curTrial) + " | Time Visible: " + (Time.time - trialStart) + " | Distance Traveled: " + Vector3.Distance(movingObj.position, startPos));
-                HideObj();
-                posString = movingObj.position.x + " " + movingObj.position.y + " " + movingObj.position.z;
-                CancelInvoke("MoveObjByStep");
-                float endTime = (Time.time - trialStart);
-                //Debug.Log("TTC: " + (endTime - hideTime) + "  |  POSITION: " + posString);
-                stepCounter = 0;
-                posString = "";
-                hideTime = 0.0f;
-            }
-        }
-    }
-
-
-    int marker = 0;
-    void OutputTime()
-    {
-        marker++;
-        Debug.Log(Time.time);
-        if (marker == 75)
-        {
-            CancelInvoke();
-            float delay = (1.0f / 75.0f);
-            InvokeRepeating("OutputTime", 0f, delay);
-        }
-    }
-
     void HeadTracking()
     {
         dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
     }
+    
 }
