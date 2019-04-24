@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * This class allows the user to control the position of the second camera (used for debugging). Note that the view from the second
+ * camera cannot be seen through the Vive headset and is only visible in Unity when the display is set to Camera 2.
+ */
 public class MoveSecondCamera : MonoBehaviour {
 
     public float speed = 3.5f;

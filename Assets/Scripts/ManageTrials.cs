@@ -5,19 +5,18 @@ using UnityEngine;
 
 public class ManageTrials : MonoBehaviour {
 
+    /**
+     * This class defines a Trial, which is defined by the input file. The trialStart and trialEnd fields
+     * aren't defined in the input file but are set when they occur during the experiment.
+     */
     [System.Serializable]
     public class Trial
     {
-        public int trialNum;            // the number of the current trial
-        public string objType;          // the name of the prefab that the object should be instantiated as
-        public float[] objScale;         // the x,y,z-coordinates for the scale of the object
-        public float[] startPos;
-        public float[] endPos;
-        public float velocity;          // the speed that the object is moving
-        public float timeVisible;       // the amount of time that the object is visible before disappearing
-        public float rotationSpeed;     // the speed at which the object should rotate
+        public int trialNum;                // the number of the current trial
+        public ManageObjs.Obj[] objects;    // the objects to be displayed in the trial
+        public float trialStart;            // the time at which the trial began
+        public float trialEnd;              // the time at which the trial ended
     }
-
 
     /**
      * This wrapper class is a workaround for how Unity's JsonUtility class handles
@@ -29,7 +28,6 @@ public class ManageTrials : MonoBehaviour {
         public Trial[] trials;
     }
 
-
     /**
      * Given a path to a JSON file containing the parameters for each trial in the experiment,
      * creates a Trial object that has the correct values for each entry in the input file.
@@ -39,9 +37,6 @@ public class ManageTrials : MonoBehaviour {
         try
         {
             string jsonString = File.ReadAllText(filepath);
-
-            //StreamReader sr = new StreamReader(filepath);
-            //string jsonString = sr.ReadToEnd();
             TrialArray trialData = JsonUtility.FromJson<TrialArray>(jsonString);
             return trialData.trials;
         }

@@ -1,0 +1,124 @@
+{
+  "trials": [
+    {
+      "trialNum": 1,
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Sphere",
+          "objScale": [
+            0.333,
+            0.333,
+            0.333
+          ],
+          "startPos": [
+            0.167,
+            0,
+            26.650
+          ],
+          "endPos": [
+            0.167,
+            0,
+            0
+          ],
+          "velocity": 8.883,
+          "timeVisible": 3,
+          "rotationSpeed": 1
+        },
+        {
+          "objNum": 2,
+          "objType": "Sphere",
+          "objScale": [
+            2.973,
+            2.973,
+            2.973
+          ],
+          "startPos": [
+            -1.487,
+            0,
+            45.100
+          ],
+          "endPos": [
+            -1.487,
+            0,
+            0
+          ],
+          "velocity": 8.883,
+          "timeVisible": 5.077,
+          "rotationSpeed": 1
+        },
+        {
+          "objNum": 3,
+          "objType": "Sphere",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            0,
+            0,
+            30.310
+          ],
+          "endPos": [
+            -0.999,
+            0,
+            0
+          ],
+          "velocity": 10.103,
+          "timeVisible": 3.000,
+          "rotationSpeed": 1
+        }
+      ]
+    },
+    {
+      "trialNum": 2,
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Sphere",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            0,
+            0,
+            30.310
+          ],
+          "endPos": [
+            -0.999,
+            0,
+            0
+          ],
+          "velocity": 10.103,
+          "timeVisible": 3.000,
+          "rotationSpeed": 1
+        },
+        {
+          "objNum": 2,
+          "objType": "Sphere",
+          "objScale": [
+            0.333,
+            0.333,
+            0.333
+          ],
+          "startPos": [
+            0,
+            0,
+            26.650
+          ],
+          "endPos": [
+            -0.167,
+            0,
+            0
+          ],
+          "velocity": 8.883,
+          "timeVisible": 3,
+          "rotationSpeed": 1
+        }
+      ]
+    }
+  ]
+}

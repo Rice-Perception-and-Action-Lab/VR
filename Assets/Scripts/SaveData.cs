@@ -7,13 +7,11 @@ using UnityEngine;
 [System.Serializable]
 public class SaveData : MonoBehaviour
 {
-
-    public TrialData[] data;        // the TTC data collected for each trial ran
-    private List<HeadPos> posData;  // the head position data collected for each trial
-
-    private int i;                  // index to track current position in data array
-    private float expStart;         // the start time of the experiment (all trial times are relative to this value)
-    private string datetime;        // the date/time that this experiment started
+    public TrialData[] data;                // the data about participant responses and the metadata about each trial's parameters
+    private List<HeadPos> posData;          // the head position data collected for each trial
+    private int i;                          // the index to track the current trial/position in the data array
+    private float expStart;                 // the start time of the experiment (the times for individual trials are relative to this)
+    private string datetime;                // the date/time that the experiment began
 
     /* Config-Specified Fields */
     public int subjNum;
@@ -27,63 +25,88 @@ public class SaveData : MonoBehaviour
     public string feedbackColor;
 
     /**
-     * This class holds all data for an individual trial. It includes all 
-     * information given in the JSON object for the trial as well as all
-     * relevant information gathered over the course of the trial.
-     */
+	 * The ObjData class holds the information for a single object within a trial.
+	 */
     [System.Serializable]
-    public class TrialData
+    public class ObjData
     {
-        public int trialNum;
-        public string objType;
-        public float[] objScale;
-        public float[] startPos;
-        public float[] endPos;
-        public float distTraveled;
-        public float velocity;
-        public float timeVisible;
-        public float rotationSpeed;
-        public float trialStart;
-        public float trialEnd;
-        public float respTime;
-        public float ttcEstimate;
-        public float ttcActual;
+        public int objNum;
+        public string objType;          // the name of the prefab that the object should be instantiated as
+        public float[] objScale;        // the x,y,z-coordinates for the scale of the object
+        public float[] startPos;        // the x,y,z-coordinates for the initial position of the object
+        public float[] endPos;          // the x,y,z-coordinates for the final position of the object
+        public float distTraveled;      // the distance that the object traveled
+        public float velocity;          // the speed that the object is moving
+        public float timeVisible;       // the amount of time that the object is visible before disappearing
+        public float rotationSpeed;     // the speed at which the object should rotate
 
         /**
-         * A constructor for the TrialData object
-         */
-        public TrialData(ManageTrials.Trial trial, float trialStart, float trialEnd, float ttcActual, float ttcEstimate, float dist)
+		 * The constructor for the ObjData object.
+		 */
+        public ObjData(ManageObjs.Obj obj)
         {
-            this.trialNum = trial.trialNum;
-            this.objType = trial.objType;
-            this.objScale = trial.objScale;
-            this.startPos = trial.startPos;
-            this.endPos = trial.endPos;
-            this.distTraveled = dist;
-            this.velocity = trial.velocity;
-            this.rotationSpeed = trial.rotationSpeed;
-            this.trialStart = trialStart;
-            this.trialEnd = trialEnd;
-            this.respTime = trialEnd - trialStart;
-            this.ttcEstimate = ttcEstimate;
-            this.ttcActual = ttcActual;
-            this.timeVisible = trial.timeVisible;
+            this.objNum = obj.objNum;
+            this.objType = obj.objType;
+            this.objScale = obj.objScale;
+            this.startPos = obj.startPos;
+            this.endPos = obj.endPos;
+            this.distTraveled = obj.dist;
+            this.velocity = obj.velocity;
+            this.timeVisible = obj.timeVisible;
+            this.rotationSpeed = obj.rotationSpeed;
         }
     }
 
+    /**
+	 * The TrialData class holds all data for an individual trial. This includes all information about the
+	 * parameters specified for the trial as well as information about the participant's responses
+	 * during the trial.
+	 */
+    [System.Serializable]
+    public class TrialData
+    {
+        public int trialNum;            // the number of the trial
+        public ObjData[] objData;       // the data about the objects presented in the trial
+        public float trialStart;        // the time at which the trial began 
+        public float trialEnd;          // the time at which the trial ended (based on when the participant responds via the controller)
+        public float respTime;          // the amount of time it took for the participant to respond
+
+        /**
+		 * The constructor for the TrialData object. It needs to create an array to represent 
+		 */
+        public TrialData(ManageTrials.Trial trial)
+        {
+            this.trialNum = trial.trialNum;
+            this.trialStart = trial.trialStart;
+            this.trialEnd = trial.trialEnd;
+            this.respTime = trialEnd - trialStart;
+
+            // Iterate through all objects to create an ObjData object for each object in the trial
+            this.objData = new ObjData[trial.objects.Length];
+            for (int j = 0; j < trial.objects.Length; j++)
+            {
+                this.objData[j] = new ObjData(trial.objects[j]);
+            }
+        }
+
+    }
+
+    /**
+     * The HeadPos class represents the position of the Vive headset at a specific point in time.
+     */
     [System.Serializable]
     public class HeadPos
     {
-        public float timestamp;     // The time this position was recorded
-        public float x;             // The x-coordinate of the camera rig at the given point in time
-        public float y;             // The x-coordinate of the camera rig at the given point in time
-        public float z;             // The x-coordinate of the camera rig at the given point in time
-        public float eulerX;
-        public float eulerY;
-        public float eulerZ;
+        public float timestamp;     // the time at which this position was recorded
+        public float x;             // the x-coordinate of the camera rig at this point in time
+        public float y;             // the y-coordinate of the camera rig at this point in time
+        public float z;             // the z-coordinate of the camera rig at this point in time
+        public float eulerX;        // the x-coordinate of the rotation of the camera rig at this point in time
+        public float eulerY;        // the y-coordinate of the rotation of the camera rig at this point in time
+        public float eulerZ;        // the z-coordinate of the rotation of the camera rig at this point in time
 
         /**
-         * A constructor for the HeadPos object
+         * A constructor for the HeadPos object.
          */
         public HeadPos(float timestamp, Vector3 pos, Vector3 euler)
         {
@@ -147,12 +170,10 @@ public class SaveData : MonoBehaviour
         }
     }
 
-   
     /**
-     * This method is called by the dataManager object in the RunExperiment script. It sets the 
-     * appropriate experiment-level variables specified in the config file. It is necessary to set
-     * all the config fields in the SaveData class so that Unity's JsonUtility will correctly
-     * convert the data to JSON.
+     * This method is called by the dataManager object in the RunExperiment script. It sets the appropriate
+     * experiment-level variables specified in the config file. Setting these config fields is necessary
+     * so that Unity's JsonUtility class can correctly convert the data to JSON.
      */
     public void SetConfigInfo(ReadConfig.Config config)
     {
@@ -167,106 +188,86 @@ public class SaveData : MonoBehaviour
         this.feedbackColor = config.feedbackColor;
     }
 
-
     /**
-     * This method is called by the dataManager object in the RunExperiment script
-     * when the experiment is initialized and the data for the experiment has
-     * been read in. This tells us how many trials the experiment contains 
-     * (i.e., how long our array should be).
+     * This method is called by the dataManager object in the RunExperiment script when the experiment is
+     * initialized, after the trial datafile has been read in. This allows us to know how many trials
+     * are in the experiment (i.e., how long our data array needs to be).
      */
     public void InitDataArray(int numTrials, float startTime)
     {
         this.data = new TrialData[numTrials];
-        this.i = 0;     // place the first trial in the first position in the array
-
-        Debug.Log("Experiment starting at time " + startTime);
+        this.i = 0;
         this.expStart = startTime;
-
         this.datetime = System.DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss");
-
-        posData = new List<HeadPos>();
+        this.posData = new List<HeadPos>();
     }
 
     /**
-     * Called by the dataManager object in the RunExperiment script whenever a given trial is 
-     * completed so that the trial's data can be added to the data array.
+     * Called by the dataManager object in the RunExperiment script whenever a given trial is completed
+     * so that the trial's data can be stored.
      */
-     public void AddTrial(ManageTrials.Trial trial, Vector3 subjPos, float startTime, float endTime, float dist)
-     {
-        // Ensure that you don't index past the end of the array
+    public void AddTrial(ManageTrials.Trial trial)
+    {
+        // Ensure that we don't try to index past the end of the array
         if (i < data.Length)
         {
-            //Debug.Log("Adding trial " + trial.trialNum + " to data array.");
-
-            // Calculate the actual and estimated TTCs
-            float ttcActual = (dist - (trial.velocity * trial.timeVisible)) / trial.velocity;
-            float ttcEstimate = (endTime - startTime) - trial.timeVisible;    // response time - time visible
-
-            // Add the new trial data to the next available position in the data array
-            data[i] = new TrialData(trial, startTime, endTime, ttcActual, ttcEstimate, dist);
+            data[i] = new TrialData(trial);
             i++;
-        }
-        else
-        {
-            //Debug.Log("All trials completed; can't add new trial");
         }
     }
 
-
+    /**
+     * Called by the dataManager object in the RunExperiment script at a specified interval so that
+     * a time series of head position data can be stored.
+     */
     public void AddHeadPos(float timestamp, Vector3 curPos, Vector3 curEuler)
     {
         posData.Add(new HeadPos(timestamp, curPos, curEuler));
     }
 
+    /**
+     * Write the head position data to a JSON file.
+     */
     public void WritePosData()
     {
-        HeadPos[] posArr = posData.ToArray();
+        HeadPos[] posArr = posData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
         string jsonData = JsonHelper.ToJson(this, posArr, true);
         string dir = Application.dataPath + "/../Results/Subj" + subjNum + "/HeadPos/";
 
-        // Create the directory if it hasn't already been created
+        // Create the directory to store the position data if it doesn't already exist
         if (!Directory.Exists(dir))
         {
-            //Debug.Log("creating dir " + dir);
             Directory.CreateDirectory(dir);
         }
 
-        // Add the time of the experiment and create that directory, if needed
-        /*dir += datetime + "/";
-        if (!Directory.Exists(dir))
-        {
-            Directory.CreateDirectory(dir);
-        }*/
+        string trialPosDataFile = "Trial" + i + ".json";
+        string filepath = Path.Combine(dir, trialPosDataFile);
 
-        string trialDataFile = "Trial" + (i) + ".json";
-        string filepath = Path.Combine(dir, trialDataFile);
-
+        // Write the JSON string to the specified file path
         using (StreamWriter writer = new StreamWriter(filepath, false))
         {
             writer.WriteLine(jsonData);
             writer.Flush();
         }
 
+        // Make a new list to collect the next trial's head position data
         posData = new List<HeadPos>();
     }
 
     /**
-     * This method writes all trial data to a JSON file.
+     * Write all trial data to a JSON file.
      */
     public void Save()
     {
         string jsonData = JsonHelper.ToJson(this, data, true);
-        //string dir = Application.dataPath + "/../Results/Subj" + subjNum + "/ParticipantResponse/";
         string dir = Application.dataPath + "/../Results/Subj" + subjNum;
 
-        // Create the directory if it hasn't already been created
+        // Create the directory to store the trial data if it hasn't already been created
         if (!Directory.Exists(dir))
         {
             Directory.CreateDirectory(dir);
         }
 
-
-        //string dataFile = System.DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss") + "_data.json";
         string dataFile = "response_data.json";
         string filepath = Path.Combine(dir, dataFile);
         Debug.Log("Saving data to " + filepath);
@@ -277,5 +278,4 @@ public class SaveData : MonoBehaviour
             writer.Flush();
         }
     }
-
 }

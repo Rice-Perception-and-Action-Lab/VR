@@ -15,14 +15,10 @@ public class ManageUI : MonoBehaviour {
     public void SetCanvasPosition(float x, float y, float z)
     {
         canvas.transform.position = new Vector3(x, y, z);
-        //canvas.transform.position = viveCamera.TransformDirection(new Vector3(x, y, z));
-
         canvas.transform.position = viveCamera.position + (viveCamera.forward * z);
-        //canvas.transform.eulerAngles = new Vector3(0, 0, 0);
         canvas.transform.position = new Vector3(canvas.transform.position.x, y, canvas.transform.position.z);
         canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - viveCamera.position);
     }
-
 
     /**
      * Sets the font size of the feedback message.
@@ -31,7 +27,6 @@ public class ManageUI : MonoBehaviour {
     {
         feedbackMsg.fontSize = size;
     }
-
 
     /**
      * Sets the text color of the feedback that is presented to the participant.
@@ -64,7 +59,6 @@ public class ManageUI : MonoBehaviour {
         }
     }
 
-
     /**
      * Initializes the feedback message to empty at the beginning of a trial.
      */
@@ -72,7 +66,6 @@ public class ManageUI : MonoBehaviour {
      {
         feedbackMsg.text = "";
      }
-
 
     /**
     * Display feedback that shows whether the participant responded too early, too late, or on time.
@@ -96,7 +89,6 @@ public class ManageUI : MonoBehaviour {
         }
     }
 
-
     /**
      * Displays a message telling the participant that the experiment is complete.
      */
@@ -105,13 +97,17 @@ public class ManageUI : MonoBehaviour {
         feedbackMsg.text = "Experiment complete";
      }
 
-
+    /**
+     * Shows whatever message is passed in as an argument to the function.
+     */
     public void ShowMessage(string msg)
     {
         feedbackMsg.text = msg;
     }
 
-
+    /**
+     * Clears the canvas so no text is visible.
+     */
     public void ClearMessage()
     {
         feedbackMsg.text = "";

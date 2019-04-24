@@ -1,7 +1,7 @@
 {
-    "subjNum": 2,
+    "subjNum": 1,
     "subjSex": 1,
-    "dataFile": "~\\..\\Assets\\TrialData\\vr1_input.json",
+    "dataFile": "~\\..\\Assets\\TrialData\\mult_obj_input.json",
     "initCameraPos": [
         0,
         0,

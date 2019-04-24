@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class ReadConfig : MonoBehaviour {
 
+    /**
+     * The Config class parses all information from the provided config file and creates an object so that the 
+     * config information can be accessed by the rest of the program.
+     */
     [System.Serializable]
     public class Config
     {
