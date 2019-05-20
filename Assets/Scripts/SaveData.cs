@@ -38,7 +38,9 @@ public class SaveData : MonoBehaviour
         public float distTraveled;      // the distance that the object traveled
         public float velocity;          // the speed that the object is moving
         public float timeVisible;       // the amount of time that the object is visible before disappearing
-        public float rotationSpeed;     // the speed at which the object should rotate
+        public float rotationSpeedX;         // the speed at which the object should rotate around X axis
+        public float rotationSpeedY;         // the speed at which the object should rotate around Y axis
+        public float rotationSpeedZ;         // the speed at which the object should rotate around Z axis
 
         /**
 		 * The constructor for the ObjData object.
@@ -53,7 +55,9 @@ public class SaveData : MonoBehaviour
             this.distTraveled = obj.dist;
             this.velocity = obj.velocity;
             this.timeVisible = obj.timeVisible;
-            this.rotationSpeed = obj.rotationSpeed;
+            this.rotationSpeedX = obj.rotationSpeedX;
+            this.rotationSpeedX = obj.rotationSpeedY;
+            this.rotationSpeedX = obj.rotationSpeedZ;
         }
     }
 
