@@ -70,6 +70,7 @@ public class SaveData : MonoBehaviour
         public float trialStart;        // the time at which the trial began 
         public float trialEnd;          // the time at which the trial ended (based on when the participant responds via the controller)
         public float respTime;          // the amount of time it took for the participant to respond
+        public string response;
 
         /**
 		 * The constructor for the TrialData object. It needs to create an array to represent 
@@ -80,6 +81,8 @@ public class SaveData : MonoBehaviour
             this.trialStart = trial.trialStart;
             this.trialEnd = trial.trialEnd;
             this.respTime = trialEnd - trialStart;
+            this.response = trial.response;
+
 
             // Iterate through all objects to create an ObjData object for each object in the trial
             this.objData = new ObjData[trial.objects.Length];

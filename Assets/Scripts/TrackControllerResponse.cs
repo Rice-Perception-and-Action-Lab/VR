@@ -12,6 +12,7 @@ public class TrackControllerResponse : MonoBehaviour
     private GameObject movingObj;               // a reference to the MovingObj GameObject so we can call methods from the RunExperiment script attached to it
     private RunExperiment script;               // a reference to the RunExperiment script so we can call its methods
 
+
     private SteamVR_Controller.Device Controller
     {
         // Finds the index of the controller from all tracked objects; allows us to easily track controller input
@@ -38,10 +39,23 @@ public class TrackControllerResponse : MonoBehaviour
         float threshold = 0.3f;
         bool runningTrial = script.CheckTrialRunning();
 
+        Vector2 touchVector = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
+        
         // End the trial if there is a trial running and the touchpad button is pressed
         if (runningTrial && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            script.CompleteTrial(Time.time, true);
+            if (touchVector.x < -0.7f)
+            {
+                Debug.Log("Left Press");
+                script.CompleteTrial(Time.time, true, "left");
+            }
+            if (touchVector.x > 0.7f)
+            {
+                Debug.Log("Right Press");
+                script.CompleteTrial(Time.time, true, "right");
+            }
+            // if (touchVector.y > 0.7f) UP
+            // if (touchVector.y < -0.7) DOWN
         }
         else
         {
