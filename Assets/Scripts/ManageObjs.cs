@@ -20,7 +20,9 @@ public class ManageObjs : MonoBehaviour {
         public float[] endPos;              // the x,y,z-coordinates for the final position of the object
         public float velocity;              // the speed that the object is moving
         public float timeVisible;           // the amount of time that the object is visible before disappearing
-        public float rotationSpeed;         // the speed at which the object should rotate
+        public float rotationSpeedX;         // the speed at which the object should rotate around X axis
+        public float rotationSpeedY;         // the speed at which the object should rotate around Y axis
+        public float rotationSpeedZ;         // the speed at which the object should rotate around Z axis
         public float dist;                  // the distance that the object must travel
 
         /* Derived fields */

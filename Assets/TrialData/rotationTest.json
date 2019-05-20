@@ -1,0 +1,389 @@
+{
+  "trials": [
+    {
+      "trialNum": 1,
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            -1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            -1.487,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 2,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            0,
+            0,
+            20
+          ],
+          "endPos": [
+            0,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 3,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            1.487,
+            0,
+            0
+          ],
+          "velocity": 3.0,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
+        }
+      ]
+    },
+	    {
+      "trialNum": 1,
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            -1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            -1.487,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 1,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 2,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            0,
+            0,
+            20
+          ],
+          "endPos": [
+            0,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 1,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 3,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            1.487,
+            0,
+            0
+          ],
+          "velocity": 3.0,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 1
+        }
+      ]
+    },
+	{
+      "trialNum": 2,
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            -1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            -1.487,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 5,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 2,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            0,
+            0,
+            20
+          ],
+          "endPos": [
+            0,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 5,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 3,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            1.487,
+            0,
+            0
+          ],
+          "velocity": 3.0,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 5
+        }
+      ]
+    },
+	{
+      "trialNum": 3,
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            -1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            -1.487,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 1,
+		  "rotationSpeedY": 1,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 2,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            0,
+            0,
+            20
+          ],
+          "endPos": [
+            0,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 1,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 1
+        },
+        {
+          "objNum": 3,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            1.487,
+            0,
+            0
+          ],
+          "velocity": 3.0,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 1,
+		  "rotationSpeedZ": 1
+        }
+      ]
+    },
+	{
+      "trialNum": 4,
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            -1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            -1.487,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 10,
+		  "rotationSpeedY": 10,
+		  "rotationSpeedZ": 0
+        },
+        {
+          "objNum": 2,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            0,
+            0,
+            20
+          ],
+          "endPos": [
+            0,
+            0,
+            0
+          ],
+          "velocity": 3.00,
+          "timeVisible": 500,
+          "rotationSpeedX": 10,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 10
+        },
+        {
+          "objNum": 3,
+          "objType": "Soccer Ball",
+          "objScale": [
+            1.998,
+            1.998,
+            1.998
+          ],
+          "startPos": [
+            1.487,
+            0,
+            20
+          ],
+          "endPos": [
+            1.487,
+            0,
+            0
+          ],
+          "velocity": 3.0,
+          "timeVisible": 500,
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 10,
+		  "rotationSpeedZ": 10
+        }
+      ]
+    }
+  ]
+}
