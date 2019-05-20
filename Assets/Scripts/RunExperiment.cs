@@ -232,8 +232,9 @@ public class RunExperiment : MonoBehaviour {
                 // Move the object forward another step
                 float fracTraveled = curObj.stepCounter / curObj.finalStep;
                 movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
-                movingObjs[i].Rotate(-curObj.step * curObj.velocity, 0.0f, 0.0f);
-                curObj.stepCounter++;
+                //movingObjs[i].Rotate(-curObj.step * curObj.velocity, 0.0f, 0.0f);
+                movingObjs[i].Rotate(0.0f, 0.0f, 0.0f); //TODO: Fix rotation based on input file
+				curObj.stepCounter++;
 
                 // If the object has traveled the entire distance, it should no longer be moving
                 if (fracTraveled >= 1)
