@@ -185,8 +185,9 @@ public class RunExperiment : MonoBehaviour {
     /**
      * End the given trial by cancelling the repeating methods and saving the data.
      */
-    public void CompleteTrial(float trialEnd, bool receivedResponse)
+    public void CompleteTrial(float trialEnd, bool receivedResponse, string response)
     {
+        Debug.Log("Trial completed");
         CancelInvoke("MoveObjsByStep");
         CancelInvoke("HeadTracking");
 
@@ -201,6 +202,7 @@ public class RunExperiment : MonoBehaviour {
         }
 
         trials[curTrial - 1].trialEnd = trialEnd;
+        trials[curTrial - 1].response = response;
         dataManager.AddTrial(trials[curTrial - 1]);
         isRunning = false;
 
