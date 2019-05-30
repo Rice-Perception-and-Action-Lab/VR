@@ -34,6 +34,3 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-Results/Subj1/HeadPos/Trial1.json
-Results/Subj1/HeadPos/Trial2.json
-Results/Subj1/response_data.json
