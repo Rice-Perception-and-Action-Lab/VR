@@ -75,6 +75,8 @@ public class SaveData : MonoBehaviour
         public float trialEnd;          // the time at which the trial ended (based on when the participant responds via the controller)
         public float respTime;          // the amount of time it took for the participant to respond
         public string response;
+        public float ttcEstimate;
+
 
         /**
 		 * The constructor for the TrialData object. It needs to create an array to represent 
@@ -88,11 +90,13 @@ public class SaveData : MonoBehaviour
             this.response = trial.response;
 
 
+
             // Iterate through all objects to create an ObjData object for each object in the trial
             this.objData = new ObjData[trial.objects.Length];
             for (int j = 0; j < trial.objects.Length; j++)
             {
                 this.objData[j] = new ObjData(trial.objects[j]);
+                this.ttcEstimate = this.respTime - this.objData[j].timeVisible;
             }
         }
 
