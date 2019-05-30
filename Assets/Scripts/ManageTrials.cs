@@ -17,6 +17,7 @@ public class ManageTrials : MonoBehaviour {
         public float trialStart;            // the time at which the trial began
         public float trialEnd;              // the time at which the trial ended
         public string response;
+
     }
 
     /**

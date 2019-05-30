@@ -1,15 +1,13 @@
 {
     "subjNum": 1,
     "subjSex": 1,
-    "dataFile": "~\\..\\Assets\\TrialData\\rotationTest.json",
+    "dataFile": "~\\..\\Assets\\TrialData\\pm_test.json",
     "initCameraPos": [
         0,
         0,
         0
     ],
-    "objMoveMode": 0,
     "trackHeadPos": true,
-    "offsetObj": true,
     "showFeedback": false,
     "feedbackColor": "black",
     "feedbackSize": 75,
