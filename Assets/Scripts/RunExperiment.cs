@@ -22,6 +22,7 @@ public class RunExperiment : MonoBehaviour {
     private float rate;                     // The framerate that we're moving the object at
     private ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
     private Transform headPos;              // The location of the camera rig relevant to the scene
+    private bool expComplete;
 
     // Trial-Dependent Variables
     private int curTrial;                   // Track the number of the current trial being run
@@ -69,6 +70,7 @@ public class RunExperiment : MonoBehaviour {
         // Initialize global variables
         curTrial = 0;
         isRunning = false;
+        expComplete = false;
 
         // Set the initial position of the participant 
         cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
@@ -88,6 +90,8 @@ public class RunExperiment : MonoBehaviour {
         {
             // Stop displaying the feedback text
             uiManager.ResetFeedbackMsg();
+
+            Debug.Log("Trial " + trials[curTrial].trialNum + " started");
 
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
@@ -160,6 +164,7 @@ public class RunExperiment : MonoBehaviour {
             // Do this check and then increment the trial num so data is only saved once
             if (curTrial == trials.Length)
             {
+                expComplete = true;
                 Debug.Log("Experiment complete");
                 uiManager.DisplayCompletedMsg();
                 dataManager.Save();
@@ -187,7 +192,7 @@ public class RunExperiment : MonoBehaviour {
      */
     public void CompleteTrial(float trialEnd, bool receivedResponse, string response)
     {
-        Debug.Log("Trial completed");
+        Debug.Log("Trial " + trials[curTrial - 1].trialNum + " completed" + Environment.NewLine);
         CancelInvoke("MoveObjsByStep");
         CancelInvoke("HeadTracking");
 
@@ -277,5 +282,22 @@ public class RunExperiment : MonoBehaviour {
     {
         dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
     }
-    
+
+
+    void OnApplicationQuit()
+    {
+        if (expComplete)
+        {
+            Debug.Log(Environment.NewLine + "Simulation shutting down after successful completion" + Environment.NewLine);
+            Debug.Log("Total simulation time " + Time.time + " seconds");
+        }
+        else
+        {
+            Debug.Log(Environment.NewLine + "Simulation shutting down after UNSUCCESSFUL completion...Saving partial data..." + Environment.NewLine);
+            Debug.Log("Total simulation time " + Time.time + " seconds");
+            dataManager.Save();
+        }
+
+    }
+
 }
