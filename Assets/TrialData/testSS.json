@@ -1,0 +1,60 @@
+{
+  "trials": [
+    {
+      "trialNum": 1,
+	  "trialName": "VRE3LN",
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Sphere",
+          "objScale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "startPos": [
+            0,
+            0,
+            36
+          ],
+          "endPos": [
+            0,
+            0,
+			0
+          ],
+          "velocity": 8,
+          "timeVisible": 3,
+          "rotationSpeed": 0
+        }
+      ]
+    },
+	{
+      "trialNum": 2,
+	  "trialName": "VRE0P75LN",
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "Sphere",
+          "objScale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "startPos": [
+            0,
+            0,
+            30
+          ],
+          "endPos": [
+            0,
+            0,
+			0
+          ],
+          "velocity": 8,
+          "timeVisible": 3,
+          "rotationSpeed": 0
+        }
+      ]
+    }
+  ]
+}

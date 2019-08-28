@@ -13,6 +13,8 @@ public class ManageTrials : MonoBehaviour {
     public class Trial
     {
         public int trialNum;                // the number of the current trial
+        public string trialName;
+        //public string trialName;            // the name of the current trial
         public ManageObjs.Obj[] objects;    // the objects to be displayed in the trial
         public float trialStart;            // the time at which the trial began
         public float trialEnd;              // the time at which the trial ended

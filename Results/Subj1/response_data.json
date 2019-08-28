@@ -1,8 +1,8 @@
 {
     "subjNum": 1,
     "subjSex": 1,
-    "dataFile": "~\\..\\Assets\\TrialData\\pm_test.json",
-    "showFeedback": false,
+    "dataFile": "~\\..\\Assets\\TrialData\\testSS.json",
+    "showFeedback": true,
     "feedbackColor": "black",
     "trackHeadPos": true,
     "Trials": [
@@ -10,141 +10,71 @@
             "trialNum": 1,
             "objData": [
                 {
-                    "objNum": 0,
+                    "objNum": 1,
                     "objType": "Sphere",
                     "objScale": [
-                        0.3330000042915344,
-                        0.3330000042915344,
-                        0.3330000042915344
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "startPos": [
                         0.0,
                         0.0,
-                        26.649999618530275
+                        36.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        17.770000457763673
+                        0.0
                     ],
-                    "distTraveled": 8.5003662109375,
-                    "velocity": 8.880000114440918,
-                    "timeVisible": 1.0,
+                    "distTraveled": 35.89534378051758,
+                    "velocity": 8.0,
+                    "timeVisible": 3.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 1.191102385520935,
-            "trialEnd": 5.205263614654541,
-            "respTime": 4.014161109924316,
+            "trialStart": 0.46168357133865359,
+            "trialEnd": 5.346192359924316,
+            "respTime": 4.8845086097717289,
             "response": "right",
-            "ttcEstimate": 3.0141611099243166
+            "ttcEstimate": 1.8845086097717286
         },
         {
             "trialNum": 2,
             "objData": [
                 {
-                    "objNum": 0,
+                    "objNum": 1,
                     "objType": "Sphere",
                     "objScale": [
-                        1.9980000257492066,
-                        1.9980000257492066,
-                        1.9980000257492066
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "startPos": [
                         0.0,
                         0.0,
-                        30.309999465942384
+                        30.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        10.10200023651123
+                        0.0
                     ],
-                    "distTraveled": 19.34603500366211,
-                    "velocity": 6.736000061035156,
+                    "distTraveled": 29.912784576416017,
+                    "velocity": 8.0,
                     "timeVisible": 3.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 5.9496259689331059,
-            "trialEnd": 9.117473602294922,
-            "respTime": 3.1678476333618166,
+            "trialStart": 17.19603729248047,
+            "trialEnd": 21.272403717041017,
+            "respTime": 4.076366424560547,
             "response": "right",
-            "ttcEstimate": 0.1678476333618164
-        },
-        {
-            "trialNum": 3,
-            "objData": [
-                {
-                    "objNum": 0,
-                    "objType": "Sphere",
-                    "objScale": [
-                        2.9730000495910646,
-                        2.9730000495910646,
-                        2.9730000495910646
-                    ],
-                    "startPos": [
-                        0.0,
-                        0.0,
-                        45.099998474121097
-                    ],
-                    "endPos": [
-                        0.0,
-                        0.0,
-                        36.27000045776367
-                    ],
-                    "distTraveled": 8.453326225280762,
-                    "velocity": 8.829999923706055,
-                    "timeVisible": 1.0,
-                    "rotationSpeedX": 0.0,
-                    "rotationSpeedY": 0.0,
-                    "rotationSpeedZ": 0.0
-                }
-            ],
-            "trialStart": 9.545893669128418,
-            "trialEnd": 10.917243003845215,
-            "respTime": 1.3713493347167969,
-            "response": "right",
-            "ttcEstimate": 0.3713493347167969
-        },
-        {
-            "trialNum": 4,
-            "objData": [
-                {
-                    "objNum": 0,
-                    "objType": "Sphere",
-                    "objScale": [
-                        0.3330000042915344,
-                        0.3330000042915344,
-                        0.3330000042915344
-                    ],
-                    "startPos": [
-                        0.0,
-                        0.0,
-                        26.649999618530275
-                    ],
-                    "endPos": [
-                        0.0,
-                        0.0,
-                        13.324000358581543
-                    ],
-                    "distTraveled": 12.756546020507813,
-                    "velocity": 4.441999912261963,
-                    "timeVisible": 3.0,
-                    "rotationSpeedX": 0.0,
-                    "rotationSpeedY": 0.0,
-                    "rotationSpeedZ": 0.0
-                }
-            ],
-            "trialStart": 11.266924858093262,
-            "trialEnd": 14.503758430480957,
-            "respTime": 3.2368335723876955,
-            "response": "right",
-            "ttcEstimate": 0.2368335723876953
+            "ttcEstimate": 1.0763664245605469
         }
     ]
 }

@@ -1,14 +1,14 @@
 {
     "subjNum": 1,
     "subjSex": 1,
-    "dataFile": "~\\..\\Assets\\TrialData\\pm_test.json",
+    "dataFile": "~\\..\\Assets\\TrialData\\testSS.json",
     "initCameraPos": [
         0,
         0,
         0
     ],
     "trackHeadPos": true,
-    "showFeedback": false,
+    "showFeedback": true,
     "feedbackColor": "black",
     "feedbackSize": 75,
     "canvasPos": [

@@ -35,6 +35,8 @@ public class RunExperiment : MonoBehaviour {
     private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
     private int numObjs;                    // the number of objects that are part of a trial
     private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
+    private float hideTime;
+    private string posString;
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -91,6 +93,7 @@ public class RunExperiment : MonoBehaviour {
             // Stop displaying the feedback text
             uiManager.ResetFeedbackMsg();
 
+            Debug.Log(trials[curTrial].trialName + " started");
             Debug.Log("Trial " + trials[curTrial].trialNum + " started");
 
             // Get the current trial from the data array
@@ -232,6 +235,8 @@ public class RunExperiment : MonoBehaviour {
                 // Hide the object once it has been visible for its defined timeVisible
                 if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
                 {
+                    hideTime = (Time.time - trials[curTrial - 1].trialStart);
+                    Debug.Log("Time Hidden: " + hideTime);
                     HideObj(movingObjs[i]);
                     curObj.objVisible = false;
                 }
@@ -245,6 +250,8 @@ public class RunExperiment : MonoBehaviour {
                 // If the object has traveled the entire distance, it should no longer be moving
                 if (fracTraveled >= 1)
                 {
+                    float endTime = (Time.time - trials[curTrial - 1].trialStart);
+                    Debug.Log("TTC: " + (endTime - hideTime));
                     // Hide the object if it hasn't been hidden already
                     if (curObj.objVisible)
                     {
