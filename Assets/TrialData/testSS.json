@@ -1,7 +1,35 @@
 {
   "trials": [
     {
-      "trialNum": 1,
+      "trialNum": -1,
+	  "trialName": "VRE1P5LF",
+      "objects": [
+        {
+          "objNum": 1,
+          "objType": "soccerball",
+          "objScale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "startPos": [
+            0,
+            0,
+            6
+          ],
+          "endPos": [
+            0,
+            0,
+			6
+          ],
+          "velocity": 0,
+          "timeVisible": 3000,
+          "rotationSpeed": 0
+        }
+      ]
+    },
+	{
+      "trialNum": 2,
 	  "trialName": "VRE3LN",
       "objects": [
         {
@@ -15,42 +43,14 @@
           "startPos": [
             0,
             0,
-            36
+            12
           ],
           "endPos": [
             0,
             0,
 			0
           ],
-          "velocity": 8,
-          "timeVisible": 3,
-          "rotationSpeed": 0
-        }
-      ]
-    },
-	{
-      "trialNum": 2,
-	  "trialName": "VRE0P75LN",
-      "objects": [
-        {
-          "objNum": 1,
-          "objType": "Sphere",
-          "objScale": [
-            1.0,
-            1.0,
-            1.0
-          ],
-          "startPos": [
-            0,
-            0,
-            30
-          ],
-          "endPos": [
-            0,
-            0,
-			0
-          ],
-          "velocity": 8,
+          "velocity": 2,
           "timeVisible": 3,
           "rotationSpeed": 0
         }

@@ -16,6 +16,7 @@ public class SaveData : MonoBehaviour
     /* Config-Specified Fields */
     public int subjNum;
     public int subjSex;
+    public static int TRIALNUM;
     public string dataFile;
     public bool trackHeadPos;
     public float[] initCameraPos;
@@ -70,12 +71,14 @@ public class SaveData : MonoBehaviour
     public class TrialData
     {
         public int trialNum;            // the number of the trial
+        public string trialName;           // the name of the trial
         public ObjData[] objData;       // the data about the objects presented in the trial
         public float trialStart;        // the time at which the trial began 
         public float trialEnd;          // the time at which the trial ended (based on when the participant responds via the controller)
         public float respTime;          // the amount of time it took for the participant to respond
         public string response;
         public float ttcEstimate;
+        public float ttcActual;
 
 
         /**
@@ -84,10 +87,13 @@ public class SaveData : MonoBehaviour
         public TrialData(ManageTrials.Trial trial)
         {
             this.trialNum = trial.trialNum;
+            TRIALNUM = SaveData.putTrialNum(trial.trialNum);
+            this.trialName = trial.trialName;
             this.trialStart = trial.trialStart;
             this.trialEnd = trial.trialEnd;
             this.respTime = trialEnd - trialStart;
             this.response = trial.response;
+            this.ttcActual = trial.ttcActual;
 
 
 
@@ -243,7 +249,7 @@ public class SaveData : MonoBehaviour
     {
         HeadPos[] posArr = posData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
         string jsonData = JsonHelper.ToJson(this, posArr, true);
-        string dir = Application.dataPath + "/../Results/Subj" + subjNum + "/HeadPos/";
+        string dir = Application.dataPath + "/../Results/Subj" + subjNum + "/Head Data/";
 
         // Create the directory to store the position data if it doesn't already exist
         if (!Directory.Exists(dir))
@@ -251,7 +257,7 @@ public class SaveData : MonoBehaviour
             Directory.CreateDirectory(dir);
         }
 
-        string trialPosDataFile = "Trial" + i + ".json";
+        string trialPosDataFile = "Subj" + subjNum.ToString() + "_Head_Data_Trial" + TRIALNUM + ".json";
         string filepath = Path.Combine(dir, trialPosDataFile);
 
         // Write the JSON string to the specified file path
@@ -279,7 +285,7 @@ public class SaveData : MonoBehaviour
             Directory.CreateDirectory(dir);
         }
 
-        string dataFile = "response_data.json";
+        string dataFile = "Subj" + subjNum.ToString() + "_Data.json";
         string filepath = Path.Combine(dir, dataFile);
         Debug.Log("Saving data to " + filepath);
 
@@ -288,5 +294,10 @@ public class SaveData : MonoBehaviour
             writer.WriteLine(jsonData);
             writer.Flush();
         }
+    }
+
+    public static int putTrialNum(int trialNum) //probably not the best approach but it worked...
+    {
+        return trialNum;
     }
 }

@@ -37,6 +37,9 @@ public class RunExperiment : MonoBehaviour {
     private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
+    private float ttcActual;
+    private float estimate;
+    private float timeVisible;
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -93,8 +96,7 @@ public class RunExperiment : MonoBehaviour {
             // Stop displaying the feedback text
             uiManager.ResetFeedbackMsg();
 
-            Debug.Log(trials[curTrial].trialName + " started");
-            Debug.Log("Trial " + trials[curTrial].trialNum + " started");
+            Debug.Log("Trial " + trials[curTrial].trialNum + ": " + trials[curTrial].trialName + " started");
 
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
@@ -203,6 +205,7 @@ public class RunExperiment : MonoBehaviour {
         ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
         for (int i = 0; i < objs.Length; i++)
         {
+            timeVisible = objs[i].timeVisible;//!!! Only works correctly for 1 object scenes
             if (objs[i].objVisible)
             {
                 HideObj(movingObjs[i]);
@@ -213,6 +216,14 @@ public class RunExperiment : MonoBehaviour {
         trials[curTrial - 1].response = response;
         dataManager.AddTrial(trials[curTrial - 1]);
         isRunning = false;
+
+
+        estimate = (trials[curTrial - 1].trialEnd - trials[curTrial - 1].trialStart) - timeVisible;
+        Debug.Log("Estimate " + estimate + Environment.NewLine);
+        Debug.Log("end " + trials[curTrial - 1].trialEnd + Environment.NewLine);
+        Debug.Log("start " + trials[curTrial - 1].trialStart + Environment.NewLine);
+        Debug.Log("visible " + timeVisible + Environment.NewLine);
+        if (config.showFeedback) uiManager.DisplayFeedback(estimate, ttcActual);
 
         // Only save the head tracking data if that flag was set in the config file
         if (config.trackHeadPos) dataManager.WritePosData();
@@ -235,10 +246,10 @@ public class RunExperiment : MonoBehaviour {
                 // Hide the object once it has been visible for its defined timeVisible
                 if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
                 {
-                    hideTime = (Time.time - trials[curTrial - 1].trialStart);
-                    Debug.Log("Time Hidden: " + hideTime);
                     HideObj(movingObjs[i]);
                     curObj.objVisible = false;
+                    hideTime = (Time.time - trials[curTrial - 1].trialStart);
+                    Debug.Log("Time Hidden: " + hideTime);
                 }
 
                 // Move the object forward another step
@@ -251,7 +262,9 @@ public class RunExperiment : MonoBehaviour {
                 if (fracTraveled >= 1)
                 {
                     float endTime = (Time.time - trials[curTrial - 1].trialStart);
-                    Debug.Log("TTC: " + (endTime - hideTime));
+                    ttcActual = (endTime - hideTime);
+                    trials[curTrial - 1].ttcActual = ttcActual;
+                    Debug.Log("TTC: " + ttcActual);
                     // Hide the object if it hasn't been hidden already
                     if (curObj.objVisible)
                     {

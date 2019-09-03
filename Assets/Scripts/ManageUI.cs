@@ -70,9 +70,9 @@ public class ManageUI : MonoBehaviour {
     /**
     * Display feedback that shows whether the participant responded too early, too late, or on time.
     */
-    public void DisplayFeedback(float respTime, float actualTTC)
+    public void DisplayFeedback(float estimate, float ttcActual)
     {
-        double diff = Math.Round((respTime - actualTTC), 2, MidpointRounding.AwayFromZero);
+        double diff = Math.Round((estimate - ttcActual), 2, MidpointRounding.AwayFromZero);
 
         if (diff == 0.0d) //never evaluates due to floating point precision - Adam hit 0.00 too slow
         {
