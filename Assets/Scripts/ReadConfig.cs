@@ -14,7 +14,7 @@ public class ReadConfig : MonoBehaviour {
     {
         public int subjNum;
         public int subjSex;
-        public string dataFile;
+        public string trialFile;
         public float[] initCameraPos;
         public bool trackHeadPos;
         public bool showFeedback;

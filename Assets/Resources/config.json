@@ -1,7 +1,7 @@
 {
     "subjNum": 1,
     "subjSex": 1,
-    "dataFile": "~\\..\\Assets\\TrialData\\rotation_test.json",
+    "trialFile": "~\\..\\Assets\\TrialData\\trial_scenes.json",
     "initCameraPos": [
         0,
         0,

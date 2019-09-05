@@ -24,7 +24,9 @@
           ],
           "velocity": 0,
           "timeVisible": 3000,
-          "rotationSpeed": 0
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
         }
       ]
     },
@@ -52,7 +54,9 @@
           ],
           "velocity": 2,
           "timeVisible": 3,
-          "rotationSpeed": 0
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
         }
       ]
     }

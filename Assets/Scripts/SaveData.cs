@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using System.Data;
+using System.Text;
 
 [System.Serializable]
 public class SaveData : MonoBehaviour
@@ -17,7 +19,7 @@ public class SaveData : MonoBehaviour
     public int subjNum;
     public int subjSex;
     public static int TRIALNUM;
-    public string dataFile;
+    public string trialFile;
     public bool trackHeadPos;
     public float[] initCameraPos;
     public bool showFeedback;
@@ -71,14 +73,14 @@ public class SaveData : MonoBehaviour
     public class TrialData
     {
         public int trialNum;            // the number of the trial
-        public string trialName;           // the name of the trial
+        public string trialName;        // the name of the trial
         public ObjData[] objData;       // the data about the objects presented in the trial
         public float trialStart;        // the time at which the trial began 
         public float trialEnd;          // the time at which the trial ended (based on when the participant responds via the controller)
         public float respTime;          // the amount of time it took for the participant to respond
-        public string response;
-        public float ttcEstimate;
-        public float ttcActual;
+        public string response;         // the reponse made by the participant 
+        public float ttcEstimate;       // the participant's calculated TTC estimate
+        public float ttcActual;         // the actual value of TTC
 
 
         /**
@@ -154,7 +156,7 @@ public class SaveData : MonoBehaviour
             wrapper.Trials = array;
             wrapper.subjNum = dataObj.subjNum;
             wrapper.subjSex = dataObj.subjSex;
-            wrapper.dataFile = dataObj.dataFile;
+            wrapper.dataFile = dataObj.trialFile;
             wrapper.showFeedback = dataObj.showFeedback;
             wrapper.feedbackColor = dataObj.feedbackColor;
             wrapper.trackHeadPos = dataObj.trackHeadPos;
@@ -167,7 +169,7 @@ public class SaveData : MonoBehaviour
             wrapper.Trials = array;
             wrapper.subjNum = dataObj.subjNum;
             wrapper.subjSex = dataObj.subjSex;
-            wrapper.dataFile = dataObj.dataFile;
+            wrapper.dataFile = dataObj.trialFile;
             wrapper.showFeedback = dataObj.showFeedback;
             wrapper.feedbackColor = dataObj.feedbackColor;
             wrapper.trackHeadPos = dataObj.trackHeadPos;
@@ -196,7 +198,7 @@ public class SaveData : MonoBehaviour
     {
         this.subjNum = config.subjNum;
         this.subjSex = config.subjSex;
-        this.dataFile = config.dataFile;
+        this.trialFile = config.trialFile;
         this.trackHeadPos = config.trackHeadPos;
         this.initCameraPos = config.initCameraPos;
         this.showFeedback = config.showFeedback;
@@ -294,10 +296,45 @@ public class SaveData : MonoBehaviour
             writer.WriteLine(jsonData);
             writer.Flush();
         }
+
+
+        //start code to write to csv file
+        string dataFileCsv = "Subj" + subjNum.ToString() + "_Data.csv";
+        string filepathCsv = Path.Combine(dir, dataFileCsv);
+        Debug.Log("Saving CSV data to " + filepathCsv);
+
+        using (StreamWriter writer = new StreamWriter(filepathCsv, false))
+        {
+
+            var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", "Subj", "Sex", "Trial", "TrialName", "TrialStart", "TrialEnd", "RespTime", "Resp", "TTC Estimate");
+            writer.WriteLine(header);
+            writer.Flush();
+
+            foreach (TrialData trial in data)
+            {
+                var subjnum = subjNum.ToString();
+                var subjsex = subjSex;
+                var trialnum = trial.trialNum.ToString();
+                var name = trial.trialName;
+                var start = trial.trialStart.ToString();
+                var end = trial.trialEnd.ToString();
+                var resptime = trial.respTime.ToString();
+                var resp = trial.response;
+                var est = trial.ttcEstimate.ToString();
+                var act = trial.ttcActual.ToString();
+
+                var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", subjnum, subjsex, trialnum, name, start, end, resptime, resp, est);
+                writer.WriteLine(data);
+                writer.Flush();
+            }
+
+        }
+
     }
 
     public static int putTrialNum(int trialNum) //probably not the best approach but it worked...
     {
         return trialNum;
     }
+
 }

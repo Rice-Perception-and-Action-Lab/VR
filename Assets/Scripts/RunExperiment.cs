@@ -64,7 +64,7 @@ public class RunExperiment : MonoBehaviour {
         uiManager.SetFeedbackSize(config.feedbackSize);
 
         // Load the data from the desired input file
-        trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile.Replace("/", "\\"), Time.time);
+        trials = GetComponent<ManageTrials>().LoadTrialData(config.trialFile.Replace("/", "\\"), Time.time);
 
         // Initialize the TrialData array to be the correct size in the experiment's data manager
         dataManager.InitDataArray(trials.Length, Time.time);
@@ -261,10 +261,16 @@ public class RunExperiment : MonoBehaviour {
                 // If the object has traveled the entire distance, it should no longer be moving
                 if (fracTraveled >= 1)
                 {
-                    float endTime = (Time.time - trials[curTrial - 1].trialStart);
-                    ttcActual = (endTime - hideTime);
-                    trials[curTrial - 1].ttcActual = ttcActual;
-                    Debug.Log("TTC: " + ttcActual);
+                    /** ! Save for later use in another method to check timing
+                    * ! Gives a value of 0 if response is made before it actually reaches camera
+                    * ! Not a good value to have for regular experiments
+                    * ! Not exact on every trial, but averaged over trials comes out to be the right value
+                    * float endTime = (Time.time - trials[curTrial - 1].trialStart);
+                    * ttcActual = (endTime - hideTime);
+                    * trials[curTrial - 1].ttcActual = ttcActual;
+                    * Debug.Log("TTC: " + ttcActual);
+                    **/
+                    
                     // Hide the object if it hasn't been hidden already
                     if (curObj.objVisible)
                     {

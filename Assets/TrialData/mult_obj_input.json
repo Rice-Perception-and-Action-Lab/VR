@@ -2,6 +2,7 @@
   "trials": [
     {
       "trialNum": 1,
+	  "trialName": "Test",
       "objects": [
         {
           "objNum": 1,
@@ -23,7 +24,9 @@
           ],
           "velocity": 8.883,
           "timeVisible": 3,
-          "rotationSpeed": 1
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
         },
         {
           "objNum": 2,
@@ -45,7 +48,9 @@
           ],
           "velocity": 8.883,
           "timeVisible": 5.077,
-          "rotationSpeed": 1
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
         },
         {
           "objNum": 3,
@@ -67,12 +72,15 @@
           ],
           "velocity": 10.103,
           "timeVisible": 3.000,
-          "rotationSpeed": 1
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
         }
       ]
     },
     {
       "trialNum": 2,
+      "trialName": "Test",
       "objects": [
         {
           "objNum": 1,
@@ -94,7 +102,9 @@
           ],
           "velocity": 10.103,
           "timeVisible": 3.000,
-          "rotationSpeed": 1
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
         },
         {
           "objNum": 2,
@@ -116,7 +126,9 @@
           ],
           "velocity": 8.883,
           "timeVisible": 3,
-          "rotationSpeed": 1
+          "rotationSpeedX": 0,
+		  "rotationSpeedY": 0,
+		  "rotationSpeedZ": 0
         }
       ]
     }
