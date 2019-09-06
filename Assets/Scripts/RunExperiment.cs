@@ -35,6 +35,12 @@ public class RunExperiment : MonoBehaviour {
     private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
     private int numObjs;                    // the number of objects that are part of a trial
     private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
+    private float hideTime;
+    private string posString;
+    private float ttcActual;
+    private float ttcActualSim;
+    private float estimate;
+    private float timeVisible;
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -50,16 +56,26 @@ public class RunExperiment : MonoBehaviour {
         stepSize = (1.0f / rate);
 
         // Load the config file
-        string configFilepath = Application.dataPath + "/../config.json";
+        string configFilepath = Application.dataPath + "/config.json";
         config = GetComponent<ReadConfig>().LoadConfig(configFilepath.Replace("/", "\\"));
+
+        Debug.Log(configFilepath);
 
         // Set the feedback display configurations based on the config file
         uiManager.SetFeedbackColor(config.feedbackColor);
-        uiManager.SetCanvasPosition(config.canvasPos[0], config.canvasPos[1], config.canvasPos[2]);
         uiManager.SetFeedbackSize(config.feedbackSize);
+        if (config.cameraLock)
+        {
+            uiManager.SetFeedbackPosition(config.feedbackPos[0], config.feedbackPos[1], config.feedbackPos[2], true);
+
+        }
+        else
+        {
+            uiManager.SetFeedbackPosition(config.feedbackPos[0], config.feedbackPos[1], config.feedbackPos[2]);
+        }
 
         // Load the data from the desired input file
-        trials = GetComponent<ManageTrials>().LoadTrialData(config.dataFile.Replace("/", "\\"), Time.time);
+        trials = GetComponent<ManageTrials>().LoadTrialData(config.trialFile.Replace("/", "\\"), Time.time);
 
         // Initialize the TrialData array to be the correct size in the experiment's data manager
         dataManager.InitDataArray(trials.Length, Time.time);
@@ -73,8 +89,8 @@ public class RunExperiment : MonoBehaviour {
         expComplete = false;
 
         // Set the initial position of the participant 
-        cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-        subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
+        //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
+        //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
@@ -91,7 +107,7 @@ public class RunExperiment : MonoBehaviour {
             // Stop displaying the feedback text
             uiManager.ResetFeedbackMsg();
 
-            Debug.Log("Trial " + trials[curTrial].trialNum + " started");
+            Debug.Log("Trial " + trials[curTrial].trialNum + ": " + trials[curTrial].trialName + " started");
 
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
@@ -114,18 +130,41 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
-                // Set the initial and final positions of the object
-                Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y, curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
-                Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y, curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
+                if (config.cameraLock)
+                {
+                    // Set the initial and final positions of the object
+                    Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
 
-                // Adjust the height of the object to match the height of the camera
-                startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y, startPosArr[i].z);
-                endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y, endPosArr[i].z);
+                    Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
 
-                // Calculate the distance that the object must travel
-                curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+                    // Adjust the height of the object to match the height of the camera
+                    startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
+                    endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
+
+                    // Calculate the distance that the object must travel
+                    curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+                }
+                else
+                { 
+                    // Set the initial and final positions of the object
+                    Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    startPosArr[i] = inputStartPos;      // orient the start position based on the rotation/direction of the Vive
+
+                    Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    endPosArr[i] = inputEndPos;          // orient the end position based on the rotation/direction of the Vive
+
+                    // Adjust the height of the object to match the height of the camera
+                    startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
+                    endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
+
+                    // Calculate the distance that the object must travel
+                    curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+                }
+
+                if (config.debugging) { Debug.Log("Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
                 movingObjs[i] = Instantiate(objs[i], startPosArr[i], Quaternion.identity);
@@ -135,6 +174,10 @@ public class RunExperiment : MonoBehaviour {
                 // Set the variables that need to be used in the repeating method to move the objects
                 curObj.step = curObj.velocity * stepSize;
                 curObj.finalStep = ((curObj.dist / curObj.velocity) * rate);
+
+                //calculate theoretical ttcActual
+                ttcActual = ((curObj.startPos[2] - (curObj.timeVisible * curObj.velocity)) / curObj.velocity);
+                if (config.debugging) { Debug.Log("TTC: " + ttcActual); }
 
                 // If timeVisible is negative, the object should never disappear
                 if (curObj.timeVisible < 0)
@@ -200,6 +243,7 @@ public class RunExperiment : MonoBehaviour {
         ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
         for (int i = 0; i < objs.Length; i++)
         {
+            timeVisible = objs[i].timeVisible;//!!! Only works correctly for 1 object scenes
             if (objs[i].objVisible)
             {
                 HideObj(movingObjs[i]);
@@ -210,6 +254,19 @@ public class RunExperiment : MonoBehaviour {
         trials[curTrial - 1].response = response;
         dataManager.AddTrial(trials[curTrial - 1]);
         isRunning = false;
+
+
+        estimate = (trials[curTrial - 1].trialEnd - trials[curTrial - 1].trialStart) - timeVisible;
+
+        if (config.debugging)
+        {
+            Debug.Log("Trial Start: " + trials[curTrial - 1].trialStart + Environment.NewLine);
+            Debug.Log("Time Visible: " + timeVisible + Environment.NewLine);
+            Debug.Log("Trial End: " + trials[curTrial - 1].trialEnd + Environment.NewLine);
+            Debug.Log("TTC Estimate: " + estimate + Environment.NewLine);
+        }
+
+        if (config.showFeedback) uiManager.DisplayFeedback(estimate, ttcActual);
 
         // Only save the head tracking data if that flag was set in the config file
         if (config.trackHeadPos) dataManager.WritePosData();
@@ -232,8 +289,12 @@ public class RunExperiment : MonoBehaviour {
                 // Hide the object once it has been visible for its defined timeVisible
                 if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
                 {
+                    hideTime = (Time.time - trials[curTrial - 1].trialStart);
+                    if (config.debugging) { Debug.Log("Time Hidden: " + hideTime); }
                     HideObj(movingObjs[i]);
                     curObj.objVisible = false;
+
+
                 }
 
                 // Move the object forward another step
@@ -245,6 +306,11 @@ public class RunExperiment : MonoBehaviour {
                 // If the object has traveled the entire distance, it should no longer be moving
                 if (fracTraveled >= 1)
                 {
+                    float endTime = (Time.time - trials[curTrial - 1].trialStart);
+                    ttcActualSim = (endTime - hideTime);
+                    if (config.debugging) { Debug.Log("TTC (sim): " + ttcActualSim); }
+                  
+                    
                     // Hide the object if it hasn't been hidden already
                     if (curObj.objVisible)
                     {
@@ -295,7 +361,7 @@ public class RunExperiment : MonoBehaviour {
         {
             Debug.Log(Environment.NewLine + "Simulation shutting down after UNSUCCESSFUL completion...Saving partial data..." + Environment.NewLine);
             Debug.Log("Total simulation time " + Time.time + " seconds");
-            dataManager.Save();
+            dataManager.Save(true);
         }
 
     }
