@@ -1,0 +1,88 @@
+{
+    "trials": [
+        {
+            "trialNum": 1,
+			"trialName": "VRE1P5SN",
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        0.333,
+                        0.333,
+                        0.333
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        18
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+        {
+            "trialNum": 2,
+			"trialName": "VRE0P75LF",
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        60
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 16,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+        {
+            "trialNum": 8,
+			"trialName": "VRE3LF",
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        }
+     ]
+}

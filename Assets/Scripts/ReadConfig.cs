@@ -15,12 +15,14 @@ public class ReadConfig : MonoBehaviour {
         public int subjNum;
         public int subjSex;
         public string trialFile;
-        public float[] initCameraPos;
+        public bool cameraLock;
+        //public float[] initCameraPos;
         public bool trackHeadPos;
         public bool showFeedback;
-        public float[] canvasPos;
+        public float[] feedbackPos;
         public int feedbackSize;
         public string feedbackColor;
+        public bool debugging;
     }
 
     public Config LoadConfig(string configFilepath)

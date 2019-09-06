@@ -23,7 +23,7 @@ public class SaveData : MonoBehaviour
     public bool trackHeadPos;
     public float[] initCameraPos;
     public bool showFeedback;
-    public float[] canvasPos;
+    public float[] feedbackPos;
     public int feedbackSize;
     public string feedbackColor;
 
@@ -200,9 +200,9 @@ public class SaveData : MonoBehaviour
         this.subjSex = config.subjSex;
         this.trialFile = config.trialFile;
         this.trackHeadPos = config.trackHeadPos;
-        this.initCameraPos = config.initCameraPos;
+        //this.initCameraPos = config.initCameraPos;
         this.showFeedback = config.showFeedback;
-        this.canvasPos = config.canvasPos;
+        this.feedbackPos = config.feedbackPos;
         this.feedbackSize = config.feedbackSize;
         this.feedbackColor = config.feedbackColor;
     }
@@ -251,7 +251,7 @@ public class SaveData : MonoBehaviour
     {
         HeadPos[] posArr = posData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
         string jsonData = JsonHelper.ToJson(this, posArr, true);
-        string dir = Application.dataPath + "/../Results/Subj" + subjNum + "/Head Data/";
+        string dir = Application.dataPath + "/Data/Subj" + subjNum + "/Head Data/";
 
         // Create the directory to store the position data if it doesn't already exist
         if (!Directory.Exists(dir))
@@ -279,7 +279,7 @@ public class SaveData : MonoBehaviour
     public void Save()
     {
         string jsonData = JsonHelper.ToJson(this, data, true);
-        string dir = Application.dataPath + "/../Results/Subj" + subjNum;
+        string dir = Application.dataPath + "/Data/Subj" + subjNum;
 
         // Create the directory to store the trial data if it hasn't already been created
         if (!Directory.Exists(dir))
@@ -329,6 +329,66 @@ public class SaveData : MonoBehaviour
             }
 
         }
+
+    }
+
+    public void Save(bool partial)
+    {
+        if (partial)
+        {
+            string jsonData = JsonHelper.ToJson(this, data, true);
+            string dir = Application.dataPath + "/Data/Subj" + subjNum;
+
+            // Create the directory to store the trial data if it hasn't already been created
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            string dataFile = "Subj" + subjNum.ToString() + "_Data_Partial.json";
+            string filepath = Path.Combine(dir, dataFile);
+            Debug.Log("Saving data to " + filepath);
+
+            using (StreamWriter writer = new StreamWriter(filepath, false))
+            {
+                writer.WriteLine(jsonData);
+                writer.Flush();
+            }
+
+
+            //start code to write to csv file
+            string dataFileCsv = "Subj" + subjNum.ToString() + "_Data_Partial.csv";
+            string filepathCsv = Path.Combine(dir, dataFileCsv);
+            Debug.Log("Saving CSV data to " + filepathCsv);
+
+            using (StreamWriter writer = new StreamWriter(filepathCsv, false))
+            {
+
+                var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", "Subj", "Sex", "Trial", "TrialName", "TrialStart", "TrialEnd", "RespTime", "Resp", "TTC Estimate");
+                writer.WriteLine(header);
+                writer.Flush();
+
+                foreach (TrialData trial in data)
+                {
+                    var subjnum = subjNum.ToString();
+                    var subjsex = subjSex;
+                    var trialnum = trial.trialNum.ToString();
+                    var name = trial.trialName;
+                    var start = trial.trialStart.ToString();
+                    var end = trial.trialEnd.ToString();
+                    var resptime = trial.respTime.ToString();
+                    var resp = trial.response;
+                    var est = trial.ttcEstimate.ToString();
+                    var act = trial.ttcActual.ToString();
+
+                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", subjnum, subjsex, trialnum, name, start, end, resptime, resp, est);
+                    writer.WriteLine(data);
+                    writer.Flush();
+                }
+
+            }
+        }
+        
 
     }
 

@@ -12,7 +12,13 @@ public class ManageUI : MonoBehaviour {
     /**
      * Sets the position of the canvas in the world. ( 0, 6, 100) is the default position.
      */
-    public void SetCanvasPosition(float x, float y, float z)
+    public void SetFeedbackPosition(float x, float y, float z)
+    {
+        canvas.transform.position = new Vector3(x, y, z);
+
+    }
+
+    public void SetFeedbackPosition(float x, float y, float z, bool islocked)
     {
         canvas.transform.position = new Vector3(x, y, z);
         canvas.transform.position = viveCamera.position + (viveCamera.forward * z);
@@ -72,21 +78,30 @@ public class ManageUI : MonoBehaviour {
     */
     public void DisplayFeedback(float estimate, float ttcActual)
     {
-        double diff = Math.Round((estimate - ttcActual), 2, MidpointRounding.AwayFromZero);
 
-        if (diff == 0.0d) //never evaluates due to floating point precision - Adam hit 0.00 too slow
+        if(estimate >= 0)
         {
-            feedbackMsg.text = "Perfect timing";
-        }
-        else if (diff < 0.0d)
-        {
-            diff = -1 * diff;
-            feedbackMsg.text = diff.ToString("F2") + " seconds too fast";
+            double diff = Math.Round((estimate - ttcActual), 2, MidpointRounding.AwayFromZero);
+
+            if (diff == 0.0d) //never evaluates due to floating point precision - Adam hit 0.00 too slow
+            {
+                feedbackMsg.text = "Perfect timing";
+            }
+            else if (diff < 0.0d)
+            {
+                diff = -1 * diff;
+                feedbackMsg.text = diff.ToString("F2") + " seconds too fast";
+            }
+            else
+            {
+                feedbackMsg.text = diff.ToString("F2") + " seconds too slow";
+            }
         }
         else
         {
-            feedbackMsg.text = diff.ToString("F2") + " seconds too slow";
+            feedbackMsg.text = "Wait for object to disappear";
         }
+      
     }
 
     /**
