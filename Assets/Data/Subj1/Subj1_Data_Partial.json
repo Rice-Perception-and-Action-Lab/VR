@@ -1,0 +1,43 @@
+{
+    "subjNum": 1,
+    "subjSex": 1,
+    "dataFile": "~\\..\\Assets\\Trials\\test.json",
+    "showFeedback": true,
+    "feedbackColor": "black",
+    "trackHeadPos": true,
+    "Trials": [
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "ttcEstimate": 0.0,
+            "ttcActual": 0.0
+        },
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "ttcEstimate": 0.0,
+            "ttcActual": 0.0
+        },
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "ttcEstimate": 0.0,
+            "ttcActual": 0.0
+        }
+    ]
+}
