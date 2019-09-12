@@ -16,14 +16,17 @@ public class ManageObjs : MonoBehaviour {
         public int objNum;                  // the object number defined in the input file
         public string objType;              // the name of the prefab that the object should be instantiated as
         public float[] objScale;            // the x,y,z-coordinates for the scale of the object
-        public float[] objRot;              // the x,y,z roation for the object
+        public float[] objRot;              // the x,y,z-coordinates for the rotation of the object
         public float[] startPos;            // the x,y,z-coordinates for the initial position of the object
         public float[] endPos;              // the x,y,z-coordinates for the final position of the object
         public float velocity;              // the speed that the object is moving
         public float timeVisible;           // the amount of time that the object is visible before disappearing
-        public float rotationSpeedX;         // the speed at which the object should rotate around X axis
-        public float rotationSpeedY;         // the speed at which the object should rotate around Y axis
-        public float rotationSpeedZ;         // the speed at which the object should rotate around Z axis
+        public float rotationSpeedX;        // the speed at which the object should rotate around X axis
+        public float rotationSpeedY;        // the speed at which the object should rotate around Y axis
+        public float rotationSpeedZ;        // the speed at which the object should rotate around Z axis
+        public bool offsetX;                // whether or not an object needs an x coordinate offset
+        public bool offsetY;                // whether or not an object needs an y coordinate offset
+        public bool offsetZ;                // whether or not an object needs an z coordinate offset
         public float dist;                  // the distance that the object must travel
 
         /* Derived fields */

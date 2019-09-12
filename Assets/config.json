@@ -13,6 +13,11 @@
       100
     ],
 	"ground": true,
-	
+	"road": true,
+	"roadPos": [
+	0,
+	0,
+	0
+	],
 	"debugging": true
 }

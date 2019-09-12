@@ -8,33 +8,35 @@ using UnityEngine;
 public class RunExperiment : MonoBehaviour {
 
     // Set via the Unity editor
-    public SaveData dataManager;            // The GameObject responsible for tracking trial responses
-    public ManageUI uiManager;              // The GameObject responsible for handling any changes to the UI
-    public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
-    public Transform cameraManager;         // Used to reposition the Vive's world location at the beginning of the experiment
-    public Transform subject;               // Used to reposition the Vive's world location at the beginning of the experiment
+    public SaveData dataManager;                // The GameObject responsible for tracking trial responses
+    public ManageUI uiManager;                  // The GameObject responsible for handling any changes to the UI
+    public Transform viveCamera;                // Position of the target (i.e., the Vive camera rig)
+    public Transform cameraManager;             // Used to reposition the Vive's world location at the beginning of the experiment
+    public Transform subject;                   // Used to reposition the Vive's world location at the beginning of the experiment
 
     // The Config options
-    private ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
-    private string inputFile;               // A JSON file holding the information for every trial to be run
+    private ReadConfig.Config config;           // The configuration file specifying certain experiment-wide parameters
+    private string inputFile;                   // A JSON file holding the information for every trial to be run
 
     // Experiment-Dependent Variables
-    private float rate;                     // The framerate that we're moving the object at
-    private ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
-    private Transform headPos;              // The location of the camera rig relevant to the scene
+    private float rate;                         // The framerate that we're moving the object at
+    private ManageTrials.Trial[] trials;        // The input file converted to an array of Trial objects 
+    private Transform headPos;                  // The location of the camera rig relevant to the scene
     private bool expComplete;
+    [SerializeField] private GameObject road;   // The road object for the scene (reference for design decision: https://akbiggs.silvrback.com/please-stop-using-gameobject-find) 
+    [SerializeField] private GameObject ground; // The ground object for the scene
 
     // Trial-Dependent Variables
-    private int curTrial;                   // Track the number of the current trial being run
-    private bool isRunning;                 // Tracks whether or not a trial is currently active
-    private float trialStart;               // Track the time that the current trial began
-    private string objName;                 // The name of the prefab object used for the given trial
-    private Vector3[] startPosArr;          // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
-    private Vector3[] endPosArr;            // The ending positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
-    private Transform[] objs;               // The prefab objects that will be instantiated for a trial
-    private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
-    private int numObjs;                    // the number of objects that are part of a trial
-    private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
+    private int curTrial;                       // Track the number of the current trial being run
+    private bool isRunning;                     // Tracks whether or not a trial is currently active
+    private float trialStart;                   // Track the time that the current trial began
+    private string objName;                     // The name of the prefab object used for the given trial
+    private Vector3[] startPosArr;              // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Vector3[] endPosArr;                // The ending positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Transform[] objs;                   // The prefab objects that will be instantiated for a trial
+    private Transform[] movingObjs;             // The array of objects for a trial once they have been instantiated
+    private int numObjs;                        // the number of objects that are part of a trial
+    private float stepSize;                     // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
     private float ttcActual;
@@ -88,31 +90,32 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
         expComplete = false;
 
-        if (config.ground){
-
-            //terrain is on
-        }
-        else
-        {
-            //it's off
-        }
-
-        if (config.road)
-        {
-            //It's on 
-            //Set pos
-        }
-        else
-        {
-            //it's off
-        }
-
         // Set the initial position of the participant 
         //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
+
+        // Set up environment.
+        if (config.ground) // Toggle ground visibility.
+        {
+           ground.SetActive(true); // Make the ground visible.
+        }
+        else
+        {
+           ground.SetActive(false); // Toggle off ground visibility.
+        }
+
+        if (config.road) // Toggle and set up road.
+        {
+            road.SetActive(true); // Make the ground visible.
+            road.transform.position = new Vector3(config.roadPos[0], config.roadPos[1], config.roadPos[2]); // Set position.
+        }
+        else
+        {
+            road.SetActive(false); // Toggle off road visibility.
+        }
     }
 
     /**
@@ -148,7 +151,6 @@ public class RunExperiment : MonoBehaviour {
 
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
-                objs[i].localRotation = new Vector3(curObj.objRot[0],... );
 
                 if (config.cameraLock)
                 {

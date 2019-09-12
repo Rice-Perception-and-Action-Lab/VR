@@ -13,9 +13,9 @@
             1.0
           ],
 		  "objRot": [
-		    0,
-			0,
-			0
+		    1.0,
+			1.0,
+			1.0
 		  ],
           "startPos": [
             0,
@@ -32,6 +32,9 @@
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
 		  "rotationSpeedZ": 0
+		  "offsetX": true,
+		  "offsetY": false,
+		  "offsetZ": false
         }
       ]
     },
@@ -47,6 +50,11 @@
             1.0,
             1.0
           ],
+		  "objRot": [
+		    1.0,
+			1.0,
+			1.0
+		  ],
           "startPos": [
             0,
             0,
@@ -61,7 +69,10 @@
           "timeVisible": 3,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
-		  "rotationSpeedZ": 0
+		  "rotationSpeedZ": 0,
+		  "offsetX": true,
+		  "offsetY": false,
+		  "offsetZ": false
         }
       ]
     }
