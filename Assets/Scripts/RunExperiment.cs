@@ -88,6 +88,25 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
         expComplete = false;
 
+        if (config.ground){
+
+            //terrain is on
+        }
+        else
+        {
+            //it's off
+        }
+
+        if (config.road)
+        {
+            //It's on 
+            //Set pos
+        }
+        else
+        {
+            //it's off
+        }
+
         // Set the initial position of the participant 
         //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
@@ -129,6 +148,7 @@ public class RunExperiment : MonoBehaviour {
 
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
+                objs[i].localRotation = new Vector3(curObj.objRot[0],... );
 
                 if (config.cameraLock)
                 {

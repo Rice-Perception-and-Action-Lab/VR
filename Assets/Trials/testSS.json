@@ -6,12 +6,17 @@
       "objects": [
         {
           "objNum": 1,
-          "objType": "soccerball",
+          "objType": "03-Audi_s5_Sportback",
           "objScale": [
             1.0,
             1.0,
             1.0
           ],
+		  "objRot": [
+		    0,
+			0,
+			0
+		  ],
           "startPos": [
             0,
             0,
