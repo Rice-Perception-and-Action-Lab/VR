@@ -13,25 +13,25 @@
             1.0
           ],
 		  "objRot": [
-		    1.0,
-			1.0,
-			1.0
+		    -90,
+			-90,
+			0
 		  ],
           "startPos": [
+            31,
             0,
-            0,
-            6
+            -8
           ],
           "endPos": [
             0,
             0,
-			6
+			-8
           ],
-          "velocity": 0,
+          "velocity": 1,
           "timeVisible": 3000,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
-		  "rotationSpeedZ": 0
+		  "rotationSpeedZ": 0,
 		  "offsetX": true,
 		  "offsetY": false,
 		  "offsetZ": false

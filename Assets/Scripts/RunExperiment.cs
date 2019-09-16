@@ -152,6 +152,9 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
+                Vector3 rotVect = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]); 
+                objs[i].Rotate(rotVect, Space.World);
+
                 if (config.cameraLock)
                 {
                     // Set the initial and final positions of the object
@@ -169,20 +172,71 @@ public class RunExperiment : MonoBehaviour {
                     curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
                 }
                 else
-                { 
-                    // Set the initial and final positions of the object
-                    Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                    startPosArr[i] = inputStartPos;      // orient the start position based on the rotation/direction of the Vive
+                {
 
-                    Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                    endPosArr[i] = inputEndPos;          // orient the end position based on the rotation/direction of the Vive
+                    //// Set the initial and final positions of the object
+                    //Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    //startPosArr[i] = inputStartPos;      // orient the start position based on the rotation/direction of the Vive
 
-                    // Adjust the height of the object to match the height of the camera
-                    startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
-                    endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
+                    //Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    //endPosArr[i] = inputEndPos;          // orient the end position based on the rotation/direction of the Vive
+
+                    //// Adjust the height of the object to match the height of the camera
+                    //startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
+                    //endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
+
+                    //// Calculate the distance that the object must travel
+                    //curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+
+                    // Initialize startPosArr and endPosArr with a copy of the object's current start and end positions, respectively.
+                    startPosArr[i] = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
+                    endPosArr[i] = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
+
+                    if (curObj.offsetX)
+                    {
+                        // Set the initial and final positions of the object with the x offset.
+                        Vector3 newStartVector = new Vector3(curObj.startPos[0] + (curObj.objScale[0] / 2.0f) + 0.05f, startPosArr[i].y, startPosArr[i].z);
+                        Vector3 newEndVector = new Vector3(curObj.endPos[0] + (curObj.objScale[0] / 2.0f) + 0.05f, endPosArr[i].y, endPosArr[i].z);
+
+                        // Set new vectors in their respective arrays.
+                        startPosArr[i] = newStartVector;
+                        endPosArr[i] = newEndVector;
+
+                        if (config.debugging) { Debug.Log("X offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                    }
+
+                    if (curObj.offsetY)
+                    {
+                        // Set the initial and final positions of the object with the y offset.
+                        Vector3 newStartVector = new Vector3(startPosArr[i].x, curObj.startPos[1] + (curObj.objScale[1] / 2.0f) + 0.05f, startPosArr[i].z);
+                        Vector3 newEndVector = new Vector3(endPosArr[i].x, curObj.endPos[1] + (curObj.objScale[1] / 2.0f) + 0.05f, endPosArr[i].z);
+
+                        // Set new vectors in their respective arrays.
+                        startPosArr[i] = newStartVector;
+                        endPosArr[i] = newEndVector;
+
+                        if (config.debugging) { Debug.Log("Y Offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                    }
+
+                    if (curObj.offsetZ)
+                    {
+                        // Set the initial and final positions of the object with the z offset.
+                        Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y, curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                        Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y, curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+
+
+                        // Set new vectors in their respective arrays.
+                        startPosArr[i] = newStartVector;
+                        endPosArr[i] = newEndVector;
+
+                        if (config.debugging) { Debug.Log(" Z offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+
+                    }
 
                     // Calculate the distance that the object must travel
-                    curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+                     curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+
+
                 }
 
                 if (config.debugging) { Debug.Log("Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
