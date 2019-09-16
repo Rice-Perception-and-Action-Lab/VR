@@ -4,12 +4,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Valve.VR;
+using System.Threading;
 
 public class RunExperiment : MonoBehaviour {
 
     // Set via the Unity editor
     public SaveData dataManager;            // The GameObject responsible for tracking trial responses
     public ManageUI uiManager;              // The GameObject responsible for handling any changes to the UI
+    public TrackHead tracker;
+    public GameObject movingObj;
+
     public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
     public Transform cameraManager;         // Used to reposition the Vive's world location at the beginning of the experiment
     public Transform subject;               // Used to reposition the Vive's world location at the beginning of the experiment
@@ -42,6 +47,8 @@ public class RunExperiment : MonoBehaviour {
     private float estimate;
     private float timeVisible;
 
+
+
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
      * config file, loading in the trial-information, and setting all experiment-wide variables.
@@ -49,8 +56,8 @@ public class RunExperiment : MonoBehaviour {
     void Start()
     {
         // Set the target framerate for the application
-        Application.targetFrameRate = 75;
-        rate = 75.0f;
+        Application.targetFrameRate = 90;
+        rate = 90.0f;
 
         // Set the step size for the objects' motion based on the rate
         stepSize = (1.0f / rate);
@@ -91,9 +98,11 @@ public class RunExperiment : MonoBehaviour {
         // Set the initial position of the participant 
         //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-        
+
         // Set the head position transform to track the participant's movements
-        headPos = GameObject.Find("Camera (eye)").transform;
+        //headPos = GameObject.Find("Camera (eye)").transform;
+        movingObj = GameObject.Find("MovingObj");
+        tracker = movingObj.GetComponent<TrackHead>();
     }
 
     /**
@@ -101,6 +110,7 @@ public class RunExperiment : MonoBehaviour {
      */
     public void InitializeTrial()
     {
+        tracker.callBack(true);
         // Check that we still have more trials to run
         if (curTrial < this.trials.Length)
         {
@@ -197,7 +207,7 @@ public class RunExperiment : MonoBehaviour {
             // Call the repeating methods to move the objects and track head position
             float delay = (1.0f / rate);
             InvokeRepeating("MoveObjsByStep", 0.0f, delay);
-            InvokeRepeating("HeadTracking", 0.0f, delay);
+            //InvokeRepeating("HeadTracking", 0.0f, delay);
 
             // Set the trial as running
             isRunning = true;
@@ -235,9 +245,10 @@ public class RunExperiment : MonoBehaviour {
      */
     public void CompleteTrial(float trialEnd, bool receivedResponse, string response)
     {
+        tracker.callBack(true);
         Debug.Log("Trial " + trials[curTrial - 1].trialNum + " completed" + Environment.NewLine);
         CancelInvoke("MoveObjsByStep");
-        CancelInvoke("HeadTracking");
+        //CancelInvoke("HeadTracking");
 
         // Hide any objects that haven't already been hidden
         ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
@@ -269,7 +280,8 @@ public class RunExperiment : MonoBehaviour {
         if (config.showFeedback) uiManager.DisplayFeedback(estimate, ttcActual);
 
         // Only save the head tracking data if that flag was set in the config file
-        if (config.trackHeadPos) dataManager.WritePosData();
+        //if (config.trackHeadPos) dataManager.WritePosData();
+
     }
 
     /**
@@ -346,9 +358,8 @@ public class RunExperiment : MonoBehaviour {
      */
     void HeadTracking()
     {
-        dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
+        //dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
     }
-
 
     void OnApplicationQuit()
     {
@@ -365,5 +376,6 @@ public class RunExperiment : MonoBehaviour {
         }
 
     }
+
 
 }

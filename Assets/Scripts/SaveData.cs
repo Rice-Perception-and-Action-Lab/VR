@@ -26,6 +26,14 @@ public class SaveData : MonoBehaviour
     public float[] feedbackPos;
     public int feedbackSize;
     public string feedbackColor;
+    public string path;
+
+
+
+    void Awake()
+    {
+        path = Application.dataPath;
+    }
 
     /**
 	 * The ObjData class holds the information for a single object within a trial.
@@ -249,28 +257,31 @@ public class SaveData : MonoBehaviour
      */
     public void WritePosData()
     {
-        HeadPos[] posArr = posData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
-        string jsonData = JsonHelper.ToJson(this, posArr, true);
-        string dir = Application.dataPath + "/Data/Subj" + subjNum + "/Head Data/";
+            HeadPos[] posArr = posData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
+            string jsonData = JsonHelper.ToJson(this, posArr, true);
+            string dir = path + "/Data/Subj" + subjNum + "/Head Data/";
 
-        // Create the directory to store the position data if it doesn't already exist
-        if (!Directory.Exists(dir))
-        {
-            Directory.CreateDirectory(dir);
-        }
+            // Create the directory to store the position data if it doesn't already exist
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
 
-        string trialPosDataFile = "Subj" + subjNum.ToString() + "_Head_Data_Trial" + TRIALNUM + ".json";
-        string filepath = Path.Combine(dir, trialPosDataFile);
+            string trialPosDataFile = "Subj" + subjNum.ToString() + "_Head_Data_Trial" + TRIALNUM + ".json";
+            string filepath = Path.Combine(dir, trialPosDataFile);
+            Debug.Log("Saving head data to " + filepath);
 
-        // Write the JSON string to the specified file path
-        using (StreamWriter writer = new StreamWriter(filepath, false))
-        {
-            writer.WriteLine(jsonData);
-            writer.Flush();
-        }
+            // Write the JSON string to the specified file path
+            using (StreamWriter writer = new StreamWriter(filepath, false))
+            {
+                writer.WriteLine(jsonData);
+                writer.Flush();
+            }
 
-        // Make a new list to collect the next trial's head position data
-        posData = new List<HeadPos>();
+            // Make a new list to collect the next trial's head position data
+            posData = new List<HeadPos>();
+
+        
     }
 
     /**

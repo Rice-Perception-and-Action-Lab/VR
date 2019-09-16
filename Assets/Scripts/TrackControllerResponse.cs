@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Valve.VR;
 
 public class TrackControllerResponse : MonoBehaviour
 {
@@ -40,10 +39,12 @@ public class TrackControllerResponse : MonoBehaviour
         bool runningTrial = script.CheckTrialRunning();
 
         Vector2 touchVector = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
-        
+       
+
         // End the trial if there is a trial running and the touchpad button is pressed
         if (runningTrial && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
+
             if (touchVector.x < -0.5f)
             {
                 Debug.Log("Left Press");
