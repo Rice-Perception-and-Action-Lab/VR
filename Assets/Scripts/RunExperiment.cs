@@ -152,8 +152,8 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
-                Vector3 rotVect = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]); 
-                objs[i].Rotate(rotVect, Space.World);
+                // Set the object rotation.
+                objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
 
                 if (config.cameraLock)
                 {
@@ -173,20 +173,6 @@ public class RunExperiment : MonoBehaviour {
                 }
                 else
                 {
-
-                    //// Set the initial and final positions of the object
-                    //Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                    //startPosArr[i] = inputStartPos;      // orient the start position based on the rotation/direction of the Vive
-
-                    //Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                    //endPosArr[i] = inputEndPos;          // orient the end position based on the rotation/direction of the Vive
-
-                    //// Adjust the height of the object to match the height of the camera
-                    //startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
-                    //endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
-
-                    //// Calculate the distance that the object must travel
-                    //curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
 
                     // Initialize startPosArr and endPosArr with a copy of the object's current start and end positions, respectively.
                     startPosArr[i] = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
@@ -243,7 +229,7 @@ public class RunExperiment : MonoBehaviour {
                 if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
-                movingObjs[i] = Instantiate(objs[i], startPosArr[i], Quaternion.identity);
+                movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
                 curObj.objVisible = true;
                 curObj.objActive = true;
 
