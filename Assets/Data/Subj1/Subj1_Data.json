@@ -19,28 +19,28 @@
                         1.0
                     ],
                     "startPos": [
+                        -62.0,
                         0.0,
-                        0.0,
-                        -8.0
+                        5.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        0.0
+                        5.0
                     ],
-                    "distTraveled": 8.0,
-                    "velocity": 0.0,
+                    "distTraveled": 62.0,
+                    "velocity": 10.0,
                     "timeVisible": 3000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 1.8414586782455445,
-            "trialEnd": 6.3725128173828129,
-            "respTime": 4.5310540199279789,
+            "trialStart": 7.701711177825928,
+            "trialEnd": 24.1604061126709,
+            "respTime": 16.458694458007814,
             "response": "right",
-            "ttcEstimate": -2995.468994140625,
+            "ttcEstimate": -2983.541259765625,
             "ttcActual": 0.0
         },
         {
@@ -73,11 +73,11 @@
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 6.398402214050293,
-            "trialEnd": 6.408738136291504,
-            "respTime": 0.010335922241210938,
+            "trialStart": 30.335899353027345,
+            "trialEnd": 31.590524673461915,
+            "respTime": 1.2546253204345704,
             "response": "right",
-            "ttcEstimate": -2.989664077758789,
+            "ttcEstimate": -1.7453746795654297,
             "ttcActual": 0.0
         }
     ]

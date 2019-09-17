@@ -14,20 +14,20 @@
           ],
 		  "objRot": [
 		    -90,
-			-90,
+			90,
 			0
 		  ],
           "startPos": [
-            31,
+            -62,
             0,
-            -8
+            5
           ],
           "endPos": [
             0,
             0,
-			-8
+			5
           ],
-          "velocity": 1,
+          "velocity": 10,
           "timeVisible": 3000,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,

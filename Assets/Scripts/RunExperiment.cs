@@ -155,6 +155,9 @@ public class RunExperiment : MonoBehaviour {
                 // Set the object rotation.
                 objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
 
+                if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
+
+
                 if (config.cameraLock)
                 {
                     // Set the initial and final positions of the object
@@ -181,8 +184,8 @@ public class RunExperiment : MonoBehaviour {
                     if (curObj.offsetX)
                     {
                         // Set the initial and final positions of the object with the x offset.
-                        Vector3 newStartVector = new Vector3(curObj.startPos[0] + (curObj.objScale[0] / 2.0f) + 0.05f, startPosArr[i].y, startPosArr[i].z);
-                        Vector3 newEndVector = new Vector3(curObj.endPos[0] + (curObj.objScale[0] / 2.0f) + 0.05f, endPosArr[i].y, endPosArr[i].z);
+                        Vector3 newStartVector = new Vector3(curObj.startPos[0] - ((curObj.objScale[0] / 2.0f) + 0.05f), startPosArr[i].y, startPosArr[i].z);
+                        Vector3 newEndVector = new Vector3(curObj.endPos[0] - ((curObj.objScale[0] / 2.0f) + 0.05f), endPosArr[i].y, endPosArr[i].z);
 
                         // Set new vectors in their respective arrays.
                         startPosArr[i] = newStartVector;
@@ -288,7 +291,7 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            rend.enabled = false;
+            rend.enabled = true;
         }
     }
 
