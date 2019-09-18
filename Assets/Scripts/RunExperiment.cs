@@ -232,9 +232,26 @@ public class RunExperiment : MonoBehaviour {
                 if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
+          
+                
+
                 movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
+                // GameObject parentObject= new GameObject(); //create an 'empty' object
+                // movingObjs[i].parent = parentObject.transform;
+
                 curObj.objVisible = true;
                 curObj.objActive = true;
+
+                // FOR TESTING PURPOSE: Getting size of the model
+                //Mesh mesh_p = parentObject.transform.GetChild(0).GetComponent<MeshFilter>().sharedMesh;
+                //Vector3 objectSizeP = Vector3.Scale(parentObject.transform.localScale, mesh_p.bounds.size);
+                //if (config.debugging) { Debug.Log("P Object Size: " + objectSizeP.x + " " + objectSizeP.y + " " + objectSizeP.z); }
+
+
+                Mesh mesh = objs[i].GetComponent<MeshFilter>().sharedMesh;
+                Vector3 objectSize = Vector3.Scale(objs[i].localScale, mesh.bounds.size);
+                if (config.debugging) { Debug.Log("Mesh bounds Size: " + mesh.bounds.size.x + " " + mesh.bounds.size.y + " " + mesh.bounds.size.z); }
+                if (config.debugging) { Debug.Log("Object Size: " + objectSize.x + " " + objectSize.y + " " + objectSize.z);  }
 
                 // Set the variables that need to be used in the repeating method to move the objects
                 curObj.step = curObj.velocity * stepSize;
