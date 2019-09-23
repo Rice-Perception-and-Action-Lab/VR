@@ -1,6 +1,6 @@
 {
   "trials": [
-    {
+	{
       "trialNum": -1,
 	  "trialName": "VRE1P5LF",
       "objects": [
@@ -18,61 +18,23 @@
 			0
 		  ],
           "startPos": [
-            -62,
+            62,
             0,
-            5
+            -55
           ],
           "endPos": [
             0,
             0,
 			5
           ],
-          "velocity": 10,
+          "velocity": 50,
           "timeVisible": 3000,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
 		  "rotationSpeedZ": 0,
 		  "offsetX": true,
 		  "offsetY": false,
-		  "offsetZ": false
-        }
-      ]
-    },
-	{
-      "trialNum": 2,
-	  "trialName": "VRE3LN",
-      "objects": [
-        {
-          "objNum": 1,
-          "objType": "Sphere",
-          "objScale": [
-            1.0,
-            1.0,
-            1.0
-          ],
-		  "objRot": [
-		    1.0,
-			1.0,
-			1.0
-		  ],
-          "startPos": [
-            0,
-            0,
-            12
-          ],
-          "endPos": [
-            0,
-            0,
-			0
-          ],
-          "velocity": 2,
-          "timeVisible": 3,
-          "rotationSpeedX": 0,
-		  "rotationSpeedY": 0,
-		  "rotationSpeedZ": 0,
-		  "offsetX": true,
-		  "offsetY": false,
-		  "offsetZ": false
+		  "offsetZ": true
         }
       ]
     }

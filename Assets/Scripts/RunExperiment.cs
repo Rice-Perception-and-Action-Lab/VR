@@ -154,9 +154,12 @@ public class RunExperiment : MonoBehaviour {
 
                 // Set the object rotation.
                 objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
-
                 if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
 
+                // Get size of model (for offsets).
+                Renderer render = objs[i].GetComponent<Renderer>();
+                Vector3 objSize = render.bounds.size;
+                if (config.debugging) { Debug.Log("Render bounds Size: " + render.bounds.size.x + " " + render.bounds.size.y + " " + render.bounds.size.z); }
 
                 if (config.cameraLock)
                 {
@@ -183,9 +186,16 @@ public class RunExperiment : MonoBehaviour {
 
                     if (curObj.offsetX)
                     {
+                        // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+                        // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+                        float direction = (curObj.startPos[0] - curObj.endPos[0]) / Mathf.Abs(curObj.startPos[0] - curObj.endPos[0]);
+
+                        // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
+                        float offset = objSize.x / 2;
+
                         // Set the initial and final positions of the object with the x offset.
-                        Vector3 newStartVector = new Vector3(curObj.startPos[0] - ((curObj.objScale[0] / 2.0f) + 0.05f), startPosArr[i].y, startPosArr[i].z);
-                        Vector3 newEndVector = new Vector3(curObj.endPos[0] - ((curObj.objScale[0] / 2.0f) + 0.05f), endPosArr[i].y, endPosArr[i].z);
+                        Vector3 newStartVector = new Vector3(curObj.startPos[0] + (direction * offset), startPosArr[i].y, startPosArr[i].z);
+                        Vector3 newEndVector = new Vector3(curObj.endPos[0] + (direction * offset), endPosArr[i].y, endPosArr[i].z);
 
                         // Set new vectors in their respective arrays.
                         startPosArr[i] = newStartVector;
@@ -196,9 +206,16 @@ public class RunExperiment : MonoBehaviour {
 
                     if (curObj.offsetY)
                     {
+                        // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+                        // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+                        float direction = (curObj.startPos[1] - curObj.endPos[1]) / Mathf.Abs(curObj.startPos[1] - curObj.endPos[1]);
+
+                        // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
+                        float offset = objSize.y / 2;
+
                         // Set the initial and final positions of the object with the y offset.
-                        Vector3 newStartVector = new Vector3(startPosArr[i].x, curObj.startPos[1] + (curObj.objScale[1] / 2.0f) + 0.05f, startPosArr[i].z);
-                        Vector3 newEndVector = new Vector3(endPosArr[i].x, curObj.endPos[1] + (curObj.objScale[1] / 2.0f) + 0.05f, endPosArr[i].z);
+                        Vector3 newStartVector = new Vector3(startPosArr[i].x, curObj.startPos[1] + (direction * offset), startPosArr[i].z);
+                        Vector3 newEndVector = new Vector3(endPosArr[i].x, curObj.endPos[1] + (direction * offset), endPosArr[i].z);
 
                         // Set new vectors in their respective arrays.
                         startPosArr[i] = newStartVector;
@@ -209,9 +226,16 @@ public class RunExperiment : MonoBehaviour {
 
                     if (curObj.offsetZ)
                     {
+                        // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+                        // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+                        float direction = (curObj.startPos[2] - curObj.endPos[2]) / Mathf.Abs(curObj.startPos[2] - curObj.endPos[2]);
+
+                        // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
+                        float offset = objSize.z / 2;
+
                         // Set the initial and final positions of the object with the z offset.
-                        Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y, curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                        Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y, curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                        Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y, curObj.startPos[2] + (direction * offset));
+                        Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y, curObj.endPos[2] + (direction * offset));
 
 
                         // Set new vectors in their respective arrays.
@@ -241,17 +265,6 @@ public class RunExperiment : MonoBehaviour {
 
                 curObj.objVisible = true;
                 curObj.objActive = true;
-
-                // FOR TESTING PURPOSE: Getting size of the model
-                //Mesh mesh_p = parentObject.transform.GetChild(0).GetComponent<MeshFilter>().sharedMesh;
-                //Vector3 objectSizeP = Vector3.Scale(parentObject.transform.localScale, mesh_p.bounds.size);
-                //if (config.debugging) { Debug.Log("P Object Size: " + objectSizeP.x + " " + objectSizeP.y + " " + objectSizeP.z); }
-
-
-                Mesh mesh = objs[i].GetComponent<MeshFilter>().sharedMesh;
-                Vector3 objectSize = Vector3.Scale(objs[i].localScale, mesh.bounds.size);
-                if (config.debugging) { Debug.Log("Mesh bounds Size: " + mesh.bounds.size.x + " " + mesh.bounds.size.y + " " + mesh.bounds.size.z); }
-                if (config.debugging) { Debug.Log("Object Size: " + objectSize.x + " " + objectSize.y + " " + objectSize.z);  }
 
                 // Set the variables that need to be used in the repeating method to move the objects
                 curObj.step = curObj.velocity * stepSize;
@@ -308,6 +321,7 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
+            //System.Threading.Thread.Sleep(1000);
             rend.enabled = true;
         }
     }

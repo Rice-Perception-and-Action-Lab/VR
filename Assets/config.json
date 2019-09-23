@@ -4,7 +4,7 @@
     "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
 	"cameraLock": false, 
     "trackHeadPos": true,
-    "showFeedback": true,
+    "showFeedback": false,
     "feedbackColor": "black",
     "feedbackSize": 75,
     "feedbackPos": [
