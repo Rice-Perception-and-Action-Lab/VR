@@ -18,9 +18,9 @@
 			0
 		  ],
           "startPos": [
-            62,
-            0,
-            -55
+            10,
+            10,
+            10
           ],
           "endPos": [
             0,
@@ -32,9 +32,9 @@
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
 		  "rotationSpeedZ": 0,
-		  "offsetX": true,
+		  "offsetX": false,
 		  "offsetY": false,
-		  "offsetZ": true
+		  "offsetZ": false
         }
       ]
     }

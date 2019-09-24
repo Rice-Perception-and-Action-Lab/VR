@@ -2,7 +2,7 @@
     "subjNum": 1,
     "subjSex": 1,
     "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
-	"cameraLock": false, 
+	"cameraLock": true, 
     "trackHeadPos": true,
     "showFeedback": false,
     "feedbackColor": "black",

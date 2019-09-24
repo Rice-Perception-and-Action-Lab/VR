@@ -164,15 +164,30 @@ public class RunExperiment : MonoBehaviour {
                 if (config.cameraLock)
                 {
                     // Set the initial and final positions of the object
-                    Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                    startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
+                    // Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
 
-                    Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    Vector3 inputStartPos = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
+                    //if (config.debugging) { Debug.Log("Camera start position: " + viveCamera.position); }
+                    //if (config.debugging) { Debug.Log("Object's normal start position: " + inputStartPos); }
+                    startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
+                                                                                    //if (config.debugging) { Debug.Log("Object's transformed start position: " + viveCamera.TransformPoint(inputStartPos)); }
+                                                                                    //Vector3 diff = inputStartPos - startPosArr[i];
+
+                    //if (config.debugging) { Debug.Log("Difference:" + diff); }
+                    //if (config.debugging) { Debug.Log("add camera to game object position: " + (viveCamera.position + objs[i].localScale)); }
+
+                    // Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
+                    Vector3 inputEndPos = new Vector3(curObj.endPos[0],curObj.endPos[1], curObj.endPos[2]);
                     endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
 
-                    // Adjust the height of the object to match the height of the camera
-                    startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
-                    endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
+
+                    if (config.debugging) { Debug.Log("camera's world position:" + viveCamera.position); }
+                    if (config.debugging) { Debug.Log("transformed point" + endPosArr[i]); }
+
+
+                    //// Adjust the height of the object to match the height of the camera
+                    //startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
+                    //endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
 
                     // Calculate the distance that the object must travel
                     curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
@@ -284,6 +299,7 @@ public class RunExperiment : MonoBehaviour {
                     curObj.stepHidden = curObj.timeVisible * rate;
                 }
             }
+
 
             // Set the start time of this trial so that it can be recorded by the data manager
             trial.trialStart = Time.time;
