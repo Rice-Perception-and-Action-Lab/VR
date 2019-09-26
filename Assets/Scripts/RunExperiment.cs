@@ -156,71 +156,48 @@ public class RunExperiment : MonoBehaviour {
                 objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
                 if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
 
-                // Get size of model (for offsets).
+                /**
+                 * Begin calculating offsets. --------------------------------------------------------------------------------------------------------------
+                 */
+                // Get size of model
                 Renderer render = objs[i].GetComponent<Renderer>();
                 Vector3 objSize = render.bounds.size;
                 if (config.debugging) { Debug.Log("Render bounds Size: " + render.bounds.size.x + " " + render.bounds.size.y + " " + render.bounds.size.z); }
 
-                if (config.cameraLock)
+                // Initialize startPosArr and endPosArr with a copy of the object's current start and end positions, respectively.
+                startPosArr[i] = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
+                endPosArr[i] = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
+
+                if (curObj.offsetX)
                 {
-                    // Set the initial and final positions of the object
-                    // Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-
-                    Vector3 inputStartPos = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
-                    //if (config.debugging) { Debug.Log("Camera start position: " + viveCamera.position); }
-                    //if (config.debugging) { Debug.Log("Object's normal start position: " + inputStartPos); }
-                    startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
-                                                                                    //if (config.debugging) { Debug.Log("Object's transformed start position: " + viveCamera.TransformPoint(inputStartPos)); }
-                                                                                    //Vector3 diff = inputStartPos - startPosArr[i];
-
-                    //if (config.debugging) { Debug.Log("Difference:" + diff); }
-                    //if (config.debugging) { Debug.Log("add camera to game object position: " + (viveCamera.position + objs[i].localScale)); }
-
-                    // Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2] + (curObj.objScale[2] / 2.0f) + 0.05f);
-                    Vector3 inputEndPos = new Vector3(curObj.endPos[0],curObj.endPos[1], curObj.endPos[2]);
-                    endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
-
-
-                    if (config.debugging) { Debug.Log("camera's world position:" + viveCamera.position); }
-                    if (config.debugging) { Debug.Log("transformed point" + endPosArr[i]); }
-
-
-                    //// Adjust the height of the object to match the height of the camera
-                    //startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
-                    //endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
-
-                    // Calculate the distance that the object must travel
-                    curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
-                }
-                else
-                {
-
-                    // Initialize startPosArr and endPosArr with a copy of the object's current start and end positions, respectively.
-                    startPosArr[i] = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
-                    endPosArr[i] = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
-
-                    if (curObj.offsetX)
+                    if (startPosArr[i].x != endPosArr[i].x) // Can't calculate offset if doesn't move.
                     {
                         // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
                         // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                        float direction = (curObj.startPos[0] - curObj.endPos[0]) / Mathf.Abs(curObj.startPos[0] - curObj.endPos[0]);
+                        float direction = (startPosArr[i].x - endPosArr[i].x) / Mathf.Abs(curObj.startPos[0] - curObj.endPos[0]);
 
                         // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
                         float offset = objSize.x / 2;
 
                         // Set the initial and final positions of the object with the x offset.
-                        Vector3 newStartVector = new Vector3(curObj.startPos[0] + (direction * offset), startPosArr[i].y, startPosArr[i].z);
-                        Vector3 newEndVector = new Vector3(curObj.endPos[0] + (direction * offset), endPosArr[i].y, endPosArr[i].z);
+                        Vector3 newStartVector = new Vector3(startPosArr[i].x + (direction * offset), startPosArr[i].y, startPosArr[i].z);
+                        Vector3 newEndVector = new Vector3(endPosArr[i].x + (direction * offset), endPosArr[i].y, endPosArr[i].z);
 
                         // Set new vectors in their respective arrays.
                         startPosArr[i] = newStartVector;
                         endPosArr[i] = newEndVector;
 
-                        if (config.debugging) { Debug.Log("X offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
                     }
 
-                    if (curObj.offsetY)
+                    if (config.debugging) { Debug.Log("X offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                }
+
+                if (curObj.offsetY)
+                {
+
+                    if (startPosArr[i].y != endPosArr[i].y) // Can't calculate offset if doesn't move.
                     {
+
                         // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
                         // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
                         float direction = (curObj.startPos[1] - curObj.endPos[1]) / Mathf.Abs(curObj.startPos[1] - curObj.endPos[1]);
@@ -235,48 +212,84 @@ public class RunExperiment : MonoBehaviour {
                         // Set new vectors in their respective arrays.
                         startPosArr[i] = newStartVector;
                         endPosArr[i] = newEndVector;
-
-                        if (config.debugging) { Debug.Log("Y Offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
                     }
 
-                    if (curObj.offsetZ)
+                    if (config.debugging) { Debug.Log("Y Offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                }
+
+                if (curObj.offsetZ)
+                {
+                    if (startPosArr[i].z != endPosArr[i].z) // Can't calculate offset if doesn't move.
                     {
                         // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
                         // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                        float direction = (curObj.startPos[2] - curObj.endPos[2]) / Mathf.Abs(curObj.startPos[2] - curObj.endPos[2]);
+                        float direction = (startPosArr[i].z - endPosArr[i].z) / Mathf.Abs(startPosArr[i].z - endPosArr[i].z);
 
                         // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
                         float offset = objSize.z / 2;
 
                         // Set the initial and final positions of the object with the z offset.
-                        Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y, curObj.startPos[2] + (direction * offset));
-                        Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y, curObj.endPos[2] + (direction * offset));
-
+                        Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y, startPosArr[i].z + (direction * offset));
+                        Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y, endPosArr[i].z + (direction * offset));
 
                         // Set new vectors in their respective arrays.
                         startPosArr[i] = newStartVector;
                         endPosArr[i] = newEndVector;
-
-                        if (config.debugging) { Debug.Log(" Z offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
-
                     }
 
-                    // Calculate the distance that the object must travel
-                     curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+                    if (config.debugging) { Debug.Log(" Z offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                }
+
+                if (config.cameraLock) // Must transform points relative to camera.
+                {
+                    startPosArr[i] = new Vector3(startPosArr[i].x + viveCamera.position.x, startPosArr[i].y + viveCamera.position.y, viveCamera.position.z + startPosArr[i].z);
+                    endPosArr[i] = new Vector3(endPosArr[i].x, endPosArr[i].y, endPosArr[i].z);
+
+                    //if (config.debugging) { Debug.Log("camera's world position:" + viveCamera.TransformPoint(Vector3.zero)); }
+
+
+                    //if (config.debugging) { Debug.Log("end point before: " + endPosArr[i]); }
+
+
+                    //startPosArr[i] = viveCamera.TransformPoint(startPosCopy);
+                    //endPosArr[i] = viveCamera.TransformPoint(endPosCopy);
+
+                    //if (config.debugging) { Debug.Log("end transformed point" + endPosArr[i]); }
 
 
                 }
+                //if (config.cameraLock)
+                //{
+                //    // Set the initial and final positions of the object
+
+                //    Vector3 inputStartPos = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
+
+                //    startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
+
+                //    Vector3 inputEndPos = new Vector3(curObj.endPos[0],curObj.endPos[1], curObj.endPos[2]);
+                //    endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
+
+
+                //    if (config.debugging) { Debug.Log("camera's world position:" + viveCamera.position); }
+                //    if (config.debugging) { Debug.Log("transformed point" + endPosArr[i]); }
+
+                //    // Calculate the distance that the object must travel
+                //    curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+                //}
+
+
+                /**
+                 * End calculating offsets. --------------------------------------------------------------------------------------------------------------
+                 */
+
+                // Calculate the distance that the object must travel
+                curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
 
                 if (config.debugging) { Debug.Log("Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
                 if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
-          
-                
-
                 movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
-                // GameObject parentObject= new GameObject(); //create an 'empty' object
-                // movingObjs[i].parent = parentObject.transform;
 
                 curObj.objVisible = true;
                 curObj.objActive = true;
@@ -326,6 +339,32 @@ public class RunExperiment : MonoBehaviour {
             }
         }
     }
+
+    //public Vector3[] Offset(int offsetAxis, Vector3 startPosArr, Vector3 endPosArr, bool cameraLock, Vector3 objSize)
+    //{
+    //    switch(offsetAxis)
+    //    {
+    //        case 0: // X offset
+    //            if (startPosArr.x == endPosArr.x) { break; }
+    //            else
+    //            {
+    //                // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+    //                // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+    //                float direction = (startPosArr.x - endPosArr.x) / (startPosArr.x - endPosArr.x);
+
+    //                // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
+    //                float offset = objSize.x / 2;
+
+    //                // Set the initial and final positions of the object with the x offset.
+    //                return new[] { new Vector3(startPosArr.x + (direction * offset), startPosArr.y, startPosArr.z), new Vector3(endPosArr.x + (direction * offset), endPosArr.y, endPosArr.z) };
+    //            }
+
+
+    //        default:
+    //            return new[] { startPosArr, endPosArr };
+
+    //    }
+    //}
 
     /**
      * Hide an object so that it is no longer visible but still exists in the world.

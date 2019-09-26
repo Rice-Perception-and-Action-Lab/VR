@@ -18,23 +18,23 @@
 			0
 		  ],
           "startPos": [
-            10,
-            10,
-            10
+            0,
+            0,
+            0
           ],
           "endPos": [
             0,
             0,
-			5
+			10
           ],
           "velocity": 50,
           "timeVisible": 3000,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
 		  "rotationSpeedZ": 0,
-		  "offsetX": false,
-		  "offsetY": false,
-		  "offsetZ": false
+		  "offsetX": true,
+		  "offsetY": true,
+		  "offsetZ": true
         }
       ]
     }
