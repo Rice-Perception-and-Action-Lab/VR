@@ -20,14 +20,14 @@
           "startPos": [
             0,
             0,
-            0
+            10
           ],
           "endPos": [
             0,
             0,
-			10
+			0
           ],
-          "velocity": 50,
+          "velocity": 10,
           "timeVisible": 3000,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,

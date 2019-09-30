@@ -167,14 +167,17 @@ public class RunExperiment : MonoBehaviour {
                 // Initialize startPosArr and endPosArr with a copy of the object's current start and end positions, respectively.
                 startPosArr[i] = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
                 endPosArr[i] = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
-
+                
                 if (curObj.offsetX)
                 {
                     if (startPosArr[i].x != endPosArr[i].x) // Can't calculate offset if doesn't move.
                     {
+                        if (config.debugging) { Debug.Log("inside the offset"); }
+                        if (config.debugging) { Debug.Log(startPosArr[i].x); }
+                        if (config.debugging) { Debug.Log(endPosArr[i].x); }
                         // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
                         // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                        float direction = (startPosArr[i].x - endPosArr[i].x) / Mathf.Abs(curObj.startPos[0] - curObj.endPos[0]);
+                        float direction = (startPosArr[i].x - endPosArr[i].x) / Mathf.Abs(startPosArr[i].x - endPosArr[i].x);
 
                         // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
                         float offset = objSize.x / 2;
@@ -190,6 +193,8 @@ public class RunExperiment : MonoBehaviour {
                     }
 
                     if (config.debugging) { Debug.Log("X offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                    if (config.debugging) { Debug.Log("X offset End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
+
                 }
 
                 if (curObj.offsetY)
@@ -200,14 +205,14 @@ public class RunExperiment : MonoBehaviour {
 
                         // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
                         // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                        float direction = (curObj.startPos[1] - curObj.endPos[1]) / Mathf.Abs(curObj.startPos[1] - curObj.endPos[1]);
+                        float direction = (startPosArr[i].y - endPosArr[i].y) / Mathf.Abs(startPosArr[i].y - endPosArr[i].y);
 
                         // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
                         float offset = objSize.y / 2;
 
                         // Set the initial and final positions of the object with the y offset.
-                        Vector3 newStartVector = new Vector3(startPosArr[i].x, curObj.startPos[1] + (direction * offset), startPosArr[i].z);
-                        Vector3 newEndVector = new Vector3(endPosArr[i].x, curObj.endPos[1] + (direction * offset), endPosArr[i].z);
+                        Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y + (direction * offset), startPosArr[i].z);
+                        Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y + (direction * offset), endPosArr[i].z);
 
                         // Set new vectors in their respective arrays.
                         startPosArr[i] = newStartVector;
@@ -215,6 +220,8 @@ public class RunExperiment : MonoBehaviour {
                     }
 
                     if (config.debugging) { Debug.Log("Y Offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                    if (config.debugging) { Debug.Log(" Y offset End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
+
                 }
 
                 if (curObj.offsetZ)
@@ -238,26 +245,57 @@ public class RunExperiment : MonoBehaviour {
                     }
 
                     if (config.debugging) { Debug.Log(" Z offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                    if (config.debugging) { Debug.Log(" Z offset End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
+
                 }
 
-                if (config.cameraLock) // Must transform points relative to camera.
+                if (config.cameraLock)
                 {
-                    startPosArr[i] = new Vector3(startPosArr[i].x + viveCamera.position.x, startPosArr[i].y + viveCamera.position.y, viveCamera.position.z + startPosArr[i].z);
-                    endPosArr[i] = new Vector3(endPosArr[i].x, endPosArr[i].y, endPosArr[i].z);
 
-                    //if (config.debugging) { Debug.Log("camera's world position:" + viveCamera.TransformPoint(Vector3.zero)); }
+                    if (config.debugging) { Debug.Log("vive camera: " + viveCamera.position.x + " " + viveCamera.position.y + " " + viveCamera.position.z); }
+                    if (config.debugging) { Debug.Log("vive camera rotaTION: " + viveCamera.rotation); }
+                    if (config.debugging) { Debug.Log("vive camera local Scale: " + viveCamera.localScale); }
+                    Vector3 inputStartPos = new Vector3(startPosArr[i].x, viveCamera.position.y + startPosArr[i].y, startPosArr[i].z);
+                    Vector3 inputEndPos = new Vector3(endPosArr[i].x, viveCamera.position.y + endPosArr[i].y, endPosArr[i].z);
 
-
-                    //if (config.debugging) { Debug.Log("end point before: " + endPosArr[i]); }
-
-
-                    //startPosArr[i] = viveCamera.TransformPoint(startPosCopy);
-                    //endPosArr[i] = viveCamera.TransformPoint(endPosCopy);
-
-                    //if (config.debugging) { Debug.Log("end transformed point" + endPosArr[i]); }
+                    startPosArr[i] = viveCamera.TransformPoint(inputStartPos);
+                    endPosArr[i] = viveCamera.TransformPoint(inputEndPos);
 
 
+                    // Adjust the height of the object to match the height of the camera
+                    startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + startPosArr[i].y, startPosArr[i].z);
+                    endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + endPosArr[i].y, endPosArr[i].z);
+
+                    // Calculate the distance that the object must travel
+                    curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+
+                    if (config.debugging) { Debug.Log("start position: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                    if (config.debugging) { Debug.Log("end position: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); } // why is the end positions so weird?
                 }
+
+
+                //if (config.cameraLock) // Must transform points relative to camera.
+                //{
+                //    // startPosArr[i] = new Vector3(startPosArr[i].x + viveCamera.position.x, startPosArr[i].y + viveCamera.position.y, viveCamera.position.z + startPosArr[i].z);
+                //    // endPosArr[i] = new Vector3(endPosArr[i].x, endPosArr[i].y, endPosArr[i].z);
+
+                //    if (config.debugging) { Debug.Log("camera's  position:" + viveCamera.TransformPoint(Vector3.zero)); }
+
+
+                //    if (config.debugging) { Debug.Log("end point before: " + endPosArr[i]); }
+
+
+                //    //startPosArr[i] = viveCamera.TransformPoint(startPosCopy);
+                //    endPosArr[i] = viveCamera.TransformPoint(endPosArr[i]);
+
+                //    if (config.debugging) { Debug.Log("end transformed point" + endPosArr[i]); }
+
+                //}
+                if (config.debugging) { Debug.Log("start transformed point with offsets: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
+                if (config.debugging) { Debug.Log("end transformed point with offsets: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
+                if (config.debugging) { Debug.Log("end transformed point total" + endPosArr[i]); }
+                    // transform.rotation* Vector3.Scale(myVector, transform.localScale) + transform.position;
+
                 //if (config.cameraLock)
                 //{
                 //    // Set the initial and final positions of the object
