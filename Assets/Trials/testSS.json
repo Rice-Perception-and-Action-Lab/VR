@@ -27,13 +27,13 @@
             0,
 			0
           ],
-          "velocity": 10,
+          "velocity": 5,
           "timeVisible": 3000,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
 		  "rotationSpeedZ": 0,
-		  "offsetX": true,
-		  "offsetY": true,
+		  "offsetX": false,
+		  "offsetY": false,
 		  "offsetZ": true
         }
       ]
