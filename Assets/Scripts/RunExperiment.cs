@@ -267,7 +267,7 @@ public class RunExperiment : MonoBehaviour {
                     curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
 
                     startPosArr[i] = transformed + new Vector3(0, viveCamera.position.y, 0); // Not sure why, but need to add camera height again.
-
+                    // I have a theory that it transforms in local space => world space, and we need it to know that the input position are also world space.
 
                 }
 
