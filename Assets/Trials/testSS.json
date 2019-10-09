@@ -6,7 +6,7 @@
       "objects": [
         {
           "objNum": 1,
-          "objType": "Car",
+          "objType": "Sphere",
           "objScale": [
             1.0,
             1.0,
@@ -19,8 +19,8 @@
 		  ],
           "startPos": [
             10,
-            0,
-            0
+            10,
+            10
           ],
           "endPos": [
             0,
@@ -34,7 +34,7 @@
 		  "rotationSpeedZ": 0,
 		  "offsetX": false,
 		  "offsetY": false,
-		  "offsetZ": false
+		  "offsetZ": true
         }
       ]
     }
