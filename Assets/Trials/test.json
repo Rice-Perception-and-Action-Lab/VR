@@ -1,8 +1,9 @@
 {
     "trials": [
         {
-            "trialNum": 1,
+            "trialNum": -1,
 			"trialName": "VRE1P5SN",
+			"corrAns": 0,
             "objects": [
                 {
                     "objNum": 1,
@@ -31,6 +32,7 @@
         {
             "trialNum": 2,
 			"trialName": "VRE0P75LF",
+			"corrAns": 0,
             "objects": [
                 {
                     "objNum": 1,
@@ -57,8 +59,212 @@
             ]
         },
         {
+            "trialNum": 3,
+			"trialName": "VRE3LF",
+			"corrAns": 0,			
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+		{
+            "trialNum": 4,
+			"trialName": "VRE3LF",
+			"corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+		{
+            "trialNum": 5,
+			"trialName": "VRE3LF",
+			"corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+		{
+            "trialNum": 6,
+			"trialName": "VRE3LF",
+			"corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+		{
+            "trialNum": 7,
+			"trialName": "VRE3LF",
+			"corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+		{
             "trialNum": 8,
 			"trialName": "VRE3LF",
+			"corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+		{
+            "trialNum": 9,
+			"trialName": "VRE3LF",
+			"corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        24
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 4,
+                    "timeVisible": 3,
+                    "rotationSpeed": 0
+                }
+            ]
+        },
+		{
+            "trialNum": 10,
+			"trialName": "VRE3LF",
+			"corrAns": 0,
             "objects": [
                 {
                     "objNum": 1,

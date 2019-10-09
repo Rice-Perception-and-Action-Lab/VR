@@ -6,10 +6,16 @@ public class TrackControllerResponse : MonoBehaviour
 {
 
     private float timer;                        // a timer to pause between receiving input and initializing a new trial
-    private bool waiting;                       // true if we're waiting to initialize a new trial; false otherwise
+    private bool waitingConfidence;             // a variable to determine whether we are waiting for a confidence judgment before stopping the trial
+    private bool practiceOver;                  // a varialbe to determine whether practice trials are over
     private SteamVR_TrackedObject controller;   // a reference to the controller being tracked
     private GameObject movingObj;               // a reference to the MovingObj GameObject so we can call methods from the RunExperiment script attached to it
     private RunExperiment script;               // a reference to the RunExperiment script so we can call its methods
+                                                // Hair trigger can sometimes be sensitive; set a threshold so that it has to be pushed down slightly further before it registers as a trigger press
+    private float threshold = 0.3f;
+    private float pressTime;
+    private string pressButton;
+    private string confidenceNA = "N/A";
 
 
     private SteamVR_Controller.Device Controller
@@ -27,44 +33,140 @@ public class TrackControllerResponse : MonoBehaviour
         movingObj = GameObject.Find("MovingObj");
         script = movingObj.GetComponent<RunExperiment>();
 
-        waiting = false;
+        waitingConfidence = false;
+        practiceOver = false;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Hair trigger can sometimes be sensitive; set a threshold so that it has to be pushed down slightly further before it registers as a trigger press
-        float threshold = 0.3f;
-        bool runningTrial = script.CheckTrialRunning();
-
+        
         Vector2 touchVector = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
-       
+
+        if (waitingConfidence)
+        {
+            //If statements required because switch needs to be able to figure out the value of all case statements at compile time
+            if (Input.GetKeyDown("0"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "0");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("1"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "1");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("2"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "2");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("3"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "3");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("4"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "4");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("5"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "5");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("6"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "6");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("7"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "7");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("8"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "8");
+                waitingConfidence = false;
+            }
+            if (Input.GetKeyDown("9"))
+            {
+                script.uiManager.ClearMessage();
+                script.CompleteTrial(pressTime, true, pressButton, "9");
+                waitingConfidence = false;
+            }
+
+        }
+
+        // Start the next trial if there isn't a currently running trial and the hair trigger button is pressed
+        if (!waitingConfidence && !script.isRunning && Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x > threshold)
+        {
+            script.InitializeTrial();
+        }
+
 
         // End the trial if there is a trial running and the touchpad button is pressed
-        if (runningTrial && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+        if (script.isRunning && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
 
             if (touchVector.x < -0.5f)
             {
-                Debug.Log("Left Press");
-                script.CompleteTrial(Time.time, true, "left");
-            }
+                pressTime = Time.time;
+                pressButton = "Left";
+                script.isRunning = false;
+
+                if (script.config.debugging) { Debug.Log("Button pressed: " + pressButton); }
+                if (script.config.debugging) { Debug.Log("Time at press: " + pressTime); }
+
+
+                if (!script.config.collectConfidence) { script.CompleteTrial(pressTime, true, pressButton, confidenceNA); }
+                if (script.config.collectConfidence)
+                {
+                    waitingConfidence = true;
+                    script.HideAllObjs();
+                    if (script.config.debugging) { Debug.Log("Waiting for confidence rating..."); }
+                    script.uiManager.ShowMessage("How confident?");
+                }
+
+
+             }
+
             if (touchVector.x > 0.5f)
             {
-                Debug.Log("Right Press");
-                script.CompleteTrial(Time.time, true, "right");
+                pressTime = Time.time;
+                pressButton = "Right";
+                script.isRunning = false;
+
+                if (script.config.debugging) { Debug.Log("Button pressed: " + pressButton); }
+                if (script.config.debugging) { Debug.Log("Time at press: " + pressTime); }
+
+                if (!script.config.collectConfidence) { script.CompleteTrial(pressTime, true, pressButton, confidenceNA); }
+                if (script.config.collectConfidence)
+                {
+                    waitingConfidence = true;
+                    script.HideAllObjs();
+                    if (script.config.debugging) { Debug.Log("Waiting for confidence rating..."); }
+                    script.uiManager.ShowMessage("How confident?");
+                }
+
             }
+            
             // if (touchVector.y > 0.7f) UP
             // if (touchVector.y < -0.7) DOWN
+
         }
-        else
-        {
-            // Start the next trial if there isn't a currently running trial and the hair trigger button is pressed
-            if (!runningTrial && Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x > threshold)
-            {
-                script.InitializeTrial();
-            }
-        }
+
     }
 }

@@ -3,6 +3,7 @@
     {
       "trialNum": -1,
 	  "trialName": "VRE1P5LF",
+	  "corrAns": 0,
       "objects": [
         {
           "objNum": 1,
@@ -33,6 +34,7 @@
 	{
       "trialNum": 2,
 	  "trialName": "VRE3LN",
+	  "corrAns": 0,
       "objects": [
         {
           "objNum": 1,

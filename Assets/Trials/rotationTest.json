@@ -3,6 +3,7 @@
     {
       "trialNum": 1,
       "trialName": "Test",
+	  "corrAns": 1,
       "objects": [
         {
           "objNum": 1,
@@ -81,6 +82,7 @@
 	    {
       "trialNum": 1,
 	  "trialName": "Test",
+	  "corrAns": 2,
       "objects": [
         {
           "objNum": 1,
@@ -159,6 +161,7 @@
 	{
       "trialNum": 2,
 	  "trialName": "Test",
+	  "corrAns": 2,
       "objects": [
         {
           "objNum": 1,
@@ -237,6 +240,7 @@
 	{
       "trialNum": 3,
 	  "trialName": "Test",
+	  "corrAns": 1,
       "objects": [
         {
           "objNum": 1,
@@ -315,6 +319,7 @@
 	{
       "trialNum": 4,
 	  "trialName": "Test",
+	  "corrAns": 0,
       "objects": [
         {
           "objNum": 1,

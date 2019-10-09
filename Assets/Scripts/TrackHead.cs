@@ -7,7 +7,6 @@ public class TrackHead : MonoBehaviour
 {
     private RunExperiment script;
     private GameObject movingObj;
-    private bool trialRunning;
     private CVRSystem vrSystem;
 
     public SaveData dataManager;
@@ -43,8 +42,7 @@ public class TrackHead : MonoBehaviour
     void Update() 
     {
         /*
-        trialRunning = script.CheckTrialRunning();
-        if (!trialRunning)
+        if (!script.isRunning)
         {
             if (threadStarted)
             {
@@ -81,8 +79,7 @@ public class TrackHead : MonoBehaviour
     {
         while (on)
         {
-            trialRunning = script.CheckTrialRunning();
-            if (!trialRunning)
+           if (!script.isRunning)
             {
                 if (threadStarted)
                 {

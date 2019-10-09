@@ -18,11 +18,16 @@ public class SaveData : MonoBehaviour
     /* Config-Specified Fields */
     public int subjNum;
     public int subjSex;
+    public int session;
+    public int group;
     public static int TRIALNUM;
+    public int corrAns;
     public string trialFile;
     public bool trackHeadPos;
     public float[] initCameraPos;
     public bool showFeedback;
+    public int feedbackType;
+    public bool collectConfidence;
     public float[] feedbackPos;
     public int feedbackSize;
     public string feedbackColor;
@@ -82,13 +87,15 @@ public class SaveData : MonoBehaviour
     {
         public int trialNum;            // the number of the trial
         public string trialName;        // the name of the trial
+        public int corrAns;
         public ObjData[] objData;       // the data about the objects presented in the trial
         public float trialStart;        // the time at which the trial began 
         public float trialEnd;          // the time at which the trial ended (based on when the participant responds via the controller)
         public float respTime;          // the amount of time it took for the participant to respond
-        public string response;         // the reponse made by the participant 
+        public string response;         // the reponse made by the participant
+        public string confidence;       // the confidence rating made by the participant
         public float ttcEstimate;       // the participant's calculated TTC estimate
-        public float ttcActual;         // the actual value of TTC
+
 
 
         /**
@@ -99,11 +106,12 @@ public class SaveData : MonoBehaviour
             this.trialNum = trial.trialNum;
             TRIALNUM = SaveData.putTrialNum(trial.trialNum);
             this.trialName = trial.trialName;
+            this.corrAns = trial.corrAns;
             this.trialStart = trial.trialStart;
             this.trialEnd = trial.trialEnd;
             this.respTime = trialEnd - trialStart;
             this.response = trial.response;
-            this.ttcActual = trial.ttcActual;
+            this.confidence = trial.confidence;
 
 
 
@@ -158,29 +166,20 @@ public class SaveData : MonoBehaviour
             return wrapper.Trials;
         }
 
-        public static string ToJson<T>(SaveData dataObj, T[] array)
-        {
-            Wrapper<T> wrapper = new Wrapper<T>();
-            wrapper.Trials = array;
-            wrapper.subjNum = dataObj.subjNum;
-            wrapper.subjSex = dataObj.subjSex;
-            wrapper.dataFile = dataObj.trialFile;
-            wrapper.showFeedback = dataObj.showFeedback;
-            wrapper.feedbackColor = dataObj.feedbackColor;
-            wrapper.trackHeadPos = dataObj.trackHeadPos;
-            return JsonUtility.ToJson(wrapper);
-        }
-
         public static string ToJson<T>(SaveData dataObj, T[] array, bool prettyPrint)
         {
             Wrapper<T> wrapper = new Wrapper<T>();
             wrapper.Trials = array;
             wrapper.subjNum = dataObj.subjNum;
             wrapper.subjSex = dataObj.subjSex;
-            wrapper.dataFile = dataObj.trialFile;
-            wrapper.showFeedback = dataObj.showFeedback;
-            wrapper.feedbackColor = dataObj.feedbackColor;
+            wrapper.session = dataObj.session;
+            wrapper.group = dataObj.group;
+            wrapper.trialFile = dataObj.trialFile;
             wrapper.trackHeadPos = dataObj.trackHeadPos;
+            wrapper.showFeedback = dataObj.showFeedback;
+            wrapper.feedbackType = dataObj.feedbackType;
+            wrapper.collectConfidence = dataObj.collectConfidence;
+            wrapper.feedbackColor = dataObj.feedbackColor;
             return JsonUtility.ToJson(wrapper, prettyPrint);
         }
 
@@ -189,8 +188,12 @@ public class SaveData : MonoBehaviour
         {
             public int subjNum;
             public int subjSex;
-            public string dataFile;
+            public int session;
+            public int group;
+            public string trialFile;
             public bool showFeedback;
+            public int feedbackType;
+            public bool collectConfidence;
             public string feedbackColor;
             public bool trackHeadPos;
             public T[] Trials;
@@ -206,10 +209,13 @@ public class SaveData : MonoBehaviour
     {
         this.subjNum = config.subjNum;
         this.subjSex = config.subjSex;
+        this.session = config.session;
+        this.group = config.group;
         this.trialFile = config.trialFile;
         this.trackHeadPos = config.trackHeadPos;
-        //this.initCameraPos = config.initCameraPos;
         this.showFeedback = config.showFeedback;
+        this.feedbackType = config.feedbackType;
+        this.collectConfidence = config.collectConfidence;
         this.feedbackPos = config.feedbackPos;
         this.feedbackSize = config.feedbackSize;
         this.feedbackColor = config.feedbackColor;
@@ -287,10 +293,13 @@ public class SaveData : MonoBehaviour
     /**
      * Write all trial data to a JSON file.
      */
-    public void Save()
+    
+    public void Save(bool partial)
     {
         string jsonData = JsonHelper.ToJson(this, data, true);
         string dir = Application.dataPath + "/Data/Subj" + subjNum;
+        string dataFile = "";
+        string dataFileCsv = "";
 
         // Create the directory to store the trial data if it hasn't already been created
         if (!Directory.Exists(dir))
@@ -298,7 +307,8 @@ public class SaveData : MonoBehaviour
             Directory.CreateDirectory(dir);
         }
 
-        string dataFile = "Subj" + subjNum.ToString() + "_Data.json";
+
+        if (partial) { dataFile = "Subj" + subjNum.ToString() + "_Data_Partial.json"; } else { dataFile = "Subj" + subjNum.ToString() + "_Data.json"; }
         string filepath = Path.Combine(dir, dataFile);
         Debug.Log("Saving data to " + filepath);
 
@@ -310,14 +320,14 @@ public class SaveData : MonoBehaviour
 
 
         //start code to write to csv file
-        string dataFileCsv = "Subj" + subjNum.ToString() + "_Data.csv";
+        if(partial) { dataFileCsv = "Subj" + subjNum.ToString() + "_Data_Partial.csv"; } else { dataFileCsv = "Subj" + subjNum.ToString() + "_Data.csv"; }
         string filepathCsv = Path.Combine(dir, dataFileCsv);
         Debug.Log("Saving CSV data to " + filepathCsv);
 
         using (StreamWriter writer = new StreamWriter(filepathCsv, false))
         {
 
-            var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", "Subj", "Sex", "Trial", "TrialName", "TrialStart", "TrialEnd", "RespTime", "Resp", "TTC Estimate");
+            var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}", "Subj", "Sex", "Session", "Group", "Trial", "TrialName", "CorrAns", "TrialStart", "TrialEnd", "RespTime", "Resp", "TTC Estimate", "Confidence");
             writer.WriteLine(header);
             writer.Flush();
 
@@ -325,81 +335,24 @@ public class SaveData : MonoBehaviour
             {
                 var subjnum = subjNum.ToString();
                 var subjsex = subjSex;
+                var sess = session;
+                var grp = group;
                 var trialnum = trial.trialNum.ToString();
                 var name = trial.trialName;
                 var start = trial.trialStart.ToString();
                 var end = trial.trialEnd.ToString();
                 var resptime = trial.respTime.ToString();
                 var resp = trial.response;
+                var corrAns = trial.corrAns;
+                var conf = trial.confidence;
                 var est = trial.ttcEstimate.ToString();
-                var act = trial.ttcActual.ToString();
 
-                var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", subjnum, subjsex, trialnum, name, start, end, resptime, resp, est);
+                var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}", subjnum, subjsex, sess, grp, trialnum, name, corrAns, start, end, resptime, resp, est, conf);
                 writer.WriteLine(data);
                 writer.Flush();
             }
 
         }
-
-    }
-
-    public void Save(bool partial)
-    {
-        if (partial)
-        {
-            string jsonData = JsonHelper.ToJson(this, data, true);
-            string dir = Application.dataPath + "/Data/Subj" + subjNum;
-
-            // Create the directory to store the trial data if it hasn't already been created
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-
-            string dataFile = "Subj" + subjNum.ToString() + "_Data_Partial.json";
-            string filepath = Path.Combine(dir, dataFile);
-            Debug.Log("Saving data to " + filepath);
-
-            using (StreamWriter writer = new StreamWriter(filepath, false))
-            {
-                writer.WriteLine(jsonData);
-                writer.Flush();
-            }
-
-
-            //start code to write to csv file
-            string dataFileCsv = "Subj" + subjNum.ToString() + "_Data_Partial.csv";
-            string filepathCsv = Path.Combine(dir, dataFileCsv);
-            Debug.Log("Saving CSV data to " + filepathCsv);
-
-            using (StreamWriter writer = new StreamWriter(filepathCsv, false))
-            {
-
-                var header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", "Subj", "Sex", "Trial", "TrialName", "TrialStart", "TrialEnd", "RespTime", "Resp", "TTC Estimate");
-                writer.WriteLine(header);
-                writer.Flush();
-
-                foreach (TrialData trial in data)
-                {
-                    var subjnum = subjNum.ToString();
-                    var subjsex = subjSex;
-                    var trialnum = trial.trialNum.ToString();
-                    var name = trial.trialName;
-                    var start = trial.trialStart.ToString();
-                    var end = trial.trialEnd.ToString();
-                    var resptime = trial.respTime.ToString();
-                    var resp = trial.response;
-                    var est = trial.ttcEstimate.ToString();
-                    var act = trial.ttcActual.ToString();
-
-                    var data = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", subjnum, subjsex, trialnum, name, start, end, resptime, resp, est);
-                    writer.WriteLine(data);
-                    writer.Flush();
-                }
-
-            }
-        }
-        
 
     }
 

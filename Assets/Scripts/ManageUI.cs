@@ -9,6 +9,7 @@ public class ManageUI : MonoBehaviour {
     public UnityEngine.UI.Text feedbackMsg;     // the feedback message that is displayed to the participant at the end of a trial
     public Transform viveCamera;                // the vive camera so the UI canvas can be positioned based on the direction the user is facing
 
+
     /**
      * Sets the position of the canvas in the world. ( 0, 6, 100) is the default position.
      */
@@ -76,7 +77,7 @@ public class ManageUI : MonoBehaviour {
     /**
     * Display feedback that shows whether the participant responded too early, too late, or on time.
     */
-    public void DisplayFeedback(float estimate, float ttcActual)
+    public void DisplayPMFeedback(float estimate, float ttcActual)
     {
 
         if(estimate >= 0)
@@ -104,13 +105,21 @@ public class ManageUI : MonoBehaviour {
       
     }
 
-    /**
-     * Displays a message telling the participant that the experiment is complete.
-     */
-     public void DisplayCompletedMsg()
-     {
-        feedbackMsg.text = "Experiment complete";
-     }
+    public void DisplayLRFeedback(string pressButton, int corrAns)
+    {
+        if(corrAns == 1) //Left button
+        {
+            if (pressButton == "Left") { feedbackMsg.text = "Correct"; } else { feedbackMsg.text = "Incorrect"; }
+        }
+        else if(corrAns == 2) //Right button
+        {
+            if (pressButton == "Right") { feedbackMsg.text = "Correct"; } else { feedbackMsg.text = "Incorrect"; }
+        }
+        else //corrAns was 0
+        {
+            feedbackMsg.text = "";
+        }
+    }
 
     /**
      * Shows whatever message is passed in as an argument to the function.

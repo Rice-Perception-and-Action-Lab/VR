@@ -1,10 +1,14 @@
 {
-    "subjNum": 22222222,
+    "subjNum": 2,
     "subjSex": 1,
-    "trialFile": "~\\..\\Assets\\Trials\\test.json",
+	"session": 1,
+	"group": 1,
+    "trialFile": "~\\..\\Assets\\Trials\\trial_scenes.json",
 	"cameraLock": true, 
     "trackHeadPos": true,
     "showFeedback": true,
+	"feedbackType": 1,
+	"collectConfidence": false,
     "feedbackColor": "black",
     "feedbackSize": 75,
     "feedbackPos": [
