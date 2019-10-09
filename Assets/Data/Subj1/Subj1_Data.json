@@ -1,51 +1,51 @@
 {
     "subjNum": 1,
     "subjSex": 1,
-    "dataFile": "~\\..\\Assets\\Trials\\test.json",
+    "dataFile": "~\\..\\Assets\\Trials\\testSS.json",
     "showFeedback": true,
     "feedbackColor": "black",
     "trackHeadPos": true,
     "Trials": [
         {
-            "trialNum": 1,
-            "trialName": "VRE1P5SN",
+            "trialNum": -1,
+            "trialName": "VRE1P5LF",
             "objData": [
                 {
                     "objNum": 1,
-                    "objType": "Sphere",
+                    "objType": "03-Audi_s5_Sportback",
                     "objScale": [
-                        0.3330000042915344,
-                        0.3330000042915344,
-                        0.3330000042915344
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "startPos": [
+                        -62.0,
                         0.0,
-                        0.0,
-                        18.0
+                        5.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        0.0
+                        5.0
                     ],
-                    "distTraveled": 17.964418411254884,
-                    "velocity": 4.0,
-                    "timeVisible": 3.0,
+                    "distTraveled": 62.0,
+                    "velocity": 10.0,
+                    "timeVisible": 3000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 0.6261455416679382,
-            "trialEnd": 1.6530723571777344,
-            "respTime": 1.0269267559051514,
+            "trialStart": 7.701711177825928,
+            "trialEnd": 24.1604061126709,
+            "respTime": 16.458694458007814,
             "response": "right",
-            "ttcEstimate": -1.9730732440948487,
+            "ttcEstimate": -2983.541259765625,
             "ttcActual": 0.0
         },
         {
             "trialNum": 2,
-            "trialName": "VRE0P75LF",
+            "trialName": "VRE3LN",
             "objData": [
                 {
                     "objNum": 1,
@@ -58,63 +58,26 @@
                     "startPos": [
                         0.0,
                         0.0,
-                        60.0
+                        12.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
                         0.0
                     ],
-                    "distTraveled": 59.881080627441409,
-                    "velocity": 16.0,
+                    "distTraveled": 12.0,
+                    "velocity": 2.0,
                     "timeVisible": 3.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 1.9240775108337403,
-            "trialEnd": 2.652778148651123,
-            "respTime": 0.7287006378173828,
+            "trialStart": 30.335899353027345,
+            "trialEnd": 31.590524673461915,
+            "respTime": 1.2546253204345704,
             "response": "right",
-            "ttcEstimate": -2.271299362182617,
-            "ttcActual": 0.0
-        },
-        {
-            "trialNum": 8,
-            "trialName": "VRE3LF",
-            "objData": [
-                {
-                    "objNum": 1,
-                    "objType": "Sphere",
-                    "objScale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "startPos": [
-                        0.0,
-                        0.0,
-                        24.0
-                    ],
-                    "endPos": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "distTraveled": 23.951950073242189,
-                    "velocity": 4.0,
-                    "timeVisible": 3.0,
-                    "rotationSpeedX": 0.0,
-                    "rotationSpeedY": 0.0,
-                    "rotationSpeedZ": 0.0
-                }
-            ],
-            "trialStart": 2.8168163299560549,
-            "trialEnd": 3.4864602088928224,
-            "respTime": 0.6696438789367676,
-            "response": "right",
-            "ttcEstimate": -2.3303561210632326,
+            "ttcEstimate": -1.7453746795654297,
             "ttcActual": 0.0
         }
     ]

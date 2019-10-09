@@ -1,10 +1,10 @@
 {
     "subjNum": 1,
     "subjSex": 1,
-    "trialFile": "~\\..\\Assets\\Trials\\test.json",
+    "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
 	"cameraLock": true, 
     "trackHeadPos": true,
-    "showFeedback": true,
+    "showFeedback": false,
     "feedbackColor": "black",
     "feedbackSize": 75,
     "feedbackPos": [
@@ -12,5 +12,12 @@
       6,
       100
     ],
+	"ground": true,
+	"road": true,
+	"roadPos": [
+	0,
+	0,
+	5
+	],
 	"debugging": true
 }

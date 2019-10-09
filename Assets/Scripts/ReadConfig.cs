@@ -22,6 +22,9 @@ public class ReadConfig : MonoBehaviour {
         public float[] feedbackPos;
         public int feedbackSize;
         public string feedbackColor;
+        public bool ground;
+        public bool road;
+        public float[] roadPos;
         public bool debugging;
     }
 
