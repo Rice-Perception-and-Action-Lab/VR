@@ -27,21 +27,6 @@ public class RunExperiment : MonoBehaviour {
     public ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
     private Transform headPos;              // The location of the camera rig relevant to the scene
 
-    public SaveData dataManager;                // The GameObject responsible for tracking trial responses
-    public ManageUI uiManager;                  // The GameObject responsible for handling any changes to the UI
-    public Transform viveCamera;                // Position of the target (i.e., the Vive camera rig)
-    public Transform cameraManager;             // Used to reposition the Vive's world location at the beginning of the experiment
-    public Transform subject;                   // Used to reposition the Vive's world location at the beginning of the experiment
-
-    // The Config options
-    private ReadConfig.Config config;           // The configuration file specifying certain experiment-wide parameters
-    private string inputFile;                   // A JSON file holding the information for every trial to be run
-
-    // Experiment-Dependent Variables
-    private float rate;                         // The framerate that we're moving the object at
-    private ManageTrials.Trial[] trials;        // The input file converted to an array of Trial objects 
-    private Transform headPos;                  // The location of the camera rig relevant to the scene
-
     private bool expComplete;
     [SerializeField] private GameObject road;   // The road object for the scene (reference for design decision: https://akbiggs.silvrback.com/please-stop-using-gameobject-find) 
     [SerializeField] private GameObject ground; // The ground object for the scene
@@ -57,15 +42,7 @@ public class RunExperiment : MonoBehaviour {
     private Transform[] objs;               // The prefab objects that will be instantiated for a trial
     private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
     private int numObjs;                    // the number of objects that are part of a trial
-    private int curTrial;                       // Track the number of the current trial being run
-    private bool isRunning;                     // Tracks whether or not a trial is currently active
-    private float trialStart;                   // Track the time that the current trial began
-    private string objName;                     // The name of the prefab object used for the given trial
-    private Vector3[] startPosArr;              // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
-    private Vector3[] endPosArr;                // The ending positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
-    private Transform[] objs;                   // The prefab objects that will be instantiated for a trial
-    private Transform[] movingObjs;             // The array of objects for a trial once they have been instantiated
-    private int numObjs;                        // the number of objects that are part of a trial
+
     private float stepSize;                     // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
@@ -223,32 +200,6 @@ public class RunExperiment : MonoBehaviour {
                         }
                     }
 
-
-                    if (curObj.offsetZ)
-                    {
-                        if (inputStartPos.z != inputEndPos.z) // Can't calculate offset if doesn't move.
-                        {
-                            // Get size of model
-                            Renderer render = objs[i].GetComponent<Renderer>();
-                            Vector3 objSize = render.bounds.size;
-
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (inputStartPos.z - inputEndPos.z) / Mathf.Abs(inputStartPos.z - inputEndPos.z);
-
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.z / 2;
-
-                            // Set the initial and final positions of the object with the z offset.
-                            Vector3 newStartVector = new Vector3(inputStartPos.x, inputStartPos.y, inputStartPos.z + (direction * offset));
-                            Vector3 newEndVector = new Vector3(inputEndPos.x, inputEndPos.y, inputEndPos.z + (direction * offset));
-
-                            // Set new vectors in their respective arrays.
-                            inputStartPos = newStartVector;
-                            inputEndPos = newEndVector;
-                        }
-                    }
-
                     startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
                     endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
 
@@ -257,7 +208,6 @@ public class RunExperiment : MonoBehaviour {
                     endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
 
                 }
-
                 else
                 {
                     /**
@@ -333,7 +283,6 @@ public class RunExperiment : MonoBehaviour {
                     {
                         if (startPosArr[i].z != endPosArr[i].z) // Can't calculate offset if doesn't move.
                         {
-
                             // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
                             // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
                             float direction = (startPosArr[i].z - endPosArr[i].z) / Mathf.Abs(startPosArr[i].z - endPosArr[i].z);
@@ -354,13 +303,6 @@ public class RunExperiment : MonoBehaviour {
                 }
                
 			   /**
-                 * End calculating offsets. --------------------------------------------------------------------------------------------------------------
-                 */
-
-                // Calculate the distance that the object must travel
-                curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
-
-                /**
                  * End calculating offsets. --------------------------------------------------------------------------------------------------------------
                  */
 
@@ -434,8 +376,7 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            //System.Threading.Thread.Sleep(1000);
-            rend.enabled = true;
+            rend.enabled = false;
         }
     }
 
@@ -541,11 +482,6 @@ public class RunExperiment : MonoBehaviour {
      }
 
 
-    /**
-     * Gets the position of the Vive headset at a predefined interval and adds that data point to the
-     * head position data file for the current trial.
-     */
-    
     public void HideAllObjs()
     {
         // Hide any objects that haven't already been hidden
@@ -559,7 +495,12 @@ public class RunExperiment : MonoBehaviour {
             }
         }
     }
-    void HeadTracking()
+
+ /**
+ * Gets the position of the Vive headset at a predefined interval and adds that data point to the
+ * head position data file for the current trial.
+ */
+     void HeadTracking()
     {
         dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
     }
