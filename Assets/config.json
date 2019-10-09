@@ -9,6 +9,10 @@
     "showFeedback": true,
 	"feedbackType": 1,
 	"collectConfidence": false,
+    "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
+	"cameraLock": true, 
+    "trackHeadPos": true,
+    "showFeedback": false,
     "feedbackColor": "black",
     "feedbackSize": 75,
     "feedbackPos": [

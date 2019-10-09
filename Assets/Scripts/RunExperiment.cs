@@ -26,11 +26,28 @@ public class RunExperiment : MonoBehaviour {
     private float rate;                     // The framerate that we're moving the object at
     public ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
     private Transform headPos;              // The location of the camera rig relevant to the scene
+
+    public SaveData dataManager;                // The GameObject responsible for tracking trial responses
+    public ManageUI uiManager;                  // The GameObject responsible for handling any changes to the UI
+    public Transform viveCamera;                // Position of the target (i.e., the Vive camera rig)
+    public Transform cameraManager;             // Used to reposition the Vive's world location at the beginning of the experiment
+    public Transform subject;                   // Used to reposition the Vive's world location at the beginning of the experiment
+
+    // The Config options
+    private ReadConfig.Config config;           // The configuration file specifying certain experiment-wide parameters
+    private string inputFile;                   // A JSON file holding the information for every trial to be run
+
+    // Experiment-Dependent Variables
+    private float rate;                         // The framerate that we're moving the object at
+    private ManageTrials.Trial[] trials;        // The input file converted to an array of Trial objects 
+    private Transform headPos;                  // The location of the camera rig relevant to the scene
+
     private bool expComplete;
     [SerializeField] private GameObject road;   // The road object for the scene (reference for design decision: https://akbiggs.silvrback.com/please-stop-using-gameobject-find) 
     [SerializeField] private GameObject ground; // The ground object for the scene
 
     // Trial-Dependent Variables
+
     private int curTrial;                   // Track the number of the current trial being run
     public bool isRunning;                 // Tracks whether or not a trial is currently active
     private float trialStart;               // Track the time that the current trial began
@@ -40,7 +57,16 @@ public class RunExperiment : MonoBehaviour {
     private Transform[] objs;               // The prefab objects that will be instantiated for a trial
     private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
     private int numObjs;                    // the number of objects that are part of a trial
-    private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
+    private int curTrial;                       // Track the number of the current trial being run
+    private bool isRunning;                     // Tracks whether or not a trial is currently active
+    private float trialStart;                   // Track the time that the current trial began
+    private string objName;                     // The name of the prefab object used for the given trial
+    private Vector3[] startPosArr;              // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Vector3[] endPosArr;                // The ending positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Transform[] objs;                   // The prefab objects that will be instantiated for a trial
+    private Transform[] movingObjs;             // The array of objects for a trial once they have been instantiated
+    private int numObjs;                        // the number of objects that are part of a trial
+    private float stepSize;                     // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
     private float ttcActual;                //the theoretical TTC calculated from startPos, time visible, and velocity
@@ -104,6 +130,7 @@ public class RunExperiment : MonoBehaviour {
         headPos = GameObject.Find("Camera (eye)").transform;
         movingObj = GameObject.Find("MovingObj");
 
+
         // Set up environment.
         if (config.ground) // Toggle ground visibility.
         {
@@ -123,7 +150,9 @@ public class RunExperiment : MonoBehaviour {
         {
             road.SetActive(false); // Toggle off road visibility.
         }
+
     } 
+
 
     /**
      * Initialize the current trial.
@@ -162,11 +191,38 @@ public class RunExperiment : MonoBehaviour {
                 // Set the object rotation.
                 objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
                 if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
-                 if (config.cameraLock)
+
+                if (config.cameraLock)
                 {
                     // Set the initial and final positions of the object
                     Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2]);
                     Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2]);
+
+                    if (curObj.offsetZ)
+                    {
+                        if (inputStartPos.z != inputEndPos.z) // Can't calculate offset if doesn't move.
+                        {
+                            // Get size of model
+                            Renderer render = objs[i].GetComponent<Renderer>();
+                            Vector3 objSize = render.bounds.size;
+
+                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+                            float direction = (inputStartPos.z - inputEndPos.z) / Mathf.Abs(inputStartPos.z - inputEndPos.z);
+
+                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
+                            float offset = objSize.z / 2;
+
+                            // Set the initial and final positions of the object with the z offset.
+                            Vector3 newStartVector = new Vector3(inputStartPos.x, inputStartPos.y, inputStartPos.z + (direction * offset));
+                            Vector3 newEndVector = new Vector3(inputEndPos.x, inputEndPos.y, inputEndPos.z + (direction * offset));
+
+                            // Set new vectors in their respective arrays.
+                            inputStartPos = newStartVector;
+                            inputEndPos = newEndVector;
+                        }
+                    }
+
 
                     if (curObj.offsetZ)
                     {
@@ -200,8 +256,6 @@ public class RunExperiment : MonoBehaviour {
                     startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
                     endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
 
-																		 
-																								   
                 }
 
                 else
@@ -306,11 +360,19 @@ public class RunExperiment : MonoBehaviour {
                 // Calculate the distance that the object must travel
                 curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
 
+                /**
+                 * End calculating offsets. --------------------------------------------------------------------------------------------------------------
+                 */
+
+                // Calculate the distance that the object must travel
+                curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
+
                 if (config.debugging) { Debug.Log("Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
                 if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
                 movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
+
                 curObj.objVisible = true;
                 curObj.objActive = true;
                 if (config.feedbackType == 1) { pmVisible = true; }
@@ -333,6 +395,7 @@ public class RunExperiment : MonoBehaviour {
                     curObj.stepHidden = curObj.timeVisible * rate;
                 }
             }
+
 
             // Set the start time of this trial so that it can be recorded by the data manager
             trial.trialStart = Time.time;
@@ -371,7 +434,8 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            rend.enabled = false;
+            //System.Threading.Thread.Sleep(1000);
+            rend.enabled = true;
         }
     }
 
