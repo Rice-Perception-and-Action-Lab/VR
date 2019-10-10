@@ -29,6 +29,7 @@ public class ReadConfig : MonoBehaviour {
         public bool ground;
         public bool road;
         public float[] roadPos;
+        public bool pressHold;
         public bool debugging;
     }
 
