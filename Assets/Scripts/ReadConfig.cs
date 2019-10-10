@@ -14,11 +14,15 @@ public class ReadConfig : MonoBehaviour {
     {
         public int subjNum;
         public int subjSex;
+        public int session;
+        public int group;
         public string trialFile;
         public bool cameraLock;
         //public float[] initCameraPos;
         public bool trackHeadPos;
         public bool showFeedback;
+        public int feedbackType;
+        public bool collectConfidence;
         public float[] feedbackPos;
         public int feedbackSize;
         public string feedbackColor;

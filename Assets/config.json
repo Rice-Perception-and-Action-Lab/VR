@@ -1,6 +1,14 @@
 {
-    "subjNum": 1,
+    "subjNum": 2,
     "subjSex": 1,
+	"session": 1,
+	"group": 1,
+    "trialFile": "~\\..\\Assets\\Trials\\trial_scenes.json",
+	"cameraLock": true, 
+    "trackHeadPos": true,
+    "showFeedback": true,
+	"feedbackType": 1,
+	"collectConfidence": false,
     "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
 	"cameraLock": true, 
     "trackHeadPos": true,
@@ -18,6 +26,6 @@
 	0,
 	0,
 	5
-	],
+	],				 
 	"debugging": true
 }

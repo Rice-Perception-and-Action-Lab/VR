@@ -4,45 +4,55 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Valve.VR;
+using System.Threading;
 
 public class RunExperiment : MonoBehaviour {
 
     // Set via the Unity editor
-    public SaveData dataManager;                // The GameObject responsible for tracking trial responses
-    public ManageUI uiManager;                  // The GameObject responsible for handling any changes to the UI
-    public Transform viveCamera;                // Position of the target (i.e., the Vive camera rig)
-    public Transform cameraManager;             // Used to reposition the Vive's world location at the beginning of the experiment
-    public Transform subject;                   // Used to reposition the Vive's world location at the beginning of the experiment
+    public SaveData dataManager;            // The GameObject responsible for tracking trial responses
+    public ManageUI uiManager;              // The GameObject responsible for handling any changes to the UI
+    public GameObject movingObj;
+
+    public Transform viveCamera;            // Position of the target (i.e., the Vive camera rig)
+    public Transform cameraManager;         // Used to reposition the Vive's world location at the beginning of the experiment
+    public Transform subject;               // Used to reposition the Vive's world location at the beginning of the experiment
 
     // The Config options
-    private ReadConfig.Config config;           // The configuration file specifying certain experiment-wide parameters
-    private string inputFile;                   // A JSON file holding the information for every trial to be run
+    public ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
+    private string inputFile;               // A JSON file holding the information for every trial to be run
 
     // Experiment-Dependent Variables
-    private float rate;                         // The framerate that we're moving the object at
-    private ManageTrials.Trial[] trials;        // The input file converted to an array of Trial objects 
-    private Transform headPos;                  // The location of the camera rig relevant to the scene
+    private float rate;                     // The framerate that we're moving the object at
+    public ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
+    private Transform headPos;              // The location of the camera rig relevant to the scene
+
     private bool expComplete;
     [SerializeField] private GameObject road;   // The road object for the scene (reference for design decision: https://akbiggs.silvrback.com/please-stop-using-gameobject-find) 
     [SerializeField] private GameObject ground; // The ground object for the scene
 
     // Trial-Dependent Variables
-    private int curTrial;                       // Track the number of the current trial being run
-    private bool isRunning;                     // Tracks whether or not a trial is currently active
-    private float trialStart;                   // Track the time that the current trial began
-    private string objName;                     // The name of the prefab object used for the given trial
-    private Vector3[] startPosArr;              // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
-    private Vector3[] endPosArr;                // The ending positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
-    private Transform[] objs;                   // The prefab objects that will be instantiated for a trial
-    private Transform[] movingObjs;             // The array of objects for a trial once they have been instantiated
-    private int numObjs;                        // the number of objects that are part of a trial
+
+    private int curTrial;                   // Track the number of the current trial being run
+    public bool isRunning;                 // Tracks whether or not a trial is currently active
+    private float trialStart;               // Track the time that the current trial began
+    private string objName;                 // The name of the prefab object used for the given trial
+    private Vector3[] startPosArr;          // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Vector3[] endPosArr;            // The ending positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
+    private Transform[] objs;               // The prefab objects that will be instantiated for a trial
+    private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
+    private int numObjs;                    // the number of objects that are part of a trial
+
     private float stepSize;                     // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
-    private float ttcActual;
-    private float ttcActualSim;
-    private float estimate;
-    private float timeVisible;
+    private float ttcActual;                //the theoretical TTC calculated from startPos, time visible, and velocity
+    private float ttcActualSim;             //the TTC calculated by the simulator when the endPos is 0,0,0
+    private float estimate;                 //the calculation of the participant's TTC estimate NOTE: 1 object PM Scenes only
+    private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
+    public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
+
+
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -51,8 +61,8 @@ public class RunExperiment : MonoBehaviour {
     void Start()
     {
         // Set the target framerate for the application
-        Application.targetFrameRate = 75;
-        rate = 75.0f;
+        Application.targetFrameRate = 90;
+        rate = 90.0f;
 
         // Set the step size for the objects' motion based on the rate
         stepSize = (1.0f / rate);
@@ -61,7 +71,7 @@ public class RunExperiment : MonoBehaviour {
         string configFilepath = Application.dataPath + "/config.json";
         config = GetComponent<ReadConfig>().LoadConfig(configFilepath.Replace("/", "\\"));
 
-        Debug.Log(configFilepath);
+        if (config.debugging) { Debug.Log(configFilepath); }
 
         // Set the feedback display configurations based on the config file
         uiManager.SetFeedbackColor(config.feedbackColor);
@@ -93,9 +103,10 @@ public class RunExperiment : MonoBehaviour {
         // Set the initial position of the participant 
         //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-        
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
+        movingObj = GameObject.Find("MovingObj");
+
 
         // Set up environment.
         if (config.ground) // Toggle ground visibility.
@@ -116,7 +127,9 @@ public class RunExperiment : MonoBehaviour {
         {
             road.SetActive(false); // Toggle off road visibility.
         }
-    }
+
+    } 
+
 
     /**
      * Initialize the current trial.
@@ -193,8 +206,8 @@ public class RunExperiment : MonoBehaviour {
                     // Adjust the height of the object to match the height of the camera
                     startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
                     endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
-                }
 
+                }
                 else
                 {
                     /**
@@ -270,7 +283,6 @@ public class RunExperiment : MonoBehaviour {
                     {
                         if (startPosArr[i].z != endPosArr[i].z) // Can't calculate offset if doesn't move.
                         {
-
                             // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
                             // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
                             float direction = (startPosArr[i].z - endPosArr[i].z) / Mathf.Abs(startPosArr[i].z - endPosArr[i].z);
@@ -289,8 +301,8 @@ public class RunExperiment : MonoBehaviour {
                     }
 
                 }
-
-                /**
+               
+			   /**
                  * End calculating offsets. --------------------------------------------------------------------------------------------------------------
                  */
 
@@ -305,6 +317,7 @@ public class RunExperiment : MonoBehaviour {
 
                 curObj.objVisible = true;
                 curObj.objActive = true;
+                if (config.feedbackType == 1) { pmVisible = true; }
 
                 // Set the variables that need to be used in the repeating method to move the objects
                 curObj.step = curObj.velocity * stepSize;
@@ -337,6 +350,7 @@ public class RunExperiment : MonoBehaviour {
 
             // Set the trial as running
             isRunning = true;
+
         }
         else
         {
@@ -344,9 +358,9 @@ public class RunExperiment : MonoBehaviour {
             if (curTrial == trials.Length)
             {
                 expComplete = true;
-                Debug.Log("Experiment complete");
-                uiManager.DisplayCompletedMsg();
-                dataManager.Save();
+                if (config.debugging) { Debug.Log("Experiment complete"); }
+                uiManager.ShowMessage("Experiment complete");
+                dataManager.Save(false);
                 curTrial++;
             }
         }
@@ -362,33 +376,26 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            //System.Threading.Thread.Sleep(1000);
-            rend.enabled = true;
+            rend.enabled = false;
         }
     }
 
     /**
      * End the given trial by cancelling the repeating methods and saving the data.
      */
-    public void CompleteTrial(float trialEnd, bool receivedResponse, string response)
+
+    public void CompleteTrial(float trialEnd, bool receivedResponse, string response, string confidence)
     {
+
         Debug.Log("Trial " + trials[curTrial - 1].trialNum + " completed" + Environment.NewLine);
         CancelInvoke("MoveObjsByStep");
         CancelInvoke("HeadTracking");
 
-        // Hide any objects that haven't already been hidden
-        ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
-        for (int i = 0; i < objs.Length; i++)
-        {
-            timeVisible = objs[i].timeVisible;//!!! Only works correctly for 1 object scenes
-            if (objs[i].objVisible)
-            {
-                HideObj(movingObjs[i]);
-            }
-        }
+        HideAllObjs();
 
         trials[curTrial - 1].trialEnd = trialEnd;
         trials[curTrial - 1].response = response;
+        trials[curTrial - 1].confidence = confidence;
         dataManager.AddTrial(trials[curTrial - 1]);
         isRunning = false;
 
@@ -403,16 +410,20 @@ public class RunExperiment : MonoBehaviour {
             Debug.Log("TTC Estimate: " + estimate + Environment.NewLine);
         }
 
-        if (config.showFeedback) uiManager.DisplayFeedback(estimate, ttcActual);
-
+        if (config.showFeedback)
+        {
+            if (config.feedbackType == 1) { uiManager.DisplayPMFeedback(estimate, ttcActual); }
+            if (config.feedbackType == 2) { uiManager.DisplayLRFeedback(response, trials[curTrial - 1].corrAns); }
+        }
         // Only save the head tracking data if that flag was set in the config file
         if (config.trackHeadPos) dataManager.WritePosData();
+
     }
 
     /**
      * Move each object in the current trial based on the object's parameters.
      */
-     void MoveObjsByStep()
+    void MoveObjsByStep()
      {
         ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
     
@@ -430,7 +441,7 @@ public class RunExperiment : MonoBehaviour {
                     if (config.debugging) { Debug.Log("Time Hidden: " + hideTime); }
                     HideObj(movingObjs[i]);
                     curObj.objVisible = false;
-
+                    if (config.feedbackType == 1) { pmVisible = false; }
 
                 }
 
@@ -445,7 +456,7 @@ public class RunExperiment : MonoBehaviour {
                 {
                     float endTime = (Time.time - trials[curTrial - 1].trialStart);
                     ttcActualSim = (endTime - hideTime);
-                    if (config.debugging) { Debug.Log("TTC (sim): " + ttcActualSim); }
+                    if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
                   
                     
                     // Hide the object if it hasn't been hidden already
@@ -453,6 +464,7 @@ public class RunExperiment : MonoBehaviour {
                     {
                         HideObj(movingObjs[i]);
                         curObj.objVisible = false;
+                        if (config.feedbackType == 1) { pmVisible = false; }
                     }
 
                     // Set the object to inactive and decrement numObjs
@@ -469,23 +481,29 @@ public class RunExperiment : MonoBehaviour {
         }
      }
 
-    /**
-     * Communicates with the controller script to determine if a trial is currently active.
-     */
-    public bool CheckTrialRunning()
+
+    public void HideAllObjs()
     {
-        return isRunning;
+        // Hide any objects that haven't already been hidden
+        ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
+        for (int i = 0; i < objs.Length; i++)
+        {
+            timeVisible = objs[i].timeVisible;//!!! Only works correctly for 1 object scenes
+            if (objs[i].objVisible)
+            {
+                HideObj(movingObjs[i]);
+            }
+        }
     }
 
-    /**
-     * Gets the position of the Vive headset at a predefined interval and adds that data point to the
-     * head position data file for the current trial.
-     */
-    void HeadTracking()
+ /**
+ * Gets the position of the Vive headset at a predefined interval and adds that data point to the
+ * head position data file for the current trial.
+ */
+     void HeadTracking()
     {
         dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
     }
-
 
     void OnApplicationQuit()
     {
@@ -500,6 +518,12 @@ public class RunExperiment : MonoBehaviour {
             Debug.Log("Total simulation time " + Time.time + " seconds");
             dataManager.Save(true);
         }
+
+    }
+
+    void Update()
+    {
+
 
     }
 
