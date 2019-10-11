@@ -1,0 +1,52 @@
+{
+    "subjNum": 2,
+    "subjSex": 1,
+    "session": 1,
+    "group": 1,
+    "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
+    "showFeedback": false,
+    "feedbackType": 1,
+    "collectConfidence": false,
+    "feedbackColor": "black",
+    "trackHeadPos": true,
+    "Trials": [
+        {
+            "trialNum": -1,
+            "trialName": "VRE1P5LF",
+            "corrAns": 0,
+            "objData": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "startPos": [
+                        0.0,
+                        0.0,
+                        10.0
+                    ],
+                    "endPos": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 9.99968433380127,
+                    "velocity": 5.0,
+                    "timeVisible": 3000.0,
+                    "rotationSpeedX": 0.0,
+                    "rotationSpeedY": 0.0,
+                    "rotationSpeedZ": 0.0
+                }
+            ],
+            "trialStart": 8.518143653869629,
+            "trialEnd": 12.327427864074707,
+            "respTime": 3.809284210205078,
+            "response": "Button released.",
+            "confidence": "N/A",
+            "ttcEstimate": -2996.190673828125
+        }
+    ]
+}
