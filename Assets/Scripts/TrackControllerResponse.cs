@@ -14,9 +14,12 @@ public class TrackControllerResponse : MonoBehaviour
                                                 // Hair trigger can sometimes be sensitive; set a threshold so that it has to be pushed down slightly further before it registers as a trigger press
     private float threshold = 0.3f;
     private float pressTime;
+    private float releaseTime;
     private string pressButton;
     private string confidenceNA = "N/A";
 
+    private bool checkPress;                    // a variable to check if the controller's press has already been recorded.
+    private bool buttonReleased;                // a variable to check if the controller was released.
 
     private SteamVR_Controller.Device Controller
     {
@@ -36,13 +39,16 @@ public class TrackControllerResponse : MonoBehaviour
         waitingConfidence = false;
         practiceOver = false;
 
+        checkPress = false;
+        buttonReleased = false;
+
     }
 
     // Update is called once per frame
     void Update()
     {
         
-        Vector2 touchVector = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
+        Vector2 touchVector = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0)); // Returns the axis that is being pushed.
 
         if (waitingConfidence)
         {
@@ -116,57 +122,102 @@ public class TrackControllerResponse : MonoBehaviour
             script.InitializeTrial();
         }
 
-
-        // End the trial if there is a trial running and the touchpad button is pressed
-        if (script.isRunning && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+        // Option for pressing button down.
+        if (script.config.pressHold)
         {
-
-            if (touchVector.x < -0.5f)
+            // Record when button first pressed down. (Last inequality is to make sure trigger button is not pressed).
+            if (Controller.GetState().ulButtonPressed > 0 && !checkPress && Controller.GetState().ulButtonPressed < 8000000000)
             {
                 pressTime = Time.time;
-                pressButton = "Left";
+                checkPress = true;
+                if (script.config.debugging) { Debug.Log("Time is: " + pressTime); }
+                if (script.config.debugging) { Debug.Log(Controller.GetState().ulButtonPressed); }
+            }
+
+            // Record when button is released.
+            if (Controller.GetState().ulButtonPressed == 0 && checkPress)
+            {
+                releaseTime = Time.time; // Record when button is released.
+                checkPress = false;
+                buttonReleased = true;
+
+                if (script.config.debugging) { Debug.Log("Time is: " + releaseTime); }
+            }
+
+            // Add keyboard press (press 0 on number pad) for experimenter to end the trial.
+            if (buttonReleased && Input.GetKeyDown(KeyCode.Keypad0) && script.isRunning) {
                 script.isRunning = false;
+                buttonReleased = false;
+                pressButton = "Button released.";
 
-                if (script.config.debugging) { Debug.Log("Button pressed: " + pressButton); }
-                if (script.config.debugging) { Debug.Log("Time at press: " + pressTime); }
-
-
-                if (!script.config.collectConfidence) { script.CompleteTrial(pressTime, true, pressButton, confidenceNA); }
+                // Passing in release time ("trialend" variable in the data).
+                if (!script.config.collectConfidence) { script.CompleteTrial(releaseTime, true, pressButton, confidenceNA); }
                 if (script.config.collectConfidence)
                 {
+                    pressTime = releaseTime; // Change pressTime to releaseTime for correct data.
                     waitingConfidence = true;
                     script.HideAllObjs();
                     if (script.config.debugging) { Debug.Log("Waiting for confidence rating..."); }
                     script.uiManager.ShowMessage("How confident?");
                 }
+            }
+        }
 
-
-             }
-
-            if (touchVector.x > 0.5f)
+        else
+        {
+            // End the trial if there is a trial running and the touchpad button is pressed
+            if (script.isRunning && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
             {
-                pressTime = Time.time;
-                pressButton = "Right";
-                script.isRunning = false;
 
-                if (script.config.debugging) { Debug.Log("Button pressed: " + pressButton); }
-                if (script.config.debugging) { Debug.Log("Time at press: " + pressTime); }
-
-                if (!script.config.collectConfidence) { script.CompleteTrial(pressTime, true, pressButton, confidenceNA); }
-                if (script.config.collectConfidence)
+                if (touchVector.x < -0.5f)
                 {
-                    waitingConfidence = true;
-                    script.HideAllObjs();
-                    if (script.config.debugging) { Debug.Log("Waiting for confidence rating..."); }
-                    script.uiManager.ShowMessage("How confident?");
+                    pressTime = Time.time;
+                    pressButton = "Left";
+                    script.isRunning = false;
+
+                    if (script.config.debugging) { Debug.Log("Button pressed: " + pressButton); }
+                    if (script.config.debugging) { Debug.Log("Time at press: " + pressTime); }
+
+
+                    if (!script.config.collectConfidence) { script.CompleteTrial(pressTime, true, pressButton, confidenceNA); }
+                    if (script.config.collectConfidence)
+                    {
+                        waitingConfidence = true;
+                        script.HideAllObjs();
+                        if (script.config.debugging) { Debug.Log("Waiting for confidence rating..."); }
+                        script.uiManager.ShowMessage("How confident?");
+                    }
+
+
                 }
+
+                if (touchVector.x > 0.5f)
+                {
+                    pressTime = Time.time;
+                    pressButton = "Right";
+                    script.isRunning = false;
+
+                    if (script.config.debugging) { Debug.Log("Button pressed: " + pressButton); }
+                    if (script.config.debugging) { Debug.Log("Time at press: " + pressTime); }
+
+                    if (!script.config.collectConfidence) { script.CompleteTrial(pressTime, true, pressButton, confidenceNA); }
+                    if (script.config.collectConfidence)
+                    {
+                        waitingConfidence = true;
+                        script.HideAllObjs();
+                        if (script.config.debugging) { Debug.Log("Waiting for confidence rating..."); }
+                        script.uiManager.ShowMessage("How confident?");
+                    }
+
+                }
+
+                // if (touchVector.y > 0.7f) UP
+                // if (touchVector.y < -0.7) DOWN
 
             }
-            
-            // if (touchVector.y > 0.7f) UP
-            // if (touchVector.y < -0.7) DOWN
-
         }
+
+       
 
     }
 }
