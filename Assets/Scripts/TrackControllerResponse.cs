@@ -144,14 +144,17 @@ public class TrackControllerResponse : MonoBehaviour
                 if (script.config.debugging) { Debug.Log("Time is: " + releaseTime); }
             }
 
-            // Add keyboard press for experimenter to end the trial. (Make sure not to click into console.), pass release time in.
-            if (buttonReleased && Input.GetKeyDown(KeyCode.Keypad0)) {
+            // Add keyboard press (press 0 on number pad) for experimenter to end the trial.
+            if (buttonReleased && Input.GetKeyDown(KeyCode.Keypad0) && script.isRunning) {
                 script.isRunning = false;
+                buttonReleased = false;
                 pressButton = "Button released.";
-                // Might need to change the time passed in.
+
+                // Passing in release time ("trialend" variable in the data).
                 if (!script.config.collectConfidence) { script.CompleteTrial(releaseTime, true, pressButton, confidenceNA); }
                 if (script.config.collectConfidence)
                 {
+                    pressTime = releaseTime; // Change pressTime to releaseTime for correct data.
                     waitingConfidence = true;
                     script.HideAllObjs();
                     if (script.config.debugging) { Debug.Log("Waiting for confidence rating..."); }
