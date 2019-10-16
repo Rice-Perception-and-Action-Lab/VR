@@ -52,6 +52,9 @@ public class RunExperiment : MonoBehaviour {
     private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
     public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
 
+    private Vector3[] positions = {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
+            new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
+            new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2)))};         // Testing out circular motion
 
 
     /**
@@ -60,6 +63,7 @@ public class RunExperiment : MonoBehaviour {
      */
     void Start()
     {
+
         // Set the target framerate for the application
         Application.targetFrameRate = 90;
         rate = 90.0f;
@@ -435,7 +439,8 @@ public class RunExperiment : MonoBehaviour {
             if (curObj.objActive)
             {
                 // Hide the object once it has been visible for its defined timeVisible
-                if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
+                // if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
+                if (curObj.stepCounter + 1 > curObj.stepHidden && curObj.objVisible)
                 {
                     hideTime = (Time.time - trials[curTrial - 1].trialStart);
                     if (config.debugging) { Debug.Log("Time Hidden: " + hideTime); }
@@ -445,32 +450,35 @@ public class RunExperiment : MonoBehaviour {
 
                 }
 
+                int totalDuration = 100000;
                 // Move the object forward another step
-                float fracTraveled = curObj.stepCounter / curObj.finalStep;
-                movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
-                movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
-				curObj.stepCounter++;
+                float percentage = Time.deltaTime / (totalDuration / rate);
+                movingObjs[i].position = Vector3.Lerp(positions[curObj.stepCounter], positions[curObj.stepCounter + 1], percentage);
+                //            float fracTraveled = curObj.stepCounter / curObj.finalStep;
+                //            movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
+                //            movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
+                curObj.stepCounter++;
 
-                // If the object has traveled the entire distance, it should no longer be moving
-                if (fracTraveled >= 1)
-                {
-                    float endTime = (Time.time - trials[curTrial - 1].trialStart);
-                    ttcActualSim = (endTime - hideTime);
-                    if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
-                  
-                    
-                    // Hide the object if it hasn't been hidden already
-                    if (curObj.objVisible)
-                    {
-                        HideObj(movingObjs[i]);
-                        curObj.objVisible = false;
-                        if (config.feedbackType == 1) { pmVisible = false; }
-                    }
+                //            // If the object has traveled the entire distance, it should no longer be moving
+                //            if (fracTraveled >= 1)
+                //            {
+                //                float endTime = (Time.time - trials[curTrial - 1].trialStart);
+                //                ttcActualSim = (endTime - hideTime);
+                //                if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
 
-                    // Set the object to inactive and decrement numObjs
-                    curObj.objActive = false;
-                    numObjs = numObjs - 1;
-                }
+
+                //                // Hide the object if it hasn't been hidden already
+                //                if (curObj.objVisible)
+                //                {
+                //                    HideObj(movingObjs[i]);
+                //                    curObj.objVisible = false;
+                //                    if (config.feedbackType == 1) { pmVisible = false; }
+                //                }
+
+                //                // Set the object to inactive and decrement numObjs
+                //                curObj.objActive = false;
+                //                numObjs = numObjs - 1;
+                //            }
             }
         }
 
