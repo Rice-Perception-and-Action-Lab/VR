@@ -55,7 +55,8 @@ public class RunExperiment : MonoBehaviour {
     private Vector3[] positions = {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
             new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
             new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2)))};         // Testing out circular motion
-
+    private float lerpAmount;
+    private int index;
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -63,6 +64,8 @@ public class RunExperiment : MonoBehaviour {
      */
     void Start()
     {
+        lerpAmount = 0;
+        index = 0;
 
         // Set the target framerate for the application
         Application.targetFrameRate = 90;
@@ -449,15 +452,57 @@ public class RunExperiment : MonoBehaviour {
                     if (config.feedbackType == 1) { pmVisible = false; }
 
                 }
-
-                int totalDuration = 100000;
+                float lerpRate = 5;
+                // int totalDuration = 100000;
                 // Move the object forward another step
-                float percentage = Time.deltaTime / (totalDuration / rate);
-                movingObjs[i].position = Vector3.Lerp(positions[curObj.stepCounter], positions[curObj.stepCounter + 1], percentage);
+                // percentage += Time.deltaTime / (totalDuration / rate);
+
+                // Increase lerpAmount by a frame-rate independent value
+                lerpAmount += lerpRate * Time.deltaTime;
+
+                // Check to see if the Lerp amount has reached 1.0. If it has, set it to zero and increment i - use the next pair of points from now on.
+                // If it hasn't, add amount * Time.deltaTime and use the current pair of points.
+
+                // Is lerpAmount over 1?
+                if (lerpAmount > 1.0)
+                {
+                    lerpAmount = 0;
+                    index++;
+
+                }
+                // Have we gone past the end of splineArr?
+                if (index + 1 > positions.Length)
+                {
+
+                    float endTime = (Time.time - trials[curTrial - 1].trialStart);
+                    ttcActualSim = (endTime - hideTime);
+                    if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
+
+
+                    // Hide the object if it hasn't been hidden already
+                    if (curObj.objVisible)
+                    {
+                        HideObj(movingObjs[i]);
+                        curObj.objVisible = false;
+                        if (config.feedbackType == 1) { pmVisible = false; }
+                    }
+
+                    // Set the object to inactive and decrement numObjs
+                    curObj.objActive = false;
+                    numObjs = numObjs - 1;
+
+                } // End if (i + 1 > splineArr.length)
+
+                else if (index + 1 < positions.Length)
+                {
+                    // Lerp using values from the array and lerpAmount  
+                    movingObjs[i].position = Vector3.Lerp(positions[index], positions[index + 1], lerpAmount);
+                }
+
                 //            float fracTraveled = curObj.stepCounter / curObj.finalStep;
                 //            movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
                 //            movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
-                curObj.stepCounter++;
+                // curObj.stepCounter++;
 
                 //            // If the object has traveled the entire distance, it should no longer be moving
                 //            if (fracTraveled >= 1)
