@@ -35,7 +35,8 @@
 		  "rotationSpeedZ": 0,
 		  "offsetX": false,
 		  "offsetY": false,
-		  "offsetZ": false
+		  "offsetZ": false,
+		  "trialDuration": 8
         }
       ]
     }

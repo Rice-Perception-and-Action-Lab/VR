@@ -54,8 +54,9 @@ public class RunExperiment : MonoBehaviour {
 
     private Vector3[] positions = {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
             new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
-            new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2)))};         // Testing out circular motion
+            new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2))), new Vector3(0, 0, 1)};         // Testing out circular motion
     private float lerpAmount;
+    private float curFrame;
     private int index;
 
     /**
@@ -64,7 +65,7 @@ public class RunExperiment : MonoBehaviour {
      */
     void Start()
     {
-        lerpAmount = 0;
+        curFrame = 0;
         index = 0;
 
         // Set the target framerate for the application
@@ -433,7 +434,7 @@ public class RunExperiment : MonoBehaviour {
     void MoveObjsByStep()
      {
         ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
-    
+
         for (int i = 0; i < objs.Length; i++)
         {
             ManageObjs.Obj curObj = objs[i];
@@ -442,8 +443,7 @@ public class RunExperiment : MonoBehaviour {
             if (curObj.objActive)
             {
                 // Hide the object once it has been visible for its defined timeVisible
-                // if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
-                if (curObj.stepCounter + 1 > curObj.stepHidden && curObj.objVisible)
+                if (curObj.stepCounter > curObj.stepHidden && curObj.objVisible)
                 {
                     hideTime = (Time.time - trials[curTrial - 1].trialStart);
                     if (config.debugging) { Debug.Log("Time Hidden: " + hideTime); }
@@ -452,28 +452,32 @@ public class RunExperiment : MonoBehaviour {
                     if (config.feedbackType == 1) { pmVisible = false; }
 
                 }
-                float lerpRate = 5;
-                // int totalDuration = 100000;
+
                 // Move the object forward another step
-                // percentage += Time.deltaTime / (totalDuration / rate);
+                // Be careful, index refers to the positions array index. i refers to the trial object. 
 
-                // Increase lerpAmount by a frame-rate independent value
-                lerpAmount += lerpRate * Time.deltaTime;
+                float totalFrames = curObj.trialDuration * rate;
+                float framesPerPoint = totalFrames / (positions.Length - 1);
+                float fracTraveled = curObj.stepCounter / framesPerPoint;
 
-                // Check to see if the Lerp amount has reached 1.0. If it has, set it to zero and increment i - use the next pair of points from now on.
-                // If it hasn't, add amount * Time.deltaTime and use the current pair of points.
+                if (config.debugging) { Debug.Log("total frames is: " + framesPerPoint); }
+                if (config.debugging) { Debug.Log("current frame is: " + curObj.stepCounter) ; }
 
-                // Is lerpAmount over 1?
-                if (lerpAmount > 1.0)
+
+
+                if (fracTraveled >= 1) // Move onto the next position in the array.
                 {
-                    lerpAmount = 0;
                     index++;
-
+                    // if (config.debugging) { Debug.Log("Frac traveled is: " + fracTraveled); }
+                    if (config.debugging) { Debug.Log("Index position is: " + positions[index]); }
+                    if (config.debugging) { Debug.Log("Index is: " + index); }
+                    curObj.stepCounter = 0; // Reset the counter to 0 for the next segment.
+                    fracTraveled = 0;
                 }
-                // Have we gone past the end of splineArr?
-                if (index + 1 > positions.Length)
-                {
 
+                // Once we hit the second to last element of the array, it should no longer be moving
+                if (index + 2 >= positions.Length)
+                {
                     float endTime = (Time.time - trials[curTrial - 1].trialStart);
                     ttcActualSim = (endTime - hideTime);
                     if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
@@ -490,40 +494,19 @@ public class RunExperiment : MonoBehaviour {
                     // Set the object to inactive and decrement numObjs
                     curObj.objActive = false;
                     numObjs = numObjs - 1;
-
-                } // End if (i + 1 > splineArr.length)
-
-                else if (index + 1 < positions.Length)
-                {
-                    // Lerp using values from the array and lerpAmount  
-                    movingObjs[i].position = Vector3.Lerp(positions[index], positions[index + 1], lerpAmount);
                 }
 
-                //            float fracTraveled = curObj.stepCounter / curObj.finalStep;
-                //            movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
-                //            movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
-                // curObj.stepCounter++;
+                else
+                {
+                    if (config.debugging) { Debug.Log("Index is: " + index); }
+                    if (config.debugging) { Debug.Log("fraction traveled inside: " + fracTraveled); }
 
-                //            // If the object has traveled the entire distance, it should no longer be moving
-                //            if (fracTraveled >= 1)
-                //            {
-                //                float endTime = (Time.time - trials[curTrial - 1].trialStart);
-                //                ttcActualSim = (endTime - hideTime);
-                //                if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
-
-
-                //                // Hide the object if it hasn't been hidden already
-                //                if (curObj.objVisible)
-                //                {
-                //                    HideObj(movingObjs[i]);
-                //                    curObj.objVisible = false;
-                //                    if (config.feedbackType == 1) { pmVisible = false; }
-                //                }
-
-                //                // Set the object to inactive and decrement numObjs
-                //                curObj.objActive = false;
-                //                numObjs = numObjs - 1;
-                //            }
+                    movingObjs[i].position = Vector3.Lerp(positions[index], positions[index + 1], fracTraveled);
+                    if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
+                    
+                    movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
+                    curObj.stepCounter++;
+                }
             }
         }
 
@@ -532,7 +515,7 @@ public class RunExperiment : MonoBehaviour {
         {
             CancelInvoke("MoveObjsByStep");
         }
-     }
+    }
 
 
     public void HideAllObjs()
