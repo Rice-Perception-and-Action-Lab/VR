@@ -28,7 +28,6 @@ public class ManageObjs : MonoBehaviour {
         public bool offsetY;                // whether or not an object needs an y coordinate offset
         public bool offsetZ;                // whether or not an object needs an z coordinate offset
         public float dist;                  // the distance that the object must travel
-        public float trialDuration;         // total time for object to move
 
         /* Derived fields */
         public float step;                  // the distance that an object will travel in a given step based on step size and the object's velocity

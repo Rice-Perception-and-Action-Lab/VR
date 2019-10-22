@@ -4,6 +4,9 @@
       "trialNum": -1,
 	  "trialName": "VRE1P5LF",
 	  "corrAns": 0,
+	  "customMot": true,
+	  "customFile": "acceleration1.txt",
+	  "customDur": 8,
       "objects": [
         {
           "objNum": 1,
@@ -35,8 +38,7 @@
 		  "rotationSpeedZ": 0,
 		  "offsetX": false,
 		  "offsetY": false,
-		  "offsetZ": false,
-		  "trialDuration": 8
+		  "offsetZ": false
         }
       ]
     }

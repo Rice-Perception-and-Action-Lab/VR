@@ -52,12 +52,13 @@ public class RunExperiment : MonoBehaviour {
     private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
     public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
 
-    private Vector3[] positions = {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
-            new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
-            new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2))), new Vector3(0, 0, 1)};         // Testing out circular motion
-    private float lerpAmount;
+    private Double[][] positions;            // positions array for custom motion
+            // Testing out circular motion
+            // {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
+            // new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
+            // new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2))), new Vector3(0, 0, 1)};         
     private float curFrame;
-    private int index;
+    private int cusMotArrayIndex;
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -65,9 +66,6 @@ public class RunExperiment : MonoBehaviour {
      */
     void Start()
     {
-        curFrame = 0;
-        index = 0;
-
         // Set the target framerate for the application
         Application.targetFrameRate = 90;
         rate = 90.0f;
@@ -165,6 +163,18 @@ public class RunExperiment : MonoBehaviour {
             for (int i = 0; i < numObjs; i++)
             {
                 ManageObjs.Obj curObj = trial.objects[i];
+
+                // Set current frame to 0.
+                curFrame = 0;
+
+                if (trial.customMot) // Check for custom motion configurations.
+                {
+                    // Set custom motion array index to 0.
+                    cusMotArrayIndex = 0;
+                    // Set custom motion array (called positions).
+                    ReadCustomPositions("Assets/Trials/Custom_Motion_Positions/" + trial.customFile);
+                }
+
 
                 // Set the object prefab that will be displayed
                 GameObject newObj = Resources.Load("Objects\\" + curObj.objType) as GameObject;
@@ -450,63 +460,11 @@ public class RunExperiment : MonoBehaviour {
                     HideObj(movingObjs[i]);
                     curObj.objVisible = false;
                     if (config.feedbackType == 1) { pmVisible = false; }
-
                 }
 
                 // Move the object forward another step
-                // Be careful, index refers to the positions array index. i refers to the trial object. 
-
-                float totalFrames = curObj.trialDuration * rate;
-                float framesPerPoint = totalFrames / (positions.Length - 1);
-                float fracTraveled = curObj.stepCounter / framesPerPoint;
-
-                if (config.debugging) { Debug.Log("total frames is: " + framesPerPoint); }
-                if (config.debugging) { Debug.Log("current frame is: " + curObj.stepCounter) ; }
-
-
-
-                if (fracTraveled >= 1) // Move onto the next position in the array.
-                {
-                    index++;
-                    // if (config.debugging) { Debug.Log("Frac traveled is: " + fracTraveled); }
-                    if (config.debugging) { Debug.Log("Index position is: " + positions[index]); }
-                    if (config.debugging) { Debug.Log("Index is: " + index); }
-                    curObj.stepCounter = 0; // Reset the counter to 0 for the next segment.
-                    fracTraveled = 0;
-                }
-
-                // Once we hit the second to last element of the array, it should no longer be moving
-                if (index + 2 >= positions.Length)
-                {
-                    float endTime = (Time.time - trials[curTrial - 1].trialStart);
-                    ttcActualSim = (endTime - hideTime);
-                    if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
-
-
-                    // Hide the object if it hasn't been hidden already
-                    if (curObj.objVisible)
-                    {
-                        HideObj(movingObjs[i]);
-                        curObj.objVisible = false;
-                        if (config.feedbackType == 1) { pmVisible = false; }
-                    }
-
-                    // Set the object to inactive and decrement numObjs
-                    curObj.objActive = false;
-                    numObjs = numObjs - 1;
-                }
-
-                else
-                {
-                    if (config.debugging) { Debug.Log("Index is: " + index); }
-                    if (config.debugging) { Debug.Log("fraction traveled inside: " + fracTraveled); }
-
-                    movingObjs[i].position = Vector3.Lerp(positions[index], positions[index + 1], fracTraveled);
-                    if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
-                    
-                    movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
-                    curObj.stepCounter++;
-                }
+                if (trials[curTrial - 1].customMot) { CustomMotionMov(curObj, i); } // Custom motion movement
+                else { LinearMotionMov(curObj, i); } // Linear motion movement
             }
         }
 
@@ -516,7 +474,83 @@ public class RunExperiment : MonoBehaviour {
             CancelInvoke("MoveObjsByStep");
         }
     }
+    /**
+     * Moves the object in a linear path.
+     */
+    public void LinearMotionMov(ManageObjs.Obj curObj, int i)
+    {
+        float fracTraveled = curObj.stepCounter / curObj.finalStep;
+        movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
+        movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
+        curObj.stepCounter++;
 
+        // If the object has traveled the entire distance, it should no longer be moving
+        if (fracTraveled >= 1) { StopObjMov(curObj, i);}
+    }
+    /**
+     * Moves the object in a custom motion path.
+     */
+    public void CustomMotionMov(ManageObjs.Obj curObj, int i)
+    {
+        float duration = trials[curTrial - 1].customDur;
+        // Be careful, cusMotArrayIndex refers to the positions array index. i refers to the trial object.
+        float totalFrames = duration * rate;
+        float framesPerPoint = totalFrames / (positions.Length - 1);
+        float fracTraveled = curObj.stepCounter / framesPerPoint;
+
+        if (config.debugging) { Debug.Log("total frames is: " + framesPerPoint); }
+        if (config.debugging) { Debug.Log("current frame is: " + curObj.stepCounter); }
+
+        if (fracTraveled >= 1) // Move onto the next position in the array.
+        {
+            cusMotArrayIndex++;
+            if (config.debugging) { Debug.Log("Index position is: " + positions[cusMotArrayIndex]); }
+            if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
+            curObj.stepCounter = 0; // Reset the counter to 0 for the next segment.
+            fracTraveled = 0;
+        }
+
+        // Once we hit the second to last element of the array, it should no longer be moving
+        if (cusMotArrayIndex + 2 >= positions.Length) { StopObjMov(curObj, i); }
+
+        else // Move the object forward another step
+        {
+            if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
+            if (config.debugging) { Debug.Log("fraction traveled inside: " + fracTraveled); }
+
+            Vector3 initPos = new Vector3((float) positions[cusMotArrayIndex][0], (float) positions[cusMotArrayIndex][1], (float) positions[cusMotArrayIndex][2]);
+            Vector3 nextPos = new Vector3((float)positions[cusMotArrayIndex + 1][0], (float)positions[cusMotArrayIndex + 1][1], (float)positions[cusMotArrayIndex + 1][2]);
+
+            movingObjs[i].position = Vector3.Lerp(initPos, nextPos, fracTraveled);
+            if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
+
+            movingObjs[i].Rotate((float) positions[cusMotArrayIndex][3], (float) positions[cusMotArrayIndex][4], (float) positions[cusMotArrayIndex][5]);
+            curObj.stepCounter++;
+        }
+    }
+
+    /**
+     * Stops the object's movement.
+     */
+    public void StopObjMov(ManageObjs.Obj curObj, int i)
+    {
+        float endTime = (Time.time - trials[curTrial - 1].trialStart);
+        ttcActualSim = (endTime - hideTime);
+        if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
+
+
+        // Hide the object if it hasn't been hidden already
+        if (curObj.objVisible)
+        {
+            HideObj(movingObjs[i]);
+            curObj.objVisible = false;
+            if (config.feedbackType == 1) { pmVisible = false; }
+        }
+
+        // Set the object to inactive and decrement numObjs
+        curObj.objActive = false;
+        numObjs = numObjs - 1;
+    }
 
     public void HideAllObjs()
     {
@@ -530,6 +564,33 @@ public class RunExperiment : MonoBehaviour {
                 HideObj(movingObjs[i]);
             }
         }
+    }
+
+    public void ReadCustomPositions(string filename)
+    {
+        int lineNum = 0;
+        string line;
+        int n;
+        String[] posStrings;
+
+        System.IO.StreamReader file = new System.IO.StreamReader(filename);
+        while ((line = file.ReadLine()) != null)
+        {
+            posStrings = line.Split(' '); // Split by spaces.
+            n = posStrings.Length;
+            Double[] position = new Double[n];
+
+            // Population positions array.
+            for (int i = 0; i < n; i++)
+            {
+                // Convert string decimal to double and put into an array.
+                position[i] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
+            }
+
+            positions[lineNum] = position;
+            lineNum++;
+        }
+
     }
 
  /**
