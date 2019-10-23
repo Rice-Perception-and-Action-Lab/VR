@@ -4,7 +4,7 @@
 	"session": 1,
 	"group": 1,
     "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
-	"cameraLock": true, 
+	"cameraLock": false, 
     "trackHeadPos": true,
     "showFeedback": false,
 	"feedbackType": 1,

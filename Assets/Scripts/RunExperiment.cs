@@ -52,13 +52,15 @@ public class RunExperiment : MonoBehaviour {
     private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
     public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
 
-    private List<double[]> positions = new List<double[]>(); // positions array for custom motion
+    private List<Vector3> cusMotArray = new List<Vector3>(); // positions array for custom motion
+    private List<Vector3> rotations = new List<Vector3>();
     // Testing out circular motion
     // {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
     // new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
     // new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2))), new Vector3(0, 0, 1)};         
     private float curFrame;
     private int cusMotArrayIndex;
+    private int numCustomCoor;          // The number of coordinates in cusMotArray.
 
     /**
      * Initializes all trial data once the experiment begins. This includes loading the
@@ -183,8 +185,13 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
-                // Set the object rotation.
+                // Set the object rotation. (Is it better to do it from objRot or from the custom motion file?
                 objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
+                if (trial.customMot && (objs[i].localEulerAngles != rotations[0]))
+                {
+                    Debug.Log("WARNING! Object rotation is not equal to initial rotation in custom motion file.");
+                }
+
                 if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
 
                 if (config.cameraLock)
@@ -192,6 +199,12 @@ public class RunExperiment : MonoBehaviour {
                     // Set the initial and final positions of the object
                     Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2]);
                     Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2]);
+
+                    if (trial.customMot)
+                    {
+                        inputStartPos = cusMotArray[0];
+                        inputEndPos = cusMotArray[1];
+                    }
 
                     if (curObj.offsetZ)
                     {
@@ -235,89 +248,22 @@ public class RunExperiment : MonoBehaviour {
                     // Get size of model
                     Renderer render = objs[i].GetComponent<Renderer>();
                     Vector3 objSize = render.bounds.size;
-                    if (config.debugging) { Debug.Log("Render bounds Size: " + render.bounds.size.x + " " + render.bounds.size.y + " " + render.bounds.size.z); }
+                    Vector3 offsets = new Vector3(objSize.x / 2, objSize.y / 2, objSize.z / 2);
 
                     // Initialize startPosArr and endPosArr with a copy of the object's current start and end positions, respectively.
                     startPosArr[i] = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
                     endPosArr[i] = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
 
-                    if (curObj.offsetX)
-                    {
-                        if (startPosArr[i].x != endPosArr[i].x) // Can't calculate offset if doesn't move.
-                        {
-                            if (config.debugging) { Debug.Log("inside the offset"); }
-                            if (config.debugging) { Debug.Log(startPosArr[i].x); }
-                            if (config.debugging) { Debug.Log(endPosArr[i].x); }
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (startPosArr[i].x - endPosArr[i].x) / Mathf.Abs(startPosArr[i].x - endPosArr[i].x);
+                   // Calculate offsets
+                   if (trial.customMot)
+                    { Offset(cusMotArray, objSize, curObj); }
 
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.x / 2;
-
-                            // Set the initial and final positions of the object with the x offset.
-                            Vector3 newStartVector = new Vector3(startPosArr[i].x + (direction * offset), startPosArr[i].y, startPosArr[i].z);
-                            Vector3 newEndVector = new Vector3(endPosArr[i].x + (direction * offset), endPosArr[i].y, endPosArr[i].z);
-
-                            // Set new vectors in their respective arrays.
-                            startPosArr[i] = newStartVector;
-                            endPosArr[i] = newEndVector;
-
-                        }
-
-                        if (config.debugging) { Debug.Log("X offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
-                        if (config.debugging) { Debug.Log("X offset End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
-
+                   else {
+                        List<Vector3> startEndList = new List<Vector3>();
+                        startEndList.Add(startPosArr[i]);
+                        startEndList.Add(endPosArr[i]);
+                        Offset(startEndList, objSize, curObj);
                     }
-
-                    if (curObj.offsetY)
-                    {
-
-                        if (startPosArr[i].y != endPosArr[i].y) // Can't calculate offset if doesn't move.
-                        {
-
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (startPosArr[i].y - endPosArr[i].y) / Mathf.Abs(startPosArr[i].y - endPosArr[i].y);
-
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.y / 2;
-
-                            // Set the initial and final positions of the object with the y offset.
-                            Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y + (direction * offset), startPosArr[i].z);
-                            Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y + (direction * offset), endPosArr[i].z);
-
-                            // Set new vectors in their respective arrays.
-                            startPosArr[i] = newStartVector;
-                            endPosArr[i] = newEndVector;
-                        }
-
-                        if (config.debugging) { Debug.Log("Y Offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
-                        if (config.debugging) { Debug.Log(" Y offset End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
-
-                    }
-
-                    if (curObj.offsetZ)
-                    {
-                        if (startPosArr[i].z != endPosArr[i].z) // Can't calculate offset if doesn't move.
-                        {
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (startPosArr[i].z - endPosArr[i].z) / Mathf.Abs(startPosArr[i].z - endPosArr[i].z);
-
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.z / 2;
-
-                            // Set the initial and final positions of the object with the z offset.
-                            Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y, startPosArr[i].z + (direction * offset));
-                            Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y, endPosArr[i].z + (direction * offset));
-
-                            // Set new vectors in their respective arrays.
-                            startPosArr[i] = newStartVector;
-                            endPosArr[i] = newEndVector;
-                        }
-                    }
-
                 }
                
 			   /**
@@ -331,8 +277,16 @@ public class RunExperiment : MonoBehaviour {
                 if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
-                movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
+                if (trial.customMot)
+                {
+                    movingObjs[i] = Instantiate(objs[i], cusMotArray[0], objs[i].localRotation); // Important to make sure these are correct variables.
+                }
 
+                else
+                {
+                    movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
+
+                }
                 curObj.objVisible = true;
                 curObj.objActive = true;
                 if (config.feedbackType == 1) { pmVisible = true; }
@@ -495,7 +449,7 @@ public class RunExperiment : MonoBehaviour {
         float duration = trials[curTrial - 1].customDur;
         // Be careful, cusMotArrayIndex refers to the positions array index. i refers to the trial object.
         float totalFrames = duration * rate;
-        float framesPerPoint = totalFrames / (positions.Count - 1);
+        float framesPerPoint = totalFrames / (numCustomCoor- 1);
         float fracTraveled = curObj.stepCounter / framesPerPoint;
 
         if (config.debugging) { Debug.Log("total frames is: " + framesPerPoint); }
@@ -504,29 +458,33 @@ public class RunExperiment : MonoBehaviour {
         if (fracTraveled >= 1) // Move onto the next position in the array.
         {
             cusMotArrayIndex++;
-            if (config.debugging) { Debug.Log("Index position is: " + positions[cusMotArrayIndex]); }
+            if (config.debugging) { Debug.Log("Index position is: " + cusMotArray[cusMotArrayIndex]); }
             if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
             curObj.stepCounter = 0; // Reset the counter to 0 for the next segment.
             fracTraveled = 0;
         }
 
         // Once we hit the second to last element of the array, it should no longer be moving
-        if (cusMotArrayIndex + 2 >= positions.Count) { StopObjMov(curObj, i); }
+        if (cusMotArrayIndex + 2 >= numCustomCoor) { StopObjMov(curObj, i); }
 
         else // Move the object forward another step
         {
             if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
             if (config.debugging) { Debug.Log("fraction traveled inside: " + fracTraveled); }
 
-            Vector3 initPos = new Vector3((float) positions[cusMotArrayIndex][0], (float) positions[cusMotArrayIndex][1], (float) positions[cusMotArrayIndex][2]);
-            Vector3 nextPos = new Vector3((float)positions[cusMotArrayIndex + 1][0], (float)positions[cusMotArrayIndex + 1][1], (float)positions[cusMotArrayIndex + 1][2]);
+            Vector3 initPos = new Vector3(cusMotArray[cusMotArrayIndex].x, cusMotArray[cusMotArrayIndex].y, cusMotArray[cusMotArrayIndex].z);
+            Vector3 nextPos = new Vector3(cusMotArray[cusMotArrayIndex + 1].x, cusMotArray[cusMotArrayIndex + 1].y, cusMotArray[cusMotArrayIndex + 1].z);
             if (config.debugging) { Debug.Log("intial position is: " + initPos.x + " " + initPos.y + " " + initPos.z); }
             if (config.debugging) { Debug.Log("next position is: " + nextPos); }
 
             movingObjs[i].position = Vector3.Lerp(initPos, nextPos, fracTraveled);
             if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
 
-            movingObjs[i].Rotate((float) positions[cusMotArrayIndex][3], (float) positions[cusMotArrayIndex][4], (float) positions[cusMotArrayIndex][5]);
+            if (cusMotArrayIndex + 1 < numCustomCoor)
+            {
+                // Use the next rotation for current position's rotation.
+                movingObjs[i].Rotate(rotations[cusMotArrayIndex + 1].x, rotations[cusMotArrayIndex + 1].y, rotations[cusMotArrayIndex + 1].z);
+            }
             curObj.stepCounter++;
         }
     }
@@ -570,47 +528,131 @@ public class RunExperiment : MonoBehaviour {
 
     public void ReadCustomPositions(string filename)
     {
-        int lineNum = 0;
         string line;
         int n;
         string[] posStrings;
-        if (config.debugging) { Debug.Log("in here"); }
 
         System.IO.StreamReader file = new System.IO.StreamReader(filename);
         while ((line = file.ReadLine()) != null)
         {
-            if (config.debugging) { Debug.Log("in while loop"); }
             posStrings = line.Split(' '); // Split by spaces.
-            if (config.debugging) { Debug.Log("posString: " + posStrings.ToString()); }
 
             n = posStrings.Length;
-            if (config.debugging) { Debug.Log("n is: " + n); }
             double[] position = new double[n];
             // Population positions array.
             for (int i = 1; i < n; i++) // Start at one since we don't keep the frame number.
             {
                 // Convert string decimal to double and put into an array.
                 position[i - 1] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
-                if (config.debugging) { Debug.Log("index: " + i + " double : " + position[i]); }
-
-                positions.Add(position);
+                // if (config.debugging) { Debug.Log("index: " + i + " double : " + position[i]); }
             }
 
-            // positions[lineNum] = position;
-            lineNum++;
+            Vector3 coordinates = new Vector3((float)position[0], (float)position[1], (float)position[2]);
+            Vector3 rotDegrees = new Vector3((float)position[3], (float)position[4], (float)position[5]);
+
+            cusMotArray.Add(coordinates);
+            rotations.Add(rotDegrees);
         }
-        for (int j = 0; j < lineNum; j++)
-        {
-            for (int k = 0; k < 7; k++)
-            {
-                if (config.debugging) { Debug.Log("line number: " + j); }
-                if (config.debugging) { Debug.Log("coordinate " + k + ": " + positions[j][k]); }
-            }
-
-        }
-
-
+        numCustomCoor = cusMotArray.Count;
         file.Close();
+    }
+
+    public void Offset(List<Vector3> positions, Vector3 objSize, ManageObjs.Obj curObj)
+    {
+        // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
+        Vector3 offsets = new Vector3(objSize.x / 2, objSize.y / 2, objSize.z / 2);
+
+        if (config.debugging)
+        {
+            Debug.Log("offset is: " + offsets);
+        }
+
+        int i = 0;
+        while (i < positions.Count)
+        {
+            Vector3 initPos = positions[i];
+            Vector3 nextPos = positions[i + 1];
+            if (curObj.offsetX)
+            {
+                if (initPos.x != nextPos.x) // Can't calculate offset if doesn't move.
+                {
+
+                    // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+                    // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+                    float direction = (initPos.x - nextPos.x) / Mathf.Abs(initPos.x - nextPos.x);
+
+                    Vector3 newStartVector = new Vector3(initPos.x + (direction * offsets.x), initPos.y, initPos.z);
+                    Vector3 newEndVector = new Vector3(nextPos.x + (direction * offsets.x), nextPos.y, nextPos.z);
+
+                    if (config.debugging)
+                    {
+                        Debug.Log("offset initPos: " + newStartVector + " offset nextPos: " + newEndVector);
+                    }
+
+                    // Set new vectors in their respective arrays.
+                    positions[i] = newStartVector;
+                    positions[i + 1] = newEndVector;
+
+                    if (i + 2 > positions.Count)
+                    {
+                        positions[i + 2] = new Vector3(positions[i + 2].x + (direction * offsets.x), positions[i + 2].y, positions[i + 2].z);
+                    }
+                }
+
+                else if (initPos.x == nextPos.x)
+                {
+                    if (i != 0)
+                    {
+                        positions[i] = positions[i - 1];
+                    }
+                }
+
+
+            }
+
+            if (curObj.offsetY)
+            {
+                if (initPos.y != nextPos.y) // Can't calculate offset if doesn't move.
+                {
+
+                    // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+                    // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+                    float direction = (initPos.y - nextPos.y) / Mathf.Abs(initPos.y - nextPos.y);
+
+                    Vector3 newStartVector = new Vector3(initPos.x, initPos.y + (direction * offsets.y), initPos.z);
+                    Vector3 newEndVector = new Vector3(nextPos.x, nextPos.y + (direction * offsets.y), nextPos.z);
+
+                    // Set new vectors in their respective arrays.
+                    positions[i] = newStartVector;
+                    positions[i + 1] = newEndVector;
+
+                }
+
+            }
+
+            if (curObj.offsetZ)
+            {
+                if (initPos.z != nextPos.z) // Can't calculate offset if doesn't move.
+                {
+
+                    // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
+                    // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
+                    float direction = (initPos.z - nextPos.z) / Mathf.Abs(initPos.z - nextPos.z);
+
+                    Vector3 newStartVector = new Vector3(initPos.x, initPos.y, initPos.z + (direction * offsets.z));
+                    Vector3 newEndVector = new Vector3(nextPos.x, nextPos.y, nextPos.z + (direction * offsets.z));
+
+                    // Set new vectors in their respective arrays.
+                    positions[i] = newStartVector;
+                    positions[i + 1] = newEndVector;
+
+                }
+
+            }
+
+            i = i + 2;
+
+        }
 
     }
 
