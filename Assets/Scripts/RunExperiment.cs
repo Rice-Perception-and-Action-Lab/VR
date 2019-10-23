@@ -52,11 +52,11 @@ public class RunExperiment : MonoBehaviour {
     private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
     public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
 
-    private Double[][] positions;            // positions array for custom motion
-            // Testing out circular motion
-            // {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
-            // new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
-            // new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2))), new Vector3(0, 0, 1)};         
+    private List<double[]> positions = new List<double[]>(); // positions array for custom motion
+    // Testing out circular motion
+    // {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
+    // new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
+    // new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2))), new Vector3(0, 0, 1)};         
     private float curFrame;
     private int cusMotArrayIndex;
 
@@ -495,7 +495,7 @@ public class RunExperiment : MonoBehaviour {
         float duration = trials[curTrial - 1].customDur;
         // Be careful, cusMotArrayIndex refers to the positions array index. i refers to the trial object.
         float totalFrames = duration * rate;
-        float framesPerPoint = totalFrames / (positions.Length - 1);
+        float framesPerPoint = totalFrames / (positions.Count - 1);
         float fracTraveled = curObj.stepCounter / framesPerPoint;
 
         if (config.debugging) { Debug.Log("total frames is: " + framesPerPoint); }
@@ -511,7 +511,7 @@ public class RunExperiment : MonoBehaviour {
         }
 
         // Once we hit the second to last element of the array, it should no longer be moving
-        if (cusMotArrayIndex + 2 >= positions.Length) { StopObjMov(curObj, i); }
+        if (cusMotArrayIndex + 2 >= positions.Count) { StopObjMov(curObj, i); }
 
         else // Move the object forward another step
         {
@@ -520,6 +520,8 @@ public class RunExperiment : MonoBehaviour {
 
             Vector3 initPos = new Vector3((float) positions[cusMotArrayIndex][0], (float) positions[cusMotArrayIndex][1], (float) positions[cusMotArrayIndex][2]);
             Vector3 nextPos = new Vector3((float)positions[cusMotArrayIndex + 1][0], (float)positions[cusMotArrayIndex + 1][1], (float)positions[cusMotArrayIndex + 1][2]);
+            if (config.debugging) { Debug.Log("intial position is: " + initPos.x + " " + initPos.y + " " + initPos.z); }
+            if (config.debugging) { Debug.Log("next position is: " + nextPos); }
 
             movingObjs[i].position = Vector3.Lerp(initPos, nextPos, fracTraveled);
             if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
@@ -571,25 +573,44 @@ public class RunExperiment : MonoBehaviour {
         int lineNum = 0;
         string line;
         int n;
-        String[] posStrings;
+        string[] posStrings;
+        if (config.debugging) { Debug.Log("in here"); }
 
         System.IO.StreamReader file = new System.IO.StreamReader(filename);
         while ((line = file.ReadLine()) != null)
         {
+            if (config.debugging) { Debug.Log("in while loop"); }
             posStrings = line.Split(' '); // Split by spaces.
-            n = posStrings.Length;
-            Double[] position = new Double[n];
+            if (config.debugging) { Debug.Log("posString: " + posStrings.ToString()); }
 
+            n = posStrings.Length;
+            if (config.debugging) { Debug.Log("n is: " + n); }
+            double[] position = new double[n];
             // Population positions array.
-            for (int i = 0; i < n; i++)
+            for (int i = 1; i < n; i++) // Start at one since we don't keep the frame number.
             {
                 // Convert string decimal to double and put into an array.
-                position[i] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
+                position[i - 1] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
+                if (config.debugging) { Debug.Log("index: " + i + " double : " + position[i]); }
+
+                positions.Add(position);
             }
 
-            positions[lineNum] = position;
+            // positions[lineNum] = position;
             lineNum++;
         }
+        for (int j = 0; j < lineNum; j++)
+        {
+            for (int k = 0; k < 7; k++)
+            {
+                if (config.debugging) { Debug.Log("line number: " + j); }
+                if (config.debugging) { Debug.Log("coordinate " + k + ": " + positions[j][k]); }
+            }
+
+        }
+
+
+        file.Close();
 
     }
 
