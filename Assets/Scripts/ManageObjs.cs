@@ -24,9 +24,9 @@ public class ManageObjs : MonoBehaviour {
         public float rotationSpeedX;        // the speed at which the object should rotate around X axis
         public float rotationSpeedY;        // the speed at which the object should rotate around Y axis
         public float rotationSpeedZ;        // the speed at which the object should rotate around Z axis
-        public bool offsetX;                // whether or not an object needs an x coordinate offset
-        public bool offsetY;                // whether or not an object needs an y coordinate offset
-        public bool offsetZ;                // whether or not an object needs an z coordinate offset
+        public int offsetX;                 // x coordinate offset: 0 meeans doesn't need one, 1 is positive x offset, -1 is negative x offset.
+        public int offsetY;                 // z coordinate offset: 0 meeans doesn't need one, 1 is positive x offset, -1 is negative x offset.
+        public int offsetZ;                 // z coordinate offset: 0 meeans doesn't need one, 1 is positive x offset, -1 is negative x offset.
         public float dist;                  // the distance that the object must travel
 
         /* Derived fields */
