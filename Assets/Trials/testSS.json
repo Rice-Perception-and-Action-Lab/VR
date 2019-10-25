@@ -4,13 +4,14 @@
       "trialNum": -1,
 	  "trialName": "VRE1P5LF",
 	  "corrAns": 0,
-	  "customMot": true,
-	  "customFile": "cameraLockAccelerate.txt",
-	  "customDur": 8,
       "objects": [
         {
           "objNum": 1,
-          "objType": "Sphere",
+          "objType": "Car",
+		  "customMot": false,
+	      "customFile": "cameraLockAccelerate.txt",
+		  "customDur": 8,
+
           "objScale": [
             1.0,
             1.0,
@@ -23,22 +24,22 @@
 		  ],
           "startPos": [
             10,
-            10,
-            10
+            0,
+            0
           ],
           "endPos": [
-            3,
-            3,
-			3
+            0,
+            0,
+			0
           ],
           "velocity": 5,
           "timeVisible": 3000,
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
 		  "rotationSpeedZ": 0,
-		  "offsetX": 0,
+		  "offsetX": 1,
 		  "offsetY": 0,
-		  "offsetZ": 1
+		  "offsetZ": 0
         }
       ]
     }

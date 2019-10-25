@@ -171,12 +171,12 @@ public class RunExperiment : MonoBehaviour {
                 // Set current frame to 0.
                 curFrame = 0;
 
-                if (trial.customMot) // Check for custom motion configurations.
+                if (curObj.customMot) // Check for custom motion configurations.
                 {
                     // Set custom motion array index to 0.
                     cusMotArrayIndex = 0;
                     // Set custom motion array (called positions).
-                    ReadCustomPositions("Assets/Trials/Custom_Motion_Positions/" + trial.customFile);
+                    ReadCustomPositions("Assets/Trials/Custom_Motion_Positions/" + curObj.customFile);
                 }
 
 
@@ -187,7 +187,7 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
-                if (trial.customMot && (objs[i].localEulerAngles != rotations[0]))
+                if (curObj.customMot && (objs[i].localEulerAngles != rotations[0]))
                 {
                     Debug.Log("WARNING! Object rotation is not equal to initial rotation in custom motion file. Using the rotation of rotationSpeedX, rotationSpeedY, and rotationSpeedZ.");
                 }
@@ -222,10 +222,10 @@ public class RunExperiment : MonoBehaviour {
                 Vector3 startVector = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
                 Vector3 endVector = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
 
-                if (trial.customMot && (startVector != cusMotArray[0] || endVector != cusMotArray[numCustomCoor - 1]))
+                if (curObj.customMot && (startVector != cusMotArray[0] || endVector != cusMotArray[numCustomCoor - 1]))
                 {
-                    Debug.Log("WARNING! Custom motion initial and final positions in " + trial.customFile +
-                        " are not equal to startPos and endPos. Using initial and final positions in " + trial.customFile);
+                    Debug.Log("WARNING! Custom motion initial and final positions in " + curObj.customFile +
+                        " are not equal to startPos and endPos. Using initial and final positions in " + curObj.customFile);
                 }
 
                 // Get size of model
@@ -234,13 +234,11 @@ public class RunExperiment : MonoBehaviour {
 
                 if (config.cameraLock)
                 {
-
-                    // Set the initial and final positions of the object
-                    startPosArr[i] = new Vector3(startVector.x, viveCamera.position.y + startVector.y, startVector.z);
-                    endPosArr[i] = new Vector3(endVector.x, viveCamera.position.y + endVector.y, endVector.z);
+                    startPosArr[i] = new Vector3(startVector.x, startVector.y, startVector.z); // Got rid of adding camera height because was doing it twice.
+                    endPosArr[i] = new Vector3(endVector.x, endVector.y, endVector.z);
 
                     // Calculate camera lock offsets
-                    if (trial.customMot)
+                    if (curObj.customMot)
                     { CameraLockOffset(cusMotArray, objSize, offsetDirections); }
 
                     else
@@ -248,7 +246,9 @@ public class RunExperiment : MonoBehaviour {
                         List<Vector3> startEndList = new List<Vector3>();
                         startEndList.Add(startPosArr[i]);
                         startEndList.Add(endPosArr[i]);
-                        CameraLockOffset(startEndList, objSize, offsetDirections);
+                        List<Vector3> positions = CameraLockOffset(startEndList, objSize, offsetDirections);
+                        startPosArr[i] = positions[0];
+                        endPosArr[i] = positions[1];
                     }
 
                 }
@@ -260,14 +260,16 @@ public class RunExperiment : MonoBehaviour {
                     endPosArr[i] = endVector;
 
                     // Calculate offsets
-                    if (trial.customMot)
+                    if (curObj.customMot)
                     { Offset(cusMotArray, objSize, offsetDirections); }
 
                    else {
                         List<Vector3> startEndList = new List<Vector3>();
                         startEndList.Add(startPosArr[i]);
                         startEndList.Add(endPosArr[i]);
-                        Offset(startEndList, objSize, offsetDirections);
+                        List<Vector3> positions =  Offset(startEndList, objSize, offsetDirections);
+                        startPosArr[i] = positions[0];
+                        endPosArr[i] = positions[1];
                     }
                 }
                
@@ -279,7 +281,7 @@ public class RunExperiment : MonoBehaviour {
                 if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
-                if (trial.customMot)
+                if (curObj.customMot)
                 {
                     movingObjs[i] = Instantiate(objs[i], cusMotArray[0], objs[i].localRotation); // Important to make sure these are correct variables.
                 }
@@ -419,7 +421,7 @@ public class RunExperiment : MonoBehaviour {
                 }
 
                 // Move the object forward another step
-                if (trials[curTrial - 1].customMot) { CustomMotionMov(curObj, i); } // Custom motion movement
+                if (curObj.customMot) { CustomMotionMov(curObj, i); } // Custom motion movement
                 else { LinearMotionMov(curObj, i); } // Linear motion movement
             }
         }
@@ -448,7 +450,7 @@ public class RunExperiment : MonoBehaviour {
      */
     public void CustomMotionMov(ManageObjs.Obj curObj, int i)
     {
-        float duration = trials[curTrial - 1].customDur;
+        float duration = curObj.customDur;
         // Be careful, cusMotArrayIndex refers to the positions array index. i refers to the trial object.
         float totalFrames = duration * rate;
         float framesPerPoint = totalFrames / (numCustomCoor- 1);
@@ -559,7 +561,8 @@ public class RunExperiment : MonoBehaviour {
         file.Close();
     }
 
-    public void Offset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirections)
+   
+    public List<Vector3> Offset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirections)
     {
         // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
         Vector3 offsets = new Vector3(objSize.x / 2, objSize.y / 2, objSize.z / 2);
@@ -585,17 +588,18 @@ public class RunExperiment : MonoBehaviour {
 
             i = i + 2;
         }
+        return positions;
     }
 
-    public void CameraLockOffset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirection)
+    public List<Vector3> CameraLockOffset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirection)
     {
         // Only want the Z offset.
         float offsetZ = objSize.z / 2;
         if (config.debugging) { Debug.Log("offset is: " + offsetZ); }
         int i = 0;
         float offsetVal = offsetZ;
-        float endY = positions[positions.Count - 1].y;
-        float startY = positions[0].y;
+        //float endY = positions[positions.Count - 1].y;
+        //float startY = positions[0].y;
 
         while (i + 1 < positions.Count)
         {
@@ -603,24 +607,29 @@ public class RunExperiment : MonoBehaviour {
             Vector3 nextPos = positions[i + 1];
 
             // Set new vectors in their respective arrays.
-            positions[i] = viveCamera.TransformPoint(new Vector3(initPos.x, initPos.y, initPos.z + offsetVal));
-            positions[i + 1] = viveCamera.TransformPoint(new Vector3(nextPos.x, nextPos.y, nextPos.z + offsetVal));
+            Vector3 newStart = viveCamera.TransformPoint(new Vector3(initPos.x, initPos.y, initPos.z + offsetVal));
+            Vector3 newEnd = viveCamera.TransformPoint(new Vector3(nextPos.x, nextPos.y, nextPos.z + offsetVal));
+
+            if (config.debugging)
+            { Debug.Log("camera height:  " + viveCamera.position.y + " initial y position: " + positions[i].y); }
+
 
             // Adjust the height of the object to match the height of the camera
-            positions[i] = new Vector3(positions[i].x, viveCamera.position.y + startY, positions[i].z);
-            positions[i + 1] = new Vector3(positions[i + 1].x, viveCamera.position.y + endY, positions[i + 1].z);
+            positions[i] = new Vector3(newStart.x, viveCamera.position.y + positions[i].y, newStart.z);
+            positions[i + 1] = new Vector3(newEnd.x, viveCamera.position.y + positions[i + 1].y, newEnd.z);
 
             if (config.debugging)
             { Debug.Log("offset initPos: " + positions[i] + " offset nextPos: " + positions[i + 1]); }
 
             if (i + 3 == positions.Count) // Makes sure we don't miss the last coordinate
             {
-                positions[i + 2] = viveCamera.TransformPoint(new Vector3(positions[i + 2].x, positions[i + 2].y, positions[i + 2].z + offsetVal));
-                positions[i + 2] = new Vector3(positions[i + 2].x, viveCamera.position.y + endY, positions[i + 2].z);
+                Vector3 finalVector = viveCamera.TransformPoint(new Vector3(positions[i + 2].x, positions[i + 2].y, positions[i + 2].z + offsetVal));
+                positions[i + 2] = new Vector3(finalVector.x, viveCamera.position.y + positions[i + 2].y, finalVector.z);
             }
 
             i = i + 2;
         }
+        return positions;
     }
 
     /**

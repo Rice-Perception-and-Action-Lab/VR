@@ -36,6 +36,11 @@ public class ManageObjs : MonoBehaviour {
         public int stepCounter = 0;         // the number of steps the object has taken
         public bool objVisible = false;     // whether or not an object is currently visible in the scene
         public bool objActive = false;      // whether or not the object is currently active in the scene
+
+        // Custom Motion Variables
+        public bool customMot;              // if custom motion is used for the trial
+        public string customFile;           // name of file with positions for custom motion
+        public float customDur;             // amount of time for the object to start and end motion.
     }
 
 }

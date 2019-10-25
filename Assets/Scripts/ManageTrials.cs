@@ -15,11 +15,6 @@ public class ManageTrials : MonoBehaviour {
         public int trialNum;                // the number of the current trial
         public string trialName;            // the name of the current trial  
         public int corrAns;
-        
-        // Custom Motion Variables
-        public bool customMot;              // if custom motion is used for the trial
-        public string customFile;           // name of file with positions for custom motion
-        public float customDur;             // amount of time for the object to start and end motion.
 
         public ManageObjs.Obj[] objects;    // the objects to be displayed in the trial
         public float trialStart;            // the time at which the trial began (with respect to when simulation began)
