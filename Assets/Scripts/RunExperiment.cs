@@ -43,7 +43,7 @@ public class RunExperiment : MonoBehaviour {
     private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
     private int numObjs;                    // the number of objects that are part of a trial
 
-    private float stepSize;                     // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
+    private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
     private float ttcActual;                //the theoretical TTC calculated from startPos, time visible, and velocity
@@ -52,15 +52,11 @@ public class RunExperiment : MonoBehaviour {
     private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
     public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
 
-    private List<Vector3> cusMotArray = new List<Vector3>(); // positions array for custom motion
-    private List<Vector3> rotations = new List<Vector3>();
-    // Testing out circular motion
-    // {new Vector3(0, 0, 1), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float) (Math.Sqrt(2) / 2))),
-    // new Vector3(1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / 2)), 0, ((float)(Math.Sqrt(2) / -2))), new Vector3(0, 0, -1), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / -2))),
-    // new Vector3(-1, 0, 0), new Vector3(((float)(Math.Sqrt(2) / -2)), 0, ((float)(Math.Sqrt(2) / 2))), new Vector3(0, 0, 1)};         
+    private List<Vector3>[] cusMotArray;    // Array of the positions array for custom motion  for all objects
+    private List<Vector3>[] rotations;      // Array of the rotations array for custom motion  for all objects
     private float curFrame;                 // Current frame.
-    private int cusMotArrayIndex;           // Index of the positions in the cusMotArray.
-    private int numCustomCoor;              // The number of coordinates in cusMotArray.
+    private int[] cusMotArrayIndex;           // Array of the indexes of the positions in the cusMotArray, for all objects.
+    private int[] numCustomCoordinates;     // Array of the total number of coordinates in cusMotArray,  for all objects.
 
 
 
@@ -163,6 +159,10 @@ public class RunExperiment : MonoBehaviour {
             startPosArr = new Vector3[numObjs];
             endPosArr = new Vector3[numObjs];
             movingObjs = new Transform[numObjs];
+            cusMotArray = new List<Vector3>[numObjs];
+            rotations = new List<Vector3>[numObjs];
+            cusMotArrayIndex = new int[numObjs];
+            numCustomCoordinates = new int[numObjs];
 
             for (int i = 0; i < numObjs; i++)
             {
@@ -171,14 +171,25 @@ public class RunExperiment : MonoBehaviour {
                 // Set current frame to 0.
                 curFrame = 0;
 
+                // Set custom motion array to empty.
+                cusMotArray[i] = new List<Vector3>();
+                
+                // Set custom rotations array to empty.
+                rotations[i] = new List<Vector3>();
+
                 if (curObj.customMot) // Check for custom motion configurations.
                 {
                     // Set custom motion array index to 0.
-                    cusMotArrayIndex = 0;
+                    cusMotArrayIndex[i] = 0;
                     // Set custom motion array (called positions).
-                    ReadCustomPositions("Assets/Trials/Custom_Motion_Positions/" + curObj.customFile);
+                    ReadCustomPositions("Assets/Trials/Custom_Motion_Positions/" + curObj.customFile, i);
                 }
 
+                Debug.Log("custom motion array for index " + i + ": ");
+                for (int y = 0; y < numCustomCoordinates[i]; y++)
+                {
+                    Debug.Log(y + ": " + cusMotArray[i][y]);
+                }
 
                 // Set the object prefab that will be displayed
                 GameObject newObj = Resources.Load("Objects\\" + curObj.objType) as GameObject;
@@ -187,7 +198,7 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
-                if (curObj.customMot && (objs[i].localEulerAngles != rotations[0]))
+                if (curObj.customMot && (objs[i].localEulerAngles != rotations[i][0]))
                 {
                     Debug.Log("WARNING! Object rotation is not equal to initial rotation in custom motion file. Using the rotation of rotationSpeedX, rotationSpeedY, and rotationSpeedZ.");
                 }
@@ -222,7 +233,7 @@ public class RunExperiment : MonoBehaviour {
                 Vector3 startVector = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
                 Vector3 endVector = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
 
-                if (curObj.customMot && (startVector != cusMotArray[0] || endVector != cusMotArray[numCustomCoor - 1]))
+                if (curObj.customMot && (startVector != cusMotArray[i][0] || endVector != cusMotArray[i][numCustomCoordinates[i] - 1]))
                 {
                     Debug.Log("WARNING! Custom motion initial and final positions in " + curObj.customFile +
                         " are not equal to startPos and endPos. Using initial and final positions in " + curObj.customFile);
@@ -239,7 +250,7 @@ public class RunExperiment : MonoBehaviour {
 
                     // Calculate camera lock offsets
                     if (curObj.customMot)
-                    { CameraLockOffset(cusMotArray, objSize, offsetDirections); }
+                    { CameraLockOffset(cusMotArray[i], objSize, offsetDirections); }
 
                     else
                     {
@@ -261,7 +272,7 @@ public class RunExperiment : MonoBehaviour {
 
                     // Calculate offsets
                     if (curObj.customMot)
-                    { Offset(cusMotArray, objSize, offsetDirections); }
+                    { Offset(cusMotArray[i], objSize, offsetDirections); }
 
                    else {
                         List<Vector3> startEndList = new List<Vector3>();
@@ -283,7 +294,7 @@ public class RunExperiment : MonoBehaviour {
                 // Instantiate the object so that it's visible
                 if (curObj.customMot)
                 {
-                    movingObjs[i] = Instantiate(objs[i], cusMotArray[0], objs[i].localRotation); // Important to make sure these are correct variables.
+                    movingObjs[i] = Instantiate(objs[i], cusMotArray[i][0], objs[i].localRotation); // Important to make sure these are correct variables.
                 }
 
                 else
@@ -421,7 +432,7 @@ public class RunExperiment : MonoBehaviour {
                 }
 
                 // Move the object forward another step
-                if (curObj.customMot) { CustomMotionMov(curObj, i); } // Custom motion movement
+                if (curObj.customMot) { CustomMotionMov(curObj, i, cusMotArray[i], rotations[i]); } // Custom motion movement
                 else { LinearMotionMov(curObj, i); } // Linear motion movement
             }
         }
@@ -448,12 +459,12 @@ public class RunExperiment : MonoBehaviour {
     /**
      * Moves the object in a custom motion path.
      */
-    public void CustomMotionMov(ManageObjs.Obj curObj, int i)
+    public void CustomMotionMov(ManageObjs.Obj curObj, int i, List<Vector3> coordinateArray, List<Vector3> rotationArray)
     {
         float duration = curObj.customDur;
         // Be careful, cusMotArrayIndex refers to the positions array index. i refers to the trial object.
         float totalFrames = duration * rate;
-        float framesPerPoint = totalFrames / (numCustomCoor- 1);
+        float framesPerPoint = totalFrames / (numCustomCoordinates[i]- 1);
         float fracTraveled = curObj.stepCounter / framesPerPoint;
 
         //if (config.debugging) { Debug.Log("total frames is: " + framesPerPoint); }
@@ -461,7 +472,7 @@ public class RunExperiment : MonoBehaviour {
 
         if (fracTraveled >= 1) // Move onto the next position in the array.
         {
-            cusMotArrayIndex++;
+            cusMotArrayIndex[i]++;
             //if (config.debugging) { Debug.Log("Index position is: " + cusMotArray[cusMotArrayIndex]); }
             //if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
             curObj.stepCounter = 0; // Reset the counter to 0 for the next segment.
@@ -469,25 +480,25 @@ public class RunExperiment : MonoBehaviour {
         }
 
         // Once we hit the second to last element of the array, it should no longer be moving
-        if (cusMotArrayIndex + 2 > numCustomCoor) { StopObjMov(curObj, i); }
+        if (cusMotArrayIndex[i] + 2 > numCustomCoordinates[i]) { StopObjMov(curObj, i); }
 
         else // Move the object forward another step
         {
             if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
             if (config.debugging) { Debug.Log("fraction traveled inside: " + fracTraveled); }
 
-            Vector3 initPos = new Vector3(cusMotArray[cusMotArrayIndex].x, cusMotArray[cusMotArrayIndex].y, cusMotArray[cusMotArrayIndex].z);
-            Vector3 nextPos = new Vector3(cusMotArray[cusMotArrayIndex + 1].x, cusMotArray[cusMotArrayIndex + 1].y, cusMotArray[cusMotArrayIndex + 1].z);
+            Vector3 initPos = new Vector3(coordinateArray[cusMotArrayIndex[i]].x, coordinateArray[cusMotArrayIndex[i]].y, coordinateArray[cusMotArrayIndex[i]].z);
+            Vector3 nextPos = new Vector3(coordinateArray[cusMotArrayIndex[i] + 1].x, coordinateArray[cusMotArrayIndex[i] + 1].y, coordinateArray[cusMotArrayIndex[i] + 1].z);
             if (config.debugging) { Debug.Log("intial position is: " + initPos.x + " " + initPos.y + " " + initPos.z); }
             if (config.debugging) { Debug.Log("next position is: " + nextPos); }
 
             movingObjs[i].position = Vector3.Lerp(initPos, nextPos, fracTraveled);
             if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
 
-            if (cusMotArrayIndex + 1 < numCustomCoor)
+            if (cusMotArrayIndex[i] + 1 < numCustomCoordinates[i])
             {
                 // Use the next rotation for current position's rotation.
-                movingObjs[i].Rotate(rotations[cusMotArrayIndex + 1].x, rotations[cusMotArrayIndex + 1].y, rotations[cusMotArrayIndex + 1].z);
+                movingObjs[i].Rotate(rotationArray[cusMotArrayIndex[i] + 1].x, rotationArray[cusMotArrayIndex[i] + 1].y, rotationArray[cusMotArrayIndex[i] + 1].z);
             }
             curObj.stepCounter++;
         }
@@ -530,7 +541,7 @@ public class RunExperiment : MonoBehaviour {
         }
     }
 
-    public void ReadCustomPositions(string filename)
+    public void ReadCustomPositions(string filename, int j)
     {
         string line;
         int n;
@@ -554,10 +565,10 @@ public class RunExperiment : MonoBehaviour {
             Vector3 coordinates = new Vector3((float)position[0], (float)position[1], (float)position[2]);
             Vector3 rotDegrees = new Vector3((float)position[3], (float)position[4], (float)position[5]);
 
-            cusMotArray.Add(coordinates);
-            rotations.Add(rotDegrees);
+            cusMotArray[j].Add(coordinates);
+            rotations[j].Add(rotDegrees);
         }
-        numCustomCoor = cusMotArray.Count;
+        numCustomCoordinates[j] = cusMotArray[j].Count;
         file.Close();
     }
 
