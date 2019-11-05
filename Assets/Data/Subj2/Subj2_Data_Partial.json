@@ -6,7 +6,7 @@
     "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
     "showFeedback": false,
     "feedbackType": 1,
-    "collectConfidence": true,
+    "collectConfidence": false,
     "feedbackColor": "black",
     "trackHeadPos": true,
     "Trials": [

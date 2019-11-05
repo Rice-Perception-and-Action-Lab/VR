@@ -106,9 +106,6 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
         expComplete = false;
 
-        // Set the initial position of the participant 
-        //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-        //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
         movingObj = GameObject.Find("MovingObj");
@@ -181,7 +178,7 @@ public class RunExperiment : MonoBehaviour {
                 {
                     // Set custom motion array index to 0.
                     cusMotArrayIndex[i] = 0;
-                    // Set custom motion array (called positions).
+                    // Set custom motion array (called positions) and custom rotations array (called rotations).
                     ReadCustomPositions("Assets/Trials/Custom_Motion_Positions/" + curObj.customFile, i);
                 }
 
@@ -200,10 +197,10 @@ public class RunExperiment : MonoBehaviour {
 
                 if (curObj.customMot && (objs[i].localEulerAngles != rotations[i][0]))
                 {
-                    Debug.Log("WARNING! Object rotation is not equal to initial rotation in custom motion file. Using the rotation of rotationSpeedX, rotationSpeedY, and rotationSpeedZ.");
+                    Debug.Log("WARNING! Object rotation is not equal to initial rotation in custom motion file. Using the rotation of first frame in " + curObj.customFile);
                 }
                 // Set the object rotation. (Is it better to do it from objRot or from the custom motion file?
-                objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
+                objs[i].localEulerAngles = rotations[i][0];
                 if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
 
                 /** 
@@ -363,7 +360,7 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            rend.enabled = false;
+            rend.enabled = true;
         }
     }
 
@@ -487,18 +484,21 @@ public class RunExperiment : MonoBehaviour {
             if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
             if (config.debugging) { Debug.Log("fraction traveled inside: " + fracTraveled); }
 
-            Vector3 initPos = new Vector3(coordinateArray[cusMotArrayIndex[i]].x, coordinateArray[cusMotArrayIndex[i]].y, coordinateArray[cusMotArrayIndex[i]].z);
-            Vector3 nextPos = new Vector3(coordinateArray[cusMotArrayIndex[i] + 1].x, coordinateArray[cusMotArrayIndex[i] + 1].y, coordinateArray[cusMotArrayIndex[i] + 1].z);
-            if (config.debugging) { Debug.Log("intial position is: " + initPos.x + " " + initPos.y + " " + initPos.z); }
-            if (config.debugging) { Debug.Log("next position is: " + nextPos); }
+            //if (config.debugging) { Debug.Log("intial position is: " + initPos.x + " " + initPos.y + " " + initPos.z); }
+            //if (config.debugging) { Debug.Log("next position is: " + nextPos); }
 
-            movingObjs[i].position = Vector3.Lerp(initPos, nextPos, fracTraveled);
+            movingObjs[i].position = Vector3.Lerp(coordinateArray[cusMotArrayIndex[i]], coordinateArray[cusMotArrayIndex[i] + 1], fracTraveled);
             if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
 
             if (cusMotArrayIndex[i] + 1 < numCustomCoordinates[i])
             {
                 // Use the next rotation for current position's rotation.
-                movingObjs[i].Rotate(rotationArray[cusMotArrayIndex[i] + 1].x, rotationArray[cusMotArrayIndex[i] + 1].y, rotationArray[cusMotArrayIndex[i] + 1].z);
+                Vector3 currentAngle = new Vector3(
+                    Mathf.LerpAngle(rotationArray[cusMotArrayIndex[i]].x, rotationArray[cusMotArrayIndex[i] + 1].x, fracTraveled),
+                    Mathf.LerpAngle(rotationArray[cusMotArrayIndex[i]].y, rotationArray[cusMotArrayIndex[i] + 1].y, fracTraveled),
+                    Mathf.LerpAngle(rotationArray[cusMotArrayIndex[i]].z, rotationArray[cusMotArrayIndex[i] + 1].z, fracTraveled));
+
+                movingObjs[i].localEulerAngles = currentAngle;
             }
             curObj.stepCounter++;
         }
@@ -550,20 +550,24 @@ public class RunExperiment : MonoBehaviour {
         System.IO.StreamReader file = new System.IO.StreamReader(filename);
         while ((line = file.ReadLine()) != null)
         {
-            posStrings = line.Split(' '); // Split by spaces.
+            posStrings = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries); // Split by spaces.
 
-            n = posStrings.Length;
+            n = posStrings.Length; // Length of the line
+            if (n == 0) { break; } // In case accidentally added empty lines at the end of a file.
+
             double[] position = new double[n];
             // Population positions array.
             for (int i = 1; i < n; i++) // Start at one since we don't keep the frame number.
             {
                 // Convert string decimal to double and put into an array.
                 position[i - 1] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
-                // if (config.debugging) { Debug.Log("index: " + i + " double : " + position[i]); }
+                if (config.debugging) { Debug.Log("object: " + j + " index: " + i + " double : " + position[i - 1]); }
             }
-
+            // if (config.debugging) { Debug.Log("outside for loop"); }
             Vector3 coordinates = new Vector3((float)position[0], (float)position[1], (float)position[2]);
+            // if (config.debugging) { Debug.Log("coordinates: " + coordinates); }
             Vector3 rotDegrees = new Vector3((float)position[3], (float)position[4], (float)position[5]);
+            // if (config.debugging) { Debug.Log("after rotation"); }
 
             cusMotArray[j].Add(coordinates);
             rotations[j].Add(rotDegrees);
@@ -589,8 +593,8 @@ public class RunExperiment : MonoBehaviour {
             positions[i] = new Vector3(initPos.x + (offsetDirections.x * offsets.x), initPos.y + (offsetDirections.y * offsets.y), initPos.z + (offsetDirections.z * offsets.z));
             positions[i + 1] = new Vector3(nextPos.x + (offsetDirections.x * offsets.x), nextPos.y + (offsetDirections.y * offsets.y), nextPos.z + (offsetDirections.z * offsets.z));
 
-            if (config.debugging)
-            { Debug.Log("offset initPos: " + positions[i] + " offset nextPos: " + positions[i + 1]); }
+            // if (config.debugging)
+            // { Debug.Log("offset initPos: " + positions[i] + " offset nextPos: " + positions[i + 1]); }
 
             if (i + 3 == positions.Count) // Makes sure we don't miss the last coordinate
             {
@@ -606,7 +610,7 @@ public class RunExperiment : MonoBehaviour {
     {
         // Only want the Z offset.
         float offsetZ = objSize.z / 2;
-        if (config.debugging) { Debug.Log("offset is: " + offsetZ); }
+        // if (config.debugging) { Debug.Log("offset is: " + offsetZ); }
         int i = 0;
         float offsetVal = offsetZ;
         //float endY = positions[positions.Count - 1].y;
@@ -621,16 +625,16 @@ public class RunExperiment : MonoBehaviour {
             Vector3 newStart = viveCamera.TransformPoint(new Vector3(initPos.x, initPos.y, initPos.z + offsetVal));
             Vector3 newEnd = viveCamera.TransformPoint(new Vector3(nextPos.x, nextPos.y, nextPos.z + offsetVal));
 
-            if (config.debugging)
-            { Debug.Log("camera height:  " + viveCamera.position.y + " initial y position: " + positions[i].y); }
+            // if (config.debugging)
+            // { Debug.Log("camera height:  " + viveCamera.position.y + " initial y position: " + positions[i].y); }
 
 
             // Adjust the height of the object to match the height of the camera
             positions[i] = new Vector3(newStart.x, viveCamera.position.y + positions[i].y, newStart.z);
             positions[i + 1] = new Vector3(newEnd.x, viveCamera.position.y + positions[i + 1].y, newEnd.z);
 
-            if (config.debugging)
-            { Debug.Log("offset initPos: " + positions[i] + " offset nextPos: " + positions[i + 1]); }
+            // if (config.debugging)
+            // { Debug.Log("offset initPos: " + positions[i] + " offset nextPos: " + positions[i + 1]); }
 
             if (i + 3 == positions.Count) // Makes sure we don't miss the last coordinate
             {

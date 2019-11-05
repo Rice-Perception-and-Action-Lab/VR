@@ -8,7 +8,7 @@
     "trackHeadPos": true,
     "showFeedback": false,
 	"feedbackType": 1,
-	"collectConfidence": true,
+	"collectConfidence": false,
     "feedbackColor": "black",
     "feedbackSize": 75,
     "feedbackPos": [
@@ -23,6 +23,6 @@
 	0,
 	5
 	],
-	"pressHold": true,
+	"pressHold": false,
 	"debugging": true
 }
