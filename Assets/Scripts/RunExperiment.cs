@@ -19,12 +19,12 @@ public class RunExperiment : MonoBehaviour {
     public Transform subject;               // Used to reposition the Vive's world location at the beginning of the experiment
 
     // The Config options
-    public ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
+    public ReadConfig.Config config;        // The configuration file specifying certain experiment-wide parameters
     private string inputFile;               // A JSON file holding the information for every trial to be run
 
     // Experiment-Dependent Variables
     private float rate;                     // The framerate that we're moving the object at
-    public ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
+    public ManageTrials.Trial[] trials;     // The input file converted to an array of Trial objects 
     private Transform headPos;              // The location of the camera rig relevant to the scene
 
     private bool expComplete;
@@ -34,7 +34,7 @@ public class RunExperiment : MonoBehaviour {
     // Trial-Dependent Variables
 
     private int curTrial;                   // Track the number of the current trial being run
-    public bool isRunning;                 // Tracks whether or not a trial is currently active
+    public bool isRunning;                  // Tracks whether or not a trial is currently active
     private float trialStart;               // Track the time that the current trial began
     private string objName;                 // The name of the prefab object used for the given trial
     private Vector3[] startPosArr;          // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
@@ -55,7 +55,7 @@ public class RunExperiment : MonoBehaviour {
     private List<Vector3>[] cusMotArray;    // Array of the positions array for custom motion  for all objects
     private List<Vector3>[] rotations;      // Array of the rotations array for custom motion  for all objects
     private float curFrame;                 // Current frame.
-    private int[] cusMotArrayIndex;           // Array of the indexes of the positions in the cusMotArray, for all objects.
+    private int[] cusMotArrayIndex;         // Array of the indexes of the positions in the cusMotArray, for all objects.
     private int[] numCustomCoordinates;     // Array of the total number of coordinates in cusMotArray,  for all objects.
 
 
@@ -195,12 +195,18 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
+                // Set the object rotation. 
                 if (curObj.customMot && (objs[i].localEulerAngles != rotations[i][0]))
                 {
                     Debug.Log("WARNING! Object rotation is not equal to initial rotation in custom motion file. Using the rotation of first frame in " + curObj.customFile);
+                    objs[i].localEulerAngles = rotations[i][0];
                 }
-                // Set the object rotation. (Is it better to do it from objRot or from the custom motion file?
-                objs[i].localEulerAngles = rotations[i][0];
+
+                if (!curObj.customMot)
+                {
+                    objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
+                }
+
                 if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
 
                 /** 
@@ -464,14 +470,9 @@ public class RunExperiment : MonoBehaviour {
         float framesPerPoint = totalFrames / (numCustomCoordinates[i]- 1);
         float fracTraveled = curObj.stepCounter / framesPerPoint;
 
-        //if (config.debugging) { Debug.Log("total frames is: " + framesPerPoint); }
-        //if (config.debugging) { Debug.Log("current frame is: " + curObj.stepCounter); }
-
         if (fracTraveled >= 1) // Move onto the next position in the array.
         {
             cusMotArrayIndex[i]++;
-            //if (config.debugging) { Debug.Log("Index position is: " + cusMotArray[cusMotArrayIndex]); }
-            //if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
             curObj.stepCounter = 0; // Reset the counter to 0 for the next segment.
             fracTraveled = 0;
         }
@@ -481,14 +482,7 @@ public class RunExperiment : MonoBehaviour {
 
         else // Move the object forward another step
         {
-            if (config.debugging) { Debug.Log("Index is: " + cusMotArrayIndex); }
-            if (config.debugging) { Debug.Log("fraction traveled inside: " + fracTraveled); }
-
-            //if (config.debugging) { Debug.Log("intial position is: " + initPos.x + " " + initPos.y + " " + initPos.z); }
-            //if (config.debugging) { Debug.Log("next position is: " + nextPos); }
-
             movingObjs[i].position = Vector3.Lerp(coordinateArray[cusMotArrayIndex[i]], coordinateArray[cusMotArrayIndex[i] + 1], fracTraveled);
-            if (config.debugging) { Debug.Log("Lerped position is: " + movingObjs[i].position); }
 
             if (cusMotArrayIndex[i] + 1 < numCustomCoordinates[i])
             {
@@ -540,12 +534,16 @@ public class RunExperiment : MonoBehaviour {
             }
         }
     }
-
+    /**
+     * Reads in the custom positions file (a .cus file).
+     * Initializes the custom motion positions array (cusMotArray) and the custom motion rotations array (rotations).
+     */
     public void ReadCustomPositions(string filename, int j)
     {
         string line;
         int n;
         string[] posStrings;
+        int counter = 0;
 
         System.IO.StreamReader file = new System.IO.StreamReader(filename);
         while ((line = file.ReadLine()) != null)
@@ -561,22 +559,24 @@ public class RunExperiment : MonoBehaviour {
             {
                 // Convert string decimal to double and put into an array.
                 position[i - 1] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
-                if (config.debugging) { Debug.Log("object: " + j + " index: " + i + " double : " + position[i - 1]); }
             }
-            // if (config.debugging) { Debug.Log("outside for loop"); }
+
             Vector3 coordinates = new Vector3((float)position[0], (float)position[1], (float)position[2]);
-            // if (config.debugging) { Debug.Log("coordinates: " + coordinates); }
             Vector3 rotDegrees = new Vector3((float)position[3], (float)position[4], (float)position[5]);
-            // if (config.debugging) { Debug.Log("after rotation"); }
 
             cusMotArray[j].Add(coordinates);
             rotations[j].Add(rotDegrees);
+            if (config.debugging) { Debug.Log("rotation " + j + " " + rotations[j][counter] ); }
+
+            counter++;
         }
         numCustomCoordinates[j] = cusMotArray[j].Count;
         file.Close();
     }
 
-   
+   /**
+    * Calculates the offsets for non CameraLocked mode.
+    */
     public List<Vector3> Offset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirections)
     {
         // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
@@ -593,9 +593,6 @@ public class RunExperiment : MonoBehaviour {
             positions[i] = new Vector3(initPos.x + (offsetDirections.x * offsets.x), initPos.y + (offsetDirections.y * offsets.y), initPos.z + (offsetDirections.z * offsets.z));
             positions[i + 1] = new Vector3(nextPos.x + (offsetDirections.x * offsets.x), nextPos.y + (offsetDirections.y * offsets.y), nextPos.z + (offsetDirections.z * offsets.z));
 
-            // if (config.debugging)
-            // { Debug.Log("offset initPos: " + positions[i] + " offset nextPos: " + positions[i + 1]); }
-
             if (i + 3 == positions.Count) // Makes sure we don't miss the last coordinate
             {
                 positions[i + 2] = new Vector3(positions[i + 2].x + (offsetDirections.x * offsets.x), positions[i + 2].y + (offsetDirections.y * offsets.y), positions[i + 2].z + (offsetDirections.z * offsets.z));
@@ -606,15 +603,15 @@ public class RunExperiment : MonoBehaviour {
         return positions;
     }
 
+    /**
+     * Calculates the offsets for CameraLock mode. Note that only a z offset can be calculated.
+     */
     public List<Vector3> CameraLockOffset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirection)
     {
         // Only want the Z offset.
         float offsetZ = objSize.z / 2;
-        // if (config.debugging) { Debug.Log("offset is: " + offsetZ); }
         int i = 0;
         float offsetVal = offsetZ;
-        //float endY = positions[positions.Count - 1].y;
-        //float startY = positions[0].y;
 
         while (i + 1 < positions.Count)
         {
@@ -625,16 +622,9 @@ public class RunExperiment : MonoBehaviour {
             Vector3 newStart = viveCamera.TransformPoint(new Vector3(initPos.x, initPos.y, initPos.z + offsetVal));
             Vector3 newEnd = viveCamera.TransformPoint(new Vector3(nextPos.x, nextPos.y, nextPos.z + offsetVal));
 
-            // if (config.debugging)
-            // { Debug.Log("camera height:  " + viveCamera.position.y + " initial y position: " + positions[i].y); }
-
-
             // Adjust the height of the object to match the height of the camera
             positions[i] = new Vector3(newStart.x, viveCamera.position.y + positions[i].y, newStart.z);
             positions[i + 1] = new Vector3(newEnd.x, viveCamera.position.y + positions[i + 1].y, newEnd.z);
-
-            // if (config.debugging)
-            // { Debug.Log("offset initPos: " + positions[i] + " offset nextPos: " + positions[i + 1]); }
 
             if (i + 3 == positions.Count) // Makes sure we don't miss the last coordinate
             {

@@ -23,6 +23,6 @@
 	0,
 	5
 	],
-	"pressHold": false,
+	"pressHold": true,
 	"debugging": true
 }

@@ -41,45 +41,9 @@
 		  "offsetY": 0,
 		  "offsetZ": 0
         }, 
-				        {
-          "objNum": 2,
-          "objType": "Car",
-		  "customMot": false,
-	      "customFile": "accelerate.txt",
-		  "customDur": 8,
 
-          "objScale": [
-            1.0,
-            1.0,
-            1.0
-          ],
-		  "objRot": [
-		    -90,
-			-90,
-			0
-		  ],
-          "startPos": [
-            25,
-            0,
-            0
-          ],
-          "endPos": [
-            0,
-            0,
-			0
-          ],
-          "velocity": 5,
-          "timeVisible": 3000,
-          "rotationSpeedX": 0,
-		  "rotationSpeedY": 0,
-		  "rotationSpeedZ": 0,
-		  "offsetX": 0,
-		  "offsetY": 0,
-		  "offsetZ": 1
-        },
-		
 						        {
-          "objNum": 3,
+          "objNum": 2,
           "objType": "Car",
 		  "customMot": true,
 	      "customFile": "largeDeccelerate.txt",
@@ -92,7 +56,7 @@
           ],
 		  "objRot": [
 		    -90,
-			-90,
+			90,
 			0
 		  ],
           "startPos": [
@@ -110,9 +74,9 @@
           "rotationSpeedX": 0,
 		  "rotationSpeedY": 0,
 		  "rotationSpeedZ": 0,
-		  "offsetX": 0,
+		  "offsetX": 1,
 		  "offsetY": 0,
-		  "offsetZ": 1
+		  "offsetZ": 0
         },
 								        {
           "objNum": 4,
