@@ -26,6 +26,7 @@ public class RunExperiment : MonoBehaviour {
     private float rate;                     // The framerate that we're moving the object at
     public ManageTrials.Trial[] trials;     // The input file converted to an array of Trial objects 
     private Transform headPos;              // The location of the camera rig relevant to the scene
+    private Transform controllerPos;        // The location of the controller relevant to the scene
 
     private bool expComplete;
     [SerializeField] private GameObject road;   // The road object for the scene (reference for design decision: https://akbiggs.silvrback.com/please-stop-using-gameobject-find) 
@@ -108,6 +109,7 @@ public class RunExperiment : MonoBehaviour {
 
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
+        controllerPos = GameObject.Find("Controller(right)").transform;
         movingObj = GameObject.Find("MovingObj");
 
 
@@ -327,12 +329,9 @@ public class RunExperiment : MonoBehaviour {
                     curObj.stepHidden = curObj.timeVisible * rate;
                 }
             }
-
-
             // Set the start time of this trial so that it can be recorded by the data manager
             trial.trialStart = Time.time;
             curTrial++;
-
             // Call the repeating methods to move the objects and track head position
             float delay = (1.0f / rate);
             InvokeRepeating("MoveObjsByStep", 0.0f, delay);
@@ -406,7 +405,10 @@ public class RunExperiment : MonoBehaviour {
             if (config.feedbackType == 2) { uiManager.DisplayLRFeedback(response, trials[curTrial - 1].corrAns); }
         }
         // Only save the head tracking data if that flag was set in the config file
-        if (config.trackHeadPos) dataManager.WritePosData();
+        if (config.trackHeadPos) dataManager.WriteHeadPosData();
+
+        // Only save the controller tracking data if that flag was set in the config file
+        if (config.trackControllerPos) dataManager.WriteControllerPosData();
 
     }
 
@@ -641,9 +643,10 @@ public class RunExperiment : MonoBehaviour {
     * Gets the position of the Vive headset at a predefined interval and adds that data point to the
     * head position data file for the current trial.
     */
-    void HeadTracking()
+    void Tracking()
     {
         dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
+        dataManager.AddControllerPos(Time.time, controllerPos.position, controllerPos.eulerAngles);
     }
 
     void OnApplicationQuit()

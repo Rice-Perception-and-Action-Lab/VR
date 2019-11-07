@@ -6,6 +6,7 @@
     "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
 	"cameraLock": false, 
     "trackHeadPos": true,
+	"trackControllerPos": true,
     "showFeedback": false,
 	"feedbackType": 1,
 	"collectConfidence": false,
@@ -23,6 +24,6 @@
 	0,
 	5
 	],
-	"pressHold": true,
+	"pressHold": false,
 	"debugging": true
 }

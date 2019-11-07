@@ -20,6 +20,7 @@ public class ReadConfig : MonoBehaviour {
         public bool cameraLock;
         //public float[] initCameraPos;
         public bool trackHeadPos;
+        public bool trackControllerPos;
         public bool showFeedback;
         public int feedbackType;
         public bool collectConfidence;
