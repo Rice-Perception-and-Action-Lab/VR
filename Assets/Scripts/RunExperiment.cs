@@ -109,7 +109,7 @@ public class RunExperiment : MonoBehaviour {
 
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
-        controllerPos = GameObject.Find("Controller(right)").transform;
+        controllerPos = GameObject.Find("/CameraManager/[CameraRig]/Controller (right)").transform;
         movingObj = GameObject.Find("MovingObj");
 
 
@@ -335,7 +335,7 @@ public class RunExperiment : MonoBehaviour {
             // Call the repeating methods to move the objects and track head position
             float delay = (1.0f / rate);
             InvokeRepeating("MoveObjsByStep", 0.0f, delay);
-            InvokeRepeating("HeadTracking", 0.0f, delay);
+            InvokeRepeating("Tracking", 0.0f, delay);
 
             // Set the trial as running
             isRunning = true;
@@ -378,7 +378,7 @@ public class RunExperiment : MonoBehaviour {
 
         Debug.Log("Trial " + trials[curTrial - 1].trialNum + " completed" + Environment.NewLine);
         CancelInvoke("MoveObjsByStep");
-        CancelInvoke("HeadTracking");
+        CancelInvoke("Tracking");
 
         HideAllObjs();
 
