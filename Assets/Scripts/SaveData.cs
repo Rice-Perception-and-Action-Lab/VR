@@ -9,11 +9,12 @@ using System.Text;
 [System.Serializable]
 public class SaveData : MonoBehaviour
 {
-    public TrialData[] data;                // the data about participant responses and the metadata about each trial's parameters
-    private List<HeadPos> posData;          // the head position data collected for each trial
-    private int i;                          // the index to track the current trial/position in the data array
-    private float expStart;                 // the start time of the experiment (the times for individual trials are relative to this)
-    private string datetime;                // the date/time that the experiment began
+    public TrialData[] data;                    // the data about participant responses and the metadata about each trial's parameters
+    private List<Position> headPosData;         // the head position data collected for each trial
+    private List<Position> controllerPosData;   // the controller position data collected for each trial
+    private int i;                              // the index to track the current trial/position in the data array
+    private float expStart;                     // the start time of the experiment (the times for individual trials are relative to this)
+    private string datetime;                    // the date/time that the experiment began
 
     /* Config-Specified Fields */
     public int subjNum;
@@ -130,7 +131,7 @@ public class SaveData : MonoBehaviour
      * The HeadPos class represents the position of the Vive headset at a specific point in time.
      */
     [System.Serializable]
-    public class HeadPos
+    public class Position
     {
         public float timestamp;     // the time at which this position was recorded
         public float x;             // the x-coordinate of the camera rig at this point in time
@@ -143,7 +144,7 @@ public class SaveData : MonoBehaviour
         /**
          * A constructor for the HeadPos object.
          */
-        public HeadPos(float timestamp, Vector3 pos, Vector3 euler)
+        public Position(float timestamp, Vector3 pos, Vector3 euler)
         {
             this.timestamp = timestamp;
             this.x = pos.x;
@@ -232,7 +233,9 @@ public class SaveData : MonoBehaviour
         this.i = 0;
         this.expStart = startTime;
         this.datetime = System.DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss");
-        this.posData = new List<HeadPos>();
+        this.headPosData = new List<Position>();
+        this.controllerPosData = new List<Position>();
+
     }
 
     /**
@@ -255,16 +258,21 @@ public class SaveData : MonoBehaviour
      */
     public void AddHeadPos(float timestamp, Vector3 curPos, Vector3 curEuler)
     {
-        posData.Add(new HeadPos(timestamp, curPos, curEuler));
+        headPosData.Add(new Position(timestamp, curPos, curEuler));
+    }
+
+    public void AddControllerPos(float timestamp, Vector3 curPos, Vector3 curEuler)
+    {
+        controllerPosData.Add(new Position(timestamp, curPos, curEuler));
     }
 
     /**
      * Write the head position data to a JSON file.
      */
-    public void WritePosData()
+    public void WriteHeadPosData()
     {
-            HeadPos[] posArr = posData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
-            string jsonData = JsonHelper.ToJson(this, posArr, true);
+            Position[] headPosArr = headPosData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
+            string jsonData = JsonHelper.ToJson(this, headPosArr, true);
             string dir = path + "/Data/Subj" + subjNum + "/Head Data/";
 
             // Create the directory to store the position data if it doesn't already exist
@@ -285,15 +293,43 @@ public class SaveData : MonoBehaviour
             }
 
             // Make a new list to collect the next trial's head position data
-            posData = new List<HeadPos>();
+            headPosData = new List<Position>();
+    }
 
-        
+    /**
+ * Write the controller position data to a JSON file.
+ */
+    public void WriteControllerPosData()
+    {
+        Position[] controllerPosArr = controllerPosData.ToArray();   // Unity's JsonHelper utility can only parse arrays, not lists
+        string jsonData = JsonHelper.ToJson(this, controllerPosArr, true);
+        string dir = path + "/Data/Subj" + subjNum + "/Controller Data/";
+
+        // Create the directory to store the position data if it doesn't already exist
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        string trialPosDataFile = "Subj" + subjNum.ToString() + "_Controller_Data_Trial" + TRIALNUM + ".json";
+        string filepath = Path.Combine(dir, trialPosDataFile);
+        Debug.Log("Saving controller data to " + filepath);
+
+        // Write the JSON string to the specified file path
+        using (StreamWriter writer = new StreamWriter(filepath, false))
+        {
+            writer.WriteLine(jsonData);
+            writer.Flush();
+        }
+
+        // Make a new list to collect the next trial's controller position data
+        controllerPosData = new List<Position>();
     }
 
     /**
      * Write all trial data to a JSON file.
      */
-    
+
     public void Save(bool partial)
     {
         string jsonData = JsonHelper.ToJson(this, data, true);

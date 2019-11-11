@@ -24,9 +24,9 @@ public class ManageObjs : MonoBehaviour {
         public float rotationSpeedX;        // the speed at which the object should rotate around X axis
         public float rotationSpeedY;        // the speed at which the object should rotate around Y axis
         public float rotationSpeedZ;        // the speed at which the object should rotate around Z axis
-        public bool offsetX;                // whether or not an object needs an x coordinate offset
-        public bool offsetY;                // whether or not an object needs an y coordinate offset
-        public bool offsetZ;                // whether or not an object needs an z coordinate offset
+        public int offsetX;                 // x coordinate offset: 0 meeans doesn't need one, 1 is positive x offset, -1 is negative x offset.
+        public int offsetY;                 // z coordinate offset: 0 meeans doesn't need one, 1 is positive x offset, -1 is negative x offset.
+        public int offsetZ;                 // z coordinate offset: 0 meeans doesn't need one, 1 is positive x offset, -1 is negative x offset.
         public float dist;                  // the distance that the object must travel
 
         /* Derived fields */
@@ -36,6 +36,11 @@ public class ManageObjs : MonoBehaviour {
         public int stepCounter = 0;         // the number of steps the object has taken
         public bool objVisible = false;     // whether or not an object is currently visible in the scene
         public bool objActive = false;      // whether or not the object is currently active in the scene
+
+        // Custom Motion Variables
+        public bool customMot;              // if custom motion is used for the trial
+        public string customFile;           // name of file with positions for custom motion
+        public float customDur;             // amount of time for the object to start and end motion.
     }
 
 }

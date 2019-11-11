@@ -4,11 +4,12 @@
 	"session": 1,
 	"group": 1,
     "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
-	"cameraLock": true, 
+	"cameraLock": false, 
     "trackHeadPos": true,
+	"trackControllerPos": true,
     "showFeedback": false,
 	"feedbackType": 1,
-	"collectConfidence": true,
+	"collectConfidence": false,
     "feedbackColor": "black",
     "feedbackSize": 75,
     "feedbackPos": [
@@ -23,6 +24,6 @@
 	0,
 	5
 	],
-	"pressHold": true,
+	"pressHold": false,
 	"debugging": true
 }

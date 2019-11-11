@@ -1,0 +1,190 @@
+{
+    "subjNum": 2,
+    "subjSex": 1,
+    "session": 1,
+    "group": 1,
+    "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
+    "showFeedback": false,
+    "feedbackType": 1,
+    "collectConfidence": false,
+    "feedbackColor": "black",
+    "trackHeadPos": true,
+    "Trials": [
+        {
+            "trialNum": 1,
+            "trialName": "VRE1P5LF",
+            "corrAns": 0,
+            "objData": [
+                {
+                    "objNum": 1,
+                    "objType": "Cube",
+                    "objScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "startPos": [
+                        10.0,
+                        10.0,
+                        0.0
+                    ],
+                    "endPos": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 14.142135620117188,
+                    "velocity": 5.0,
+                    "timeVisible": 3000.0,
+                    "rotationSpeedX": 2.0,
+                    "rotationSpeedY": 0.0,
+                    "rotationSpeedZ": 0.0
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Car",
+                    "objScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "startPos": [
+                        50.0,
+                        0.0,
+                        0.0
+                    ],
+                    "endPos": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 50.0,
+                    "velocity": 5.0,
+                    "timeVisible": 3000.0,
+                    "rotationSpeedX": 0.0,
+                    "rotationSpeedY": 0.0,
+                    "rotationSpeedZ": 0.0
+                },
+                {
+                    "objNum": 3,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "startPos": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    "endPos": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 0.0,
+                    "velocity": 5.0,
+                    "timeVisible": 3000.0,
+                    "rotationSpeedX": 0.0,
+                    "rotationSpeedY": 0.0,
+                    "rotationSpeedZ": 0.0
+                }
+            ],
+            "trialStart": 2.023378610610962,
+            "trialEnd": 13.150338172912598,
+            "respTime": 11.126959800720215,
+            "response": "Right",
+            "confidence": "N/A",
+            "ttcEstimate": -2988.873046875
+        },
+        {
+            "trialNum": 2,
+            "trialName": "VRE1P6LF",
+            "corrAns": 0,
+            "objData": [
+                {
+                    "objNum": 1,
+                    "objType": "Cube",
+                    "objScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "startPos": [
+                        10.0,
+                        10.0,
+                        0.0
+                    ],
+                    "endPos": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 14.142135620117188,
+                    "velocity": 5.0,
+                    "timeVisible": 3000.0,
+                    "rotationSpeedX": 2.0,
+                    "rotationSpeedY": 0.0,
+                    "rotationSpeedZ": 0.0
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Car",
+                    "objScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "startPos": [
+                        50.0,
+                        0.0,
+                        0.0
+                    ],
+                    "endPos": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 50.0,
+                    "velocity": 5.0,
+                    "timeVisible": 3000.0,
+                    "rotationSpeedX": 0.0,
+                    "rotationSpeedY": 0.0,
+                    "rotationSpeedZ": 0.0
+                },
+                {
+                    "objNum": 3,
+                    "objType": "Sphere",
+                    "objScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "startPos": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    "endPos": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    "distTraveled": 0.0,
+                    "velocity": 5.0,
+                    "timeVisible": 3000.0,
+                    "rotationSpeedX": 0.0,
+                    "rotationSpeedY": 0.0,
+                    "rotationSpeedZ": 0.0
+                }
+            ],
+            "trialStart": 16.693286895751954,
+            "trialEnd": 27.766700744628908,
+            "respTime": 11.073413848876954,
+            "response": "Right",
+            "confidence": "N/A",
+            "ttcEstimate": -2988.926513671875
+        }
+    ]
+}

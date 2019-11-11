@@ -19,13 +19,14 @@ public class RunExperiment : MonoBehaviour {
     public Transform subject;               // Used to reposition the Vive's world location at the beginning of the experiment
 
     // The Config options
-    public ReadConfig.Config config;       // The configuration file specifying certain experiment-wide parameters
+    public ReadConfig.Config config;        // The configuration file specifying certain experiment-wide parameters
     private string inputFile;               // A JSON file holding the information for every trial to be run
 
     // Experiment-Dependent Variables
     private float rate;                     // The framerate that we're moving the object at
-    public ManageTrials.Trial[] trials;    // The input file converted to an array of Trial objects 
+    public ManageTrials.Trial[] trials;     // The input file converted to an array of Trial objects 
     private Transform headPos;              // The location of the camera rig relevant to the scene
+    private Transform controllerPos;        // The location of the controller relevant to the scene
 
     private bool expComplete;
     [SerializeField] private GameObject road;   // The road object for the scene (reference for design decision: https://akbiggs.silvrback.com/please-stop-using-gameobject-find) 
@@ -34,7 +35,7 @@ public class RunExperiment : MonoBehaviour {
     // Trial-Dependent Variables
 
     private int curTrial;                   // Track the number of the current trial being run
-    public bool isRunning;                 // Tracks whether or not a trial is currently active
+    public bool isRunning;                  // Tracks whether or not a trial is currently active
     private float trialStart;               // Track the time that the current trial began
     private string objName;                 // The name of the prefab object used for the given trial
     private Vector3[] startPosArr;          // The starting positions of all objects in a trial, in Vector3 form for easier reference than the float[] version stored with the object
@@ -43,7 +44,7 @@ public class RunExperiment : MonoBehaviour {
     private Transform[] movingObjs;         // The array of objects for a trial once they have been instantiated
     private int numObjs;                    // the number of objects that are part of a trial
 
-    private float stepSize;                     // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
+    private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
     private float ttcActual;                //the theoretical TTC calculated from startPos, time visible, and velocity
@@ -51,6 +52,12 @@ public class RunExperiment : MonoBehaviour {
     private float estimate;                 //the calculation of the participant's TTC estimate NOTE: 1 object PM Scenes only
     private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
     public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
+
+    private List<Vector3>[] cusMotArray;    // Array of the positions array for custom motion  for all objects
+    private List<Vector3>[] rotations;      // Array of the rotations array for custom motion  for all objects
+    private float curFrame;                 // Current frame.
+    private int[] cusMotArrayIndex;         // Array of the indexes of the positions in the cusMotArray, for all objects.
+    private int[] numCustomCoordinates;     // Array of the total number of coordinates in cusMotArray,  for all objects.
 
 
 
@@ -100,11 +107,9 @@ public class RunExperiment : MonoBehaviour {
         isRunning = false;
         expComplete = false;
 
-        // Set the initial position of the participant 
-        //cameraManager.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
-        //subject.position = viveCamera.TransformPoint(new Vector3(config.initCameraPos[0], config.initCameraPos[1], config.initCameraPos[2]));
         // Set the head position transform to track the participant's movements
         headPos = GameObject.Find("Camera (eye)").transform;
+        controllerPos = GameObject.Find("/CameraManager/[CameraRig]/Controller (right)").transform;
         movingObj = GameObject.Find("MovingObj");
 
 
@@ -153,10 +158,37 @@ public class RunExperiment : MonoBehaviour {
             startPosArr = new Vector3[numObjs];
             endPosArr = new Vector3[numObjs];
             movingObjs = new Transform[numObjs];
+            cusMotArray = new List<Vector3>[numObjs];
+            rotations = new List<Vector3>[numObjs];
+            cusMotArrayIndex = new int[numObjs];
+            numCustomCoordinates = new int[numObjs];
 
             for (int i = 0; i < numObjs; i++)
             {
                 ManageObjs.Obj curObj = trial.objects[i];
+
+                // Set current frame to 0.
+                curFrame = 0;
+
+                // Set custom motion array to empty.
+                cusMotArray[i] = new List<Vector3>();
+                
+                // Set custom rotations array to empty.
+                rotations[i] = new List<Vector3>();
+
+                if (curObj.customMot) // Check for custom motion configurations.
+                {
+                    // Set custom motion array index to 0.
+                    cusMotArrayIndex[i] = 0;
+                    // Set custom motion array (called positions) and custom rotations array (called rotations).
+                    ReadCustomPositions("Assets/Trials/Custom_Motion_Positions/" + curObj.customFile, i);
+                }
+
+                Debug.Log("custom motion array for index " + i + ": ");
+                for (int y = 0; y < numCustomCoordinates[i]; y++)
+                {
+                    Debug.Log(y + ": " + cusMotArray[i][y]);
+                }
 
                 // Set the object prefab that will be displayed
                 GameObject newObj = Resources.Load("Objects\\" + curObj.objType) as GameObject;
@@ -165,146 +197,98 @@ public class RunExperiment : MonoBehaviour {
                 // Set the scale of the object
                 objs[i].localScale = new Vector3(curObj.objScale[0], curObj.objScale[1], curObj.objScale[2]);
 
-                // Set the object rotation.
-                objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
+                // Set the object rotation. 
+                if (curObj.customMot && (objs[i].localEulerAngles != rotations[i][0]))
+                {
+                    Debug.Log("WARNING! Object rotation is not equal to initial rotation in custom motion file. Using the rotation of first frame in " + curObj.customFile);
+                    objs[i].localEulerAngles = rotations[i][0];
+                }
+
+                if (!curObj.customMot)
+                {
+                    objs[i].localEulerAngles = new Vector3(curObj.objRot[0], curObj.objRot[1], curObj.objRot[2]);
+                }
+
                 if (config.debugging) { Debug.Log("rotation: " + objs[i].localEulerAngles.x + " " + objs[i].localEulerAngles.y + " " + objs[i].localEulerAngles.z); }
+
+                /** 
+                 * Check that offsets are merely directions and don't have a magnitude. If so, correct them.
+                 */
+
+                if (Math.Abs(curObj.offsetX) > 1)
+                {
+                    Debug.Log("WARNING! Magnitude of x offset direction should not be greater than 1!");
+                    curObj.offsetX = curObj.offsetX / Math.Abs(curObj.offsetX);
+                }
+                if (Math.Abs(curObj.offsetY) > 1)
+                {
+                    Debug.Log("WARNING! Magnitude of y offset direction should not be greater than 1!");
+                    curObj.offsetY = curObj.offsetY / Math.Abs(curObj.offsetY);
+                }
+                if (Math.Abs(curObj.offsetZ) > 1)
+                {
+                    Debug.Log("WARNING! Magnitude of z offset direction should not be greater than 1!");
+                    curObj.offsetZ = curObj.offsetZ / Math.Abs(curObj.offsetZ);
+                }
+
+                // Set offset directions.
+                Vector3 offsetDirections = new Vector3(curObj.offsetX, curObj.offsetY, curObj.offsetZ);
+
+                // Set initial start and end vectors.
+                Vector3 startVector = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
+                Vector3 endVector = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
+
+                if (curObj.customMot && (startVector != cusMotArray[i][0] || endVector != cusMotArray[i][numCustomCoordinates[i] - 1]))
+                {
+                    Debug.Log("WARNING! Custom motion initial and final positions in " + curObj.customFile +
+                        " are not equal to startPos and endPos. Using initial and final positions in " + curObj.customFile);
+                }
+
+                // Get size of model
+                Renderer render = objs[i].GetComponent<Renderer>();
+                Vector3 objSize = render.bounds.size;
 
                 if (config.cameraLock)
                 {
-                    // Set the initial and final positions of the object
-                    Vector3 inputStartPos = new Vector3(curObj.startPos[0], viveCamera.position.y + curObj.startPos[1], curObj.startPos[2]);
-                    Vector3 inputEndPos = new Vector3(curObj.endPos[0], viveCamera.position.y + curObj.endPos[1], curObj.endPos[2]);
+                    startPosArr[i] = new Vector3(startVector.x, startVector.y, startVector.z); // Got rid of adding camera height because was doing it twice.
+                    endPosArr[i] = new Vector3(endVector.x, endVector.y, endVector.z);
 
-                    if (curObj.offsetZ)
+                    // Calculate camera lock offsets
+                    if (curObj.customMot)
+                    { CameraLockOffset(cusMotArray[i], objSize, offsetDirections); }
+
+                    else
                     {
-                        if (inputStartPos.z != inputEndPos.z) // Can't calculate offset if doesn't move.
-                        {
-                            // Get size of model
-                            Renderer render = objs[i].GetComponent<Renderer>();
-                            Vector3 objSize = render.bounds.size;
-
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (inputStartPos.z - inputEndPos.z) / Mathf.Abs(inputStartPos.z - inputEndPos.z);
-
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.z / 2;
-
-                            // Set the initial and final positions of the object with the z offset.
-                            Vector3 newStartVector = new Vector3(inputStartPos.x, inputStartPos.y, inputStartPos.z + (direction * offset));
-                            Vector3 newEndVector = new Vector3(inputEndPos.x, inputEndPos.y, inputEndPos.z + (direction * offset));
-
-                            // Set new vectors in their respective arrays.
-                            inputStartPos = newStartVector;
-                            inputEndPos = newEndVector;
-                        }
+                        List<Vector3> startEndList = new List<Vector3>();
+                        startEndList.Add(startPosArr[i]);
+                        startEndList.Add(endPosArr[i]);
+                        List<Vector3> positions = CameraLockOffset(startEndList, objSize, offsetDirections);
+                        startPosArr[i] = positions[0];
+                        endPosArr[i] = positions[1];
                     }
-
-                    startPosArr[i] = viveCamera.TransformPoint(inputStartPos);      // orient the start position based on the rotation/direction of the Vive
-                    endPosArr[i] = viveCamera.TransformPoint(inputEndPos);          // orient the end position based on the rotation/direction of the Vive
-
-                    // Adjust the height of the object to match the height of the camera
-                    startPosArr[i] = new Vector3(startPosArr[i].x, viveCamera.position.y + curObj.startPos[1], startPosArr[i].z);
-                    endPosArr[i] = new Vector3(endPosArr[i].x, viveCamera.position.y + curObj.endPos[1], endPosArr[i].z);
 
                 }
                 else
-                {
-                    /**
-                    * Begin calculating offsets. --------------------------------------------------------------------------------------------------------------
-                    */
-
-                    // Get size of model
-                    Renderer render = objs[i].GetComponent<Renderer>();
-                    Vector3 objSize = render.bounds.size;
-                    if (config.debugging) { Debug.Log("Render bounds Size: " + render.bounds.size.x + " " + render.bounds.size.y + " " + render.bounds.size.z); }
+                { // Add offsets for non camera-locked trials.
 
                     // Initialize startPosArr and endPosArr with a copy of the object's current start and end positions, respectively.
-                    startPosArr[i] = new Vector3(curObj.startPos[0], curObj.startPos[1], curObj.startPos[2]);
-                    endPosArr[i] = new Vector3(curObj.endPos[0], curObj.endPos[1], curObj.endPos[2]);
+                    startPosArr[i] = startVector;
+                    endPosArr[i] = endVector;
 
-                    if (curObj.offsetX)
-                    {
-                        if (startPosArr[i].x != endPosArr[i].x) // Can't calculate offset if doesn't move.
-                        {
-                            if (config.debugging) { Debug.Log("inside the offset"); }
-                            if (config.debugging) { Debug.Log(startPosArr[i].x); }
-                            if (config.debugging) { Debug.Log(endPosArr[i].x); }
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (startPosArr[i].x - endPosArr[i].x) / Mathf.Abs(startPosArr[i].x - endPosArr[i].x);
+                    // Calculate offsets
+                    if (curObj.customMot)
+                    { Offset(cusMotArray[i], objSize, offsetDirections); }
 
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.x / 2;
-
-                            // Set the initial and final positions of the object with the x offset.
-                            Vector3 newStartVector = new Vector3(startPosArr[i].x + (direction * offset), startPosArr[i].y, startPosArr[i].z);
-                            Vector3 newEndVector = new Vector3(endPosArr[i].x + (direction * offset), endPosArr[i].y, endPosArr[i].z);
-
-                            // Set new vectors in their respective arrays.
-                            startPosArr[i] = newStartVector;
-                            endPosArr[i] = newEndVector;
-
-                        }
-
-                        if (config.debugging) { Debug.Log("X offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
-                        if (config.debugging) { Debug.Log("X offset End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
-
+                   else {
+                        List<Vector3> startEndList = new List<Vector3>();
+                        startEndList.Add(startPosArr[i]);
+                        startEndList.Add(endPosArr[i]);
+                        List<Vector3> positions =  Offset(startEndList, objSize, offsetDirections);
+                        startPosArr[i] = positions[0];
+                        endPosArr[i] = positions[1];
                     }
-
-                    if (curObj.offsetY)
-                    {
-
-                        if (startPosArr[i].y != endPosArr[i].y) // Can't calculate offset if doesn't move.
-                        {
-
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (startPosArr[i].y - endPosArr[i].y) / Mathf.Abs(startPosArr[i].y - endPosArr[i].y);
-
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.y / 2;
-
-                            // Set the initial and final positions of the object with the y offset.
-                            Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y + (direction * offset), startPosArr[i].z);
-                            Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y + (direction * offset), endPosArr[i].z);
-
-                            // Set new vectors in their respective arrays.
-                            startPosArr[i] = newStartVector;
-                            endPosArr[i] = newEndVector;
-                        }
-
-                        if (config.debugging) { Debug.Log("Y Offset Start Pos: " + startPosArr[i].x + " " + startPosArr[i].y + " " + startPosArr[i].z); }
-                        if (config.debugging) { Debug.Log(" Y offset End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
-
-                    }
-
-                    if (curObj.offsetZ)
-                    {
-                        if (startPosArr[i].z != endPosArr[i].z) // Can't calculate offset if doesn't move.
-                        {
-                            // Determine where the front of the object is (direction is either 1 or -1). Since offset is either added or subtracted
-                            // from the center depending on the direction of your velocity, this calculates the correct sign of the offset.
-                            float direction = (startPosArr[i].z - endPosArr[i].z) / Mathf.Abs(startPosArr[i].z - endPosArr[i].z);
-
-                            // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
-                            float offset = objSize.z / 2;
-
-                            // Set the initial and final positions of the object with the z offset.
-                            Vector3 newStartVector = new Vector3(startPosArr[i].x, startPosArr[i].y, startPosArr[i].z + (direction * offset));
-                            Vector3 newEndVector = new Vector3(endPosArr[i].x, endPosArr[i].y, endPosArr[i].z + (direction * offset));
-
-                            // Set new vectors in their respective arrays.
-                            startPosArr[i] = newStartVector;
-                            endPosArr[i] = newEndVector;
-                        }
-                    }
-
                 }
                
-			   /**
-                 * End calculating offsets. --------------------------------------------------------------------------------------------------------------
-                 */
 
                 // Calculate the distance that the object must travel
                 curObj.dist = Vector3.Distance((Vector3)startPosArr[i], (Vector3)endPosArr[i]);
@@ -313,8 +297,16 @@ public class RunExperiment : MonoBehaviour {
                 if (config.debugging) { Debug.Log("End Pos: " + endPosArr[i].x + " " + endPosArr[i].y + " " + endPosArr[i].z); }
 
                 // Instantiate the object so that it's visible
-                movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
+                if (curObj.customMot)
+                {
+                    movingObjs[i] = Instantiate(objs[i], cusMotArray[i][0], objs[i].localRotation); // Important to make sure these are correct variables.
+                }
 
+                else
+                {
+                    movingObjs[i] = Instantiate(objs[i], startPosArr[i], objs[i].localRotation); // Important to make sure these are correct variables.
+
+                }
                 curObj.objVisible = true;
                 curObj.objActive = true;
                 if (config.feedbackType == 1) { pmVisible = true; }
@@ -337,16 +329,13 @@ public class RunExperiment : MonoBehaviour {
                     curObj.stepHidden = curObj.timeVisible * rate;
                 }
             }
-
-
             // Set the start time of this trial so that it can be recorded by the data manager
             trial.trialStart = Time.time;
             curTrial++;
-
             // Call the repeating methods to move the objects and track head position
             float delay = (1.0f / rate);
             InvokeRepeating("MoveObjsByStep", 0.0f, delay);
-            InvokeRepeating("HeadTracking", 0.0f, delay);
+            InvokeRepeating("Tracking", 0.0f, delay);
 
             // Set the trial as running
             isRunning = true;
@@ -376,7 +365,7 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            rend.enabled = false;
+            rend.enabled = true;
         }
     }
 
@@ -389,7 +378,7 @@ public class RunExperiment : MonoBehaviour {
 
         Debug.Log("Trial " + trials[curTrial - 1].trialNum + " completed" + Environment.NewLine);
         CancelInvoke("MoveObjsByStep");
-        CancelInvoke("HeadTracking");
+        CancelInvoke("Tracking");
 
         HideAllObjs();
 
@@ -416,7 +405,10 @@ public class RunExperiment : MonoBehaviour {
             if (config.feedbackType == 2) { uiManager.DisplayLRFeedback(response, trials[curTrial - 1].corrAns); }
         }
         // Only save the head tracking data if that flag was set in the config file
-        if (config.trackHeadPos) dataManager.WritePosData();
+        if (config.trackHeadPos) dataManager.WriteHeadPosData();
+
+        // Only save the controller tracking data if that flag was set in the config file
+        if (config.trackControllerPos) dataManager.WriteControllerPosData();
 
     }
 
@@ -426,7 +418,7 @@ public class RunExperiment : MonoBehaviour {
     void MoveObjsByStep()
      {
         ManageObjs.Obj[] objs = trials[curTrial - 1].objects;
-    
+
         for (int i = 0; i < objs.Length; i++)
         {
             ManageObjs.Obj curObj = objs[i];
@@ -442,35 +434,11 @@ public class RunExperiment : MonoBehaviour {
                     HideObj(movingObjs[i]);
                     curObj.objVisible = false;
                     if (config.feedbackType == 1) { pmVisible = false; }
-
                 }
 
                 // Move the object forward another step
-                float fracTraveled = curObj.stepCounter / curObj.finalStep;
-                movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
-                movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
-				curObj.stepCounter++;
-
-                // If the object has traveled the entire distance, it should no longer be moving
-                if (fracTraveled >= 1)
-                {
-                    float endTime = (Time.time - trials[curTrial - 1].trialStart);
-                    ttcActualSim = (endTime - hideTime);
-                    if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
-                  
-                    
-                    // Hide the object if it hasn't been hidden already
-                    if (curObj.objVisible)
-                    {
-                        HideObj(movingObjs[i]);
-                        curObj.objVisible = false;
-                        if (config.feedbackType == 1) { pmVisible = false; }
-                    }
-
-                    // Set the object to inactive and decrement numObjs
-                    curObj.objActive = false;
-                    numObjs = numObjs - 1;
-                }
+                if (curObj.customMot) { CustomMotionMov(curObj, i, cusMotArray[i], rotations[i]); } // Custom motion movement
+                else { LinearMotionMov(curObj, i); } // Linear motion movement
             }
         }
 
@@ -479,8 +447,81 @@ public class RunExperiment : MonoBehaviour {
         {
             CancelInvoke("MoveObjsByStep");
         }
-     }
+    }
+    /**
+     * Moves the object in a linear path.
+     */
+    public void LinearMotionMov(ManageObjs.Obj curObj, int i)
+    {
+        float fracTraveled = curObj.stepCounter / curObj.finalStep;
+        movingObjs[i].position = Vector3.Lerp(startPosArr[i], endPosArr[i], fracTraveled);
+        movingObjs[i].Rotate(curObj.rotationSpeedX, curObj.rotationSpeedY, curObj.rotationSpeedZ);
+        curObj.stepCounter++;
 
+        // If the object has traveled the entire distance, it should no longer be moving
+        if (fracTraveled >= 1) { StopObjMov(curObj, i);}
+    }
+    /**
+     * Moves the object in a custom motion path.
+     */
+    public void CustomMotionMov(ManageObjs.Obj curObj, int i, List<Vector3> coordinateArray, List<Vector3> rotationArray)
+    {
+        float duration = curObj.customDur;
+        // Be careful, cusMotArrayIndex refers to the positions array index. i refers to the trial object.
+        float totalFrames = duration * rate;
+        float framesPerPoint = totalFrames / (numCustomCoordinates[i]- 1);
+        float fracTraveled = curObj.stepCounter / framesPerPoint;
+
+        if (fracTraveled >= 1) // Move onto the next position in the array.
+        {
+            cusMotArrayIndex[i]++;
+            curObj.stepCounter = 0; // Reset the counter to 0 for the next segment.
+            fracTraveled = 0;
+        }
+
+        // Once we hit the second to last element of the array, it should no longer be moving
+        if (cusMotArrayIndex[i] + 2 > numCustomCoordinates[i]) { StopObjMov(curObj, i); }
+
+        else // Move the object forward another step
+        {
+            movingObjs[i].position = Vector3.Lerp(coordinateArray[cusMotArrayIndex[i]], coordinateArray[cusMotArrayIndex[i] + 1], fracTraveled);
+
+            if (cusMotArrayIndex[i] + 1 < numCustomCoordinates[i])
+            {
+                // Use the next rotation for current position's rotation.
+                Vector3 currentAngle = new Vector3(
+                    Mathf.LerpAngle(rotationArray[cusMotArrayIndex[i]].x, rotationArray[cusMotArrayIndex[i] + 1].x, fracTraveled),
+                    Mathf.LerpAngle(rotationArray[cusMotArrayIndex[i]].y, rotationArray[cusMotArrayIndex[i] + 1].y, fracTraveled),
+                    Mathf.LerpAngle(rotationArray[cusMotArrayIndex[i]].z, rotationArray[cusMotArrayIndex[i] + 1].z, fracTraveled));
+
+                movingObjs[i].localEulerAngles = currentAngle;
+            }
+            curObj.stepCounter++;
+        }
+    }
+
+    /**
+     * Stops the object's movement.
+     */
+    public void StopObjMov(ManageObjs.Obj curObj, int i)
+    {
+        float endTime = (Time.time - trials[curTrial - 1].trialStart);
+        ttcActualSim = (endTime - hideTime);
+        if (config.debugging) { Debug.Log("TTC (simulator): " + ttcActualSim + " Valid when end is 0,0,0"); }
+
+
+        // Hide the object if it hasn't been hidden already
+        if (curObj.objVisible)
+        {
+            HideObj(movingObjs[i]);
+            curObj.objVisible = false;
+            if (config.feedbackType == 1) { pmVisible = false; }
+        }
+
+        // Set the object to inactive and decrement numObjs
+        curObj.objActive = false;
+        numObjs = numObjs - 1;
+    }
 
     public void HideAllObjs()
     {
@@ -495,14 +536,117 @@ public class RunExperiment : MonoBehaviour {
             }
         }
     }
+    /**
+     * Reads in the custom positions file (a .cus file).
+     * Initializes the custom motion positions array (cusMotArray) and the custom motion rotations array (rotations).
+     */
+    public void ReadCustomPositions(string filename, int j)
+    {
+        string line;
+        int n;
+        string[] posStrings;
+        int counter = 0;
 
- /**
- * Gets the position of the Vive headset at a predefined interval and adds that data point to the
- * head position data file for the current trial.
- */
-     void HeadTracking()
+        System.IO.StreamReader file = new System.IO.StreamReader(filename);
+        while ((line = file.ReadLine()) != null)
+        {
+            posStrings = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries); // Split by spaces.
+
+            n = posStrings.Length; // Length of the line
+            if (n == 0) { break; } // In case accidentally added empty lines at the end of a file.
+
+            double[] position = new double[n];
+            // Population positions array.
+            for (int i = 1; i < n; i++) // Start at one since we don't keep the frame number.
+            {
+                // Convert string decimal to double and put into an array.
+                position[i - 1] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
+            }
+
+            Vector3 coordinates = new Vector3((float)position[0], (float)position[1], (float)position[2]);
+            Vector3 rotDegrees = new Vector3((float)position[3], (float)position[4], (float)position[5]);
+
+            cusMotArray[j].Add(coordinates);
+            rotations[j].Add(rotDegrees);
+            if (config.debugging) { Debug.Log("rotation " + j + " " + rotations[j][counter] ); }
+
+            counter++;
+        }
+        numCustomCoordinates[j] = cusMotArray[j].Count;
+        file.Close();
+    }
+
+   /**
+    * Calculates the offsets for non CameraLocked mode.
+    */
+    public List<Vector3> Offset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirections)
+    {
+        // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
+        Vector3 offsets = new Vector3(objSize.x / 2, objSize.y / 2, objSize.z / 2);
+        if (config.debugging) { Debug.Log("offset is: " + offsets); }
+
+        int i = 0;
+        while (i + 1 < positions.Count)
+        {
+            Vector3 initPos = positions[i];
+            Vector3 nextPos = positions[i + 1];
+
+            // Set new vectors in their respective arrays.
+            positions[i] = new Vector3(initPos.x + (offsetDirections.x * offsets.x), initPos.y + (offsetDirections.y * offsets.y), initPos.z + (offsetDirections.z * offsets.z));
+            positions[i + 1] = new Vector3(nextPos.x + (offsetDirections.x * offsets.x), nextPos.y + (offsetDirections.y * offsets.y), nextPos.z + (offsetDirections.z * offsets.z));
+
+            if (i + 3 == positions.Count) // Makes sure we don't miss the last coordinate
+            {
+                positions[i + 2] = new Vector3(positions[i + 2].x + (offsetDirections.x * offsets.x), positions[i + 2].y + (offsetDirections.y * offsets.y), positions[i + 2].z + (offsetDirections.z * offsets.z));
+            }
+
+            i = i + 2;
+        }
+        return positions;
+    }
+
+    /**
+     * Calculates the offsets for CameraLock mode. Note that only a z offset can be calculated.
+     */
+    public List<Vector3> CameraLockOffset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirection)
+    {
+        // Only want the Z offset.
+        float offsetZ = objSize.z / 2;
+        int i = 0;
+        float offsetVal = offsetZ;
+
+        while (i + 1 < positions.Count)
+        {
+            Vector3 initPos = positions[i];
+            Vector3 nextPos = positions[i + 1];
+
+            // Set new vectors in their respective arrays.
+            Vector3 newStart = viveCamera.TransformPoint(new Vector3(initPos.x, initPos.y, initPos.z + offsetVal));
+            Vector3 newEnd = viveCamera.TransformPoint(new Vector3(nextPos.x, nextPos.y, nextPos.z + offsetVal));
+
+            // Adjust the height of the object to match the height of the camera
+            positions[i] = new Vector3(newStart.x, viveCamera.position.y + positions[i].y, newStart.z);
+            positions[i + 1] = new Vector3(newEnd.x, viveCamera.position.y + positions[i + 1].y, newEnd.z);
+
+            if (i + 3 == positions.Count) // Makes sure we don't miss the last coordinate
+            {
+                Vector3 finalVector = viveCamera.TransformPoint(new Vector3(positions[i + 2].x, positions[i + 2].y, positions[i + 2].z + offsetVal));
+                positions[i + 2] = new Vector3(finalVector.x, viveCamera.position.y + positions[i + 2].y, finalVector.z);
+            }
+
+            i = i + 2;
+        }
+        return positions;
+    }
+
+    /**
+    * Gets the position of the Vive headset at a predefined interval and adds that data point to the
+    * head position data file for the current trial.
+    */
+    void Tracking()
     {
         dataManager.AddHeadPos(Time.time, headPos.position, headPos.eulerAngles);
+        dataManager.AddControllerPos(Time.time, controllerPos.position, controllerPos.eulerAngles);
     }
 
     void OnApplicationQuit()

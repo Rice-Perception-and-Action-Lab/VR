@@ -138,7 +138,7 @@ public class TrackHead : MonoBehaviour
             }
             if (workFinished)
             {
-                dataManager.WritePosData();
+                dataManager.WriteHeadPosData();
             }
         }
     }
