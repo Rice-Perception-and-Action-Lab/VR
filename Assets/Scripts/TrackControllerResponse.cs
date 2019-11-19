@@ -141,7 +141,7 @@ public class TrackControllerResponse : MonoBehaviour
                 checkPress = false;
                 buttonReleased = true;
 
-                if (script.config.debugging) { Debug.Log("Time is: " + releaseTime); }
+                if (script.config.debugging) { Debug.Log("Release time is: " + releaseTime); }
             }
 
             // Add keyboard press (press 0 on number pad) for experimenter to end the trial.

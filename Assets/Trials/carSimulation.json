@@ -1,0 +1,159 @@
+{
+	"trials": [{
+			"trialNum": 1,
+			"trialName": "TTC2",
+			"corrAns": 0,
+			"objects": [{
+					"objNum": 1,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-77.828863,
+						0,
+						5
+					],
+					"endPos": [
+						77,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				},
+				{
+					"objNum": 2,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-100.065681,
+						0,
+						5
+					],
+					"endPos": [
+						77,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				}
+			]
+		},
+		{
+			"trialNum": 2,
+			"trialName": "TTC7",
+			"corrAns": 0,
+			"objects": [{
+					"objNum": 1,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-77.828863,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				},
+				{
+					"objNum": 2,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-155.657726,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				}
+			]
+		}
+	]
+}

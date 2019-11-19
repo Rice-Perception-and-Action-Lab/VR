@@ -91,12 +91,12 @@
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 2.023378610610962,
-            "trialEnd": 13.150338172912598,
-            "respTime": 11.126959800720215,
-            "response": "Right",
+            "trialStart": 1.5234496593475342,
+            "trialEnd": 8.708207130432129,
+            "respTime": 7.184757232666016,
+            "response": "Button released.",
             "confidence": "N/A",
-            "ttcEstimate": -2988.873046875
+            "ttcEstimate": -2992.815185546875
         },
         {
             "trialNum": 2,
@@ -179,12 +179,12 @@
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 16.693286895751954,
-            "trialEnd": 27.766700744628908,
-            "respTime": 11.073413848876954,
-            "response": "Right",
+            "trialStart": 13.650469779968262,
+            "trialEnd": 19.23684310913086,
+            "respTime": 5.586373329162598,
+            "response": "Button released.",
             "confidence": "N/A",
-            "ttcEstimate": -2988.926513671875
+            "ttcEstimate": -2994.41357421875
         }
     ]
 }

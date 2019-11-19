@@ -365,7 +365,7 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            rend.enabled = true;
+            rend.enabled = false;
         }
     }
 
@@ -388,7 +388,7 @@ public class RunExperiment : MonoBehaviour {
         dataManager.AddTrial(trials[curTrial - 1]);
         isRunning = false;
 
-
+        // start time - response time - time visible, only done for PM when object disappears
         estimate = (trials[curTrial - 1].trialEnd - trials[curTrial - 1].trialStart) - timeVisible;
 
         if (config.debugging)
@@ -396,7 +396,7 @@ public class RunExperiment : MonoBehaviour {
             Debug.Log("Trial Start: " + trials[curTrial - 1].trialStart + Environment.NewLine);
             Debug.Log("Time Visible: " + timeVisible + Environment.NewLine);
             Debug.Log("Trial End: " + trials[curTrial - 1].trialEnd + Environment.NewLine);
-            Debug.Log("TTC Estimate: " + estimate + Environment.NewLine);
+            Debug.Log("TTC Estimate: " + estimate + Environment.NewLine); 
         }
 
         if (config.showFeedback)
