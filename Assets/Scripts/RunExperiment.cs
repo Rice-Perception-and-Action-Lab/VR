@@ -47,8 +47,8 @@ public class RunExperiment : MonoBehaviour {
     private float stepSize;                 // The fraction that an object moves on every call of the MoveObjsByStep method; based on the target frame rate
     private float hideTime;
     private string posString;
-    private float ttcActual;                //the theoretical TTC calculated from startPos, time visible, and velocity
-    private float ttcActualSim;             //the TTC calculated by the simulator when the endPos is 0,0,0
+    private float ttcActual;                //the theoretical TTC calculated from startPos, time visible, and velocity, for objects along the z-axis (used to calculate feedback msg)
+    private float ttcActualSim;             //the TTC calculated by the simulator when the object reaches its endpoint
     private float estimate;                 //the calculation of the participant's TTC estimate NOTE: 1 object PM Scenes only
     private float timeVisible;              //the time the object is visible NOTE: 1 object PM Scenes only
     public bool pmVisible;                  //True if the object is still visible on the screen. Used in TrackControllerResponse
@@ -365,7 +365,7 @@ public class RunExperiment : MonoBehaviour {
         // Check that the object actually exists to avoid null pointer exceptions
         if (movingObj && movingObj.gameObject && rend.enabled)
         {
-            rend.enabled = true;
+            rend.enabled = false;
         }
     }
 
@@ -388,7 +388,7 @@ public class RunExperiment : MonoBehaviour {
         dataManager.AddTrial(trials[curTrial - 1]);
         isRunning = false;
 
-
+        // start time - response time - time visible, only done for PM when object disappears
         estimate = (trials[curTrial - 1].trialEnd - trials[curTrial - 1].trialStart) - timeVisible;
 
         if (config.debugging)
@@ -396,7 +396,7 @@ public class RunExperiment : MonoBehaviour {
             Debug.Log("Trial Start: " + trials[curTrial - 1].trialStart + Environment.NewLine);
             Debug.Log("Time Visible: " + timeVisible + Environment.NewLine);
             Debug.Log("Trial End: " + trials[curTrial - 1].trialEnd + Environment.NewLine);
-            Debug.Log("TTC Estimate: " + estimate + Environment.NewLine);
+            Debug.Log("TTC Estimate: " + estimate + Environment.NewLine); 
         }
 
         if (config.showFeedback)

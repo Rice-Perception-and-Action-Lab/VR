@@ -3,7 +3,7 @@
     "subjSex": 1,
 	"session": 1,
 	"group": 1,
-    "trialFile": "~\\..\\Assets\\Trials\\testSS.json",
+    "trialFile": "~\\..\\Assets\\Trials\\carSimulation.json",
 	"cameraLock": false, 
     "trackHeadPos": true,
 	"trackControllerPos": true,
@@ -24,6 +24,6 @@
 	0,
 	5
 	],
-	"pressHold": false,
+	"pressHold": true,
 	"debugging": true
 }
