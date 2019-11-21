@@ -6,72 +6,81 @@
     "trialFile": "~\\..\\Assets\\Trials\\carSimulation.json",
     "showFeedback": false,
     "feedbackType": 1,
-    "collectConfidence": true,
+    "collectConfidence": false,
     "feedbackColor": "black",
     "trackHeadPos": true,
     "Trials": [
         {
-            "trialNum": 1,
-            "trialName": "TTC2",
+            "trialNum": 0,
+            "trialName": "",
             "corrAns": 0,
-            "objData": [
-                {
-                    "objNum": 1,
-                    "objType": "Car",
-                    "objScale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "startPos": [
-                        -77.82886505126953,
-                        0.0,
-                        5.0
-                    ],
-                    "endPos": [
-                        77.0,
-                        0.0,
-                        5.0
-                    ],
-                    "distTraveled": 154.828857421875,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
-                    "rotationSpeedX": 0.0,
-                    "rotationSpeedY": 0.0,
-                    "rotationSpeedZ": 0.0
-                },
-                {
-                    "objNum": 2,
-                    "objType": "Car",
-                    "objScale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "startPos": [
-                        -100.06568145751953,
-                        0.0,
-                        5.0
-                    ],
-                    "endPos": [
-                        77.0,
-                        0.0,
-                        5.0
-                    ],
-                    "distTraveled": 177.065673828125,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
-                    "rotationSpeedX": 0.0,
-                    "rotationSpeedY": 0.0,
-                    "rotationSpeedZ": 0.0
-                }
-            ],
-            "trialStart": 0.5107654333114624,
-            "trialEnd": 11.520883560180664,
-            "respTime": 11.01011848449707,
-            "response": "Right",
-            "confidence": "5",
-            "ttcEstimate": -2988.989990234375
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "confidence": "",
+            "ttcEstimate": 0.0
+        },
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "corrAns": 0,
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "confidence": "",
+            "ttcEstimate": 0.0
+        },
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "corrAns": 0,
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "confidence": "",
+            "ttcEstimate": 0.0
+        },
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "corrAns": 0,
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "confidence": "",
+            "ttcEstimate": 0.0
+        },
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "corrAns": 0,
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "confidence": "",
+            "ttcEstimate": 0.0
+        },
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "corrAns": 0,
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "confidence": "",
+            "ttcEstimate": 0.0
         },
         {
             "trialNum": 0,

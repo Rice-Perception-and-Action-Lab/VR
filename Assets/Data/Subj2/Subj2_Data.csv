@@ -1,3 +1,4 @@
 Subj,Sex,Session,Group,Trial,TrialName,CorrAns,TrialStart,TrialEnd,RespTime,Resp,TTC Estimate,Confidence
-2,1,1,1,1,VRE1P5LF,0,1.52345,8.708207,7.184757,Button released.,-2992.815,N/A
-2,1,1,1,2,VRE1P6LF,0,13.65047,19.23684,5.586373,Button released.,-2994.414,N/A
+2,1,1,1,1,TTC2,0,0.9599356,1.753363,0.7934279,Right,-2999.207,N/A
+2,1,1,1,2,TTC7,0,2.786069,3.852437,1.066368,Right,-2998.934,N/A
+2,1,1,1,3,TTC8,0,4.773833,23.16621,18.39237,Right,-2981.608,N/A

@@ -7,7 +7,7 @@
 					"objNum": 1,
 					"objType": "Car",
 					"customMot": false,
-					"customFile": "cameraLockAccelerate.txt",
+					"customFile": "cameraLockAccelerate.cus",
 					"customDur": 8,
 
 					"objScale": [
@@ -21,12 +21,12 @@
 						90
 					],
 					"startPos": [
-						-77.828863,
+						-77.77777778,
 						0,
 						5
 					],
 					"endPos": [
-						77,
+						0,
 						0,
 						5
 					],
@@ -57,12 +57,12 @@
 						90
 					],
 					"startPos": [
-						-100.065681,
+						-100,
 						0,
 						5
 					],
 					"endPos": [
-						77,
+						0,
 						0,
 						5
 					],
@@ -99,7 +99,7 @@
 						90
 					],
 					"startPos": [
-						-77.828863,
+						-77.77777778,
 						0,
 						5
 					],
@@ -135,7 +135,7 @@
 						90
 					],
 					"startPos": [
-						-155.657726,
+						-155.5555556,
 						0,
 						5
 					],
@@ -153,7 +153,403 @@
 					"offsetY": 0,
 					"offsetZ": 0
 				}
+				
 			]
-		}
+		},
+				{
+			"trialNum": 3,
+			"trialName": "TTC8",
+			"corrAns": 0,
+			"objects": [{
+					"objNum": 1,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-77.77777778,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				},
+				{
+					"objNum": 2,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-166.6666667,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				}
+				
+			]
+		},
+						{
+			"trialNum": 4,
+			"trialName": "TTC9",
+			"corrAns": 0,
+			"objects": [{
+					"objNum": 1,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-77.77777778,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				},
+				{
+					"objNum": 2,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-177.7777778,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				}
+				
+			]
+		},
+								{
+			"trialNum": 5,
+			"trialName": "TTC10",
+			"corrAns": 0,
+			"objects": [{
+					"objNum": 1,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-77.77777778,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				},
+				{
+					"objNum": 2,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-188.8888889,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				}
+				
+			]
+		},
+						{
+			"trialNum": 4,
+			"trialName": "TTC9",
+			"corrAns": 0,
+			"objects": [{
+					"objNum": 1,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-77.77777778,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				},
+				{
+					"objNum": 2,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-177.7777778,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				}
+				
+			]
+		},
+								{
+			"trialNum": 6,
+			"trialName": "TTC11",
+			"corrAns": 0,
+			"objects": [{
+					"objNum": 1,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-77.77777778,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				},
+				{
+					"objNum": 2,
+					"objType": "Car",
+					"customMot": false,
+					"customFile": "cameraLockAccelerate.txt",
+					"customDur": 8,
+
+					"objScale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"objRot": [
+						-90,
+						0,
+						90
+					],
+					"startPos": [
+						-200,
+						0,
+						5
+					],
+					"endPos": [
+						0,
+						0,
+						5
+					],
+					"velocity": 11.118409,
+					"timeVisible": 3000,
+					"rotationSpeedX": 0,
+					"rotationSpeedY": 0,
+					"rotationSpeedZ": 0,
+					"offsetX": -1,
+					"offsetY": 0,
+					"offsetZ": 0
+				}
+				
+			]
+		}		
 	]
 }
