@@ -45,6 +45,17 @@ accelerate.txt
 	Initial velocity	(0, 0, 0)	
 	Acceleration		-2
 
+cameraLockAccelerate.txt
+	File with 6 frames that tests an object speeding up, and can be used with camera lock turned on.
+	
+	Start Position		17.5
+	Total time (s)		5
+	Initial Velocity	-1
+	Acceleration		-1
+
+
+
+
 
 *File may have incorrect values (nonconstant acceleration).
 

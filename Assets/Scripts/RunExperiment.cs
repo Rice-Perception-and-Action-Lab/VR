@@ -59,6 +59,11 @@ public class RunExperiment : MonoBehaviour {
     private int[] cusMotArrayIndex;         // Array of the indexes of the positions in the cusMotArray, for all objects.
     private int[] numCustomCoordinates;     // Array of the total number of coordinates in cusMotArray,  for all objects.
 
+    private List<List<float>> audioDelays
+        = new List<List<float>>();          // Array of times that music starts playing for each trial.
+    private List<List<AudioClip>> audioClips
+        = new List<List<AudioClip>>();      // Array of audio sources for each trial
+    private GameObject audioSourceObject;        // The object which will play the audio files.
 
 
     /**
@@ -112,6 +117,22 @@ public class RunExperiment : MonoBehaviour {
         controllerPos = GameObject.Find("/CameraManager/[CameraRig]/Controller (right)").transform;
         movingObj = GameObject.Find("MovingObj");
 
+        // Set the audio source
+       audioSourceObject = GameObject.Find("Camera (ears)");
+
+        // Load all audio sources
+        for (int i = 0; i < trials.Length; i++)
+        {
+            ManageTrials.Trial trial = trials[i];
+
+            if (trial.playSound)
+            {
+                ReadAudioFiles(trials[i].soundFile);
+            }
+
+        }
+
+
 
         // Set up environment.
         if (config.ground) // Toggle ground visibility.
@@ -152,6 +173,7 @@ public class RunExperiment : MonoBehaviour {
             // Get the current trial from the data array
             ManageTrials.Trial trial = trials[curTrial];
 
+
             // Initialize all of the arrays for the objects in the trial
             numObjs = trial.objects.Length;
             objs = new Transform[numObjs];
@@ -162,6 +184,22 @@ public class RunExperiment : MonoBehaviour {
             rotations = new List<Vector3>[numObjs];
             cusMotArrayIndex = new int[numObjs];
             numCustomCoordinates = new int[numObjs];
+
+            // Play sounds for the trial
+            List<AudioClip> trialClips = audioClips[curTrial];
+            List<float> trialAudioTime = audioDelays[curTrial];
+
+            if (trial.playSound)
+            {
+                for (int tcIndex = 0; tcIndex < trialClips.Count; tcIndex++)
+                {
+                    AudioSource audioSource = audioSourceObject.AddComponent<AudioSource>();
+                    Debug.Log("current trial index: " + curTrial);
+                    audioSource.clip = trialClips[tcIndex];
+                    StartCoroutine(PlaySoundAfterDelay(audioSource, trialAudioTime[tcIndex]));
+                }
+
+            }
 
             for (int i = 0; i < numObjs; i++)
             {
@@ -576,10 +614,39 @@ public class RunExperiment : MonoBehaviour {
         file.Close();
     }
 
-   /**
-    * Calculates the offsets for non CameraLocked mode.
-    */
-    public List<Vector3> Offset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirections)
+    public void ReadAudioFiles(string filename)
+    {
+        string line;
+        string[] lineString;
+
+        List<AudioClip> innerAudioClips = new List<AudioClip>();
+        List<float> innerSoundDelays = new List<float>();
+
+        System.IO.StreamReader file = new System.IO.StreamReader(filename);
+        while ((line = file.ReadLine()) != null)
+        {
+            lineString = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries); // Split by spaces.
+
+            if (lineString.Length == 0) { break; } // In case accidentally added empty lines at the end of a file.
+
+            // Populate time delay array
+            innerSoundDelays.Add(Convert.ToSingle(lineString[0]));
+
+            // Populate audio clip array
+            innerAudioClips.Add((AudioClip)Resources.Load("Sounds\\" + lineString[1]));
+            
+        }
+
+        audioClips.Add(innerAudioClips);
+        audioDelays.Add(innerSoundDelays);
+
+
+    }
+
+        /**
+         * Calculates the offsets for non CameraLocked mode.
+         */
+        public List<Vector3> Offset(List<Vector3> positions, Vector3 objSize, Vector3 offsetDirections)
     {
         // Calculate offset. Assumes the object is symmetric and the object's position in Unity is the center of the object.
         Vector3 offsets = new Vector3(objSize.x / 2, objSize.y / 2, objSize.z / 2);
@@ -670,5 +737,18 @@ public class RunExperiment : MonoBehaviour {
 
 
     }
+
+
+    IEnumerator PlaySoundAfterDelay(AudioSource audioSource, float delay)
+    {
+        if (audioSource == null)
+            yield break;
+        yield return new WaitForSeconds(delay);
+        audioSource.Play();
+
+        float time = Time.time - trials[curTrial - 1].trialStart;
+        Debug.Log("Time audio played: " + time + " seconds");
+    }
+
 
 }
