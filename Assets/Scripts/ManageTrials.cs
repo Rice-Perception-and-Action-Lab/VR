@@ -15,6 +15,8 @@ public class ManageTrials : MonoBehaviour {
         public int trialNum;                // the number of the current trial
         public string trialName;            // the name of the current trial  
         public int corrAns;
+        public bool playSound;              // indicates if sound is played during trial
+        public string soundFile;            // name of the sound file
 
         public ManageObjs.Obj[] objects;    // the objects to be displayed in the trial
         public float trialStart;            // the time at which the trial began (with respect to when simulation began)

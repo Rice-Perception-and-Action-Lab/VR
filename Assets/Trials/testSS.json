@@ -3,6 +3,9 @@
 			"trialNum": 1,
 			"trialName": "VRE1P5LF",
 			"corrAns": 0,
+			"playMusic": true,
+			"musicFile": "C:\Users\stx1\Documents\GitHub\VR\Assets\Trials\sample wavs\chime_up",
+			"musicStartTime": 2,
 			"objects": [{
 					"objNum": 1,
 					"objType": "Cube",

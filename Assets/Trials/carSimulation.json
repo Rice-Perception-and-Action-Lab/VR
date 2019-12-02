@@ -3,6 +3,8 @@
 			"trialNum": 1,
 			"trialName": "TTC2",
 			"corrAns": 0,
+			"playSound": true,
+			"soundFile": "~\\..\\Assets\\Trials\\soundFiles\\testSoundFile.txt",
 			"objects": [{
 					"objNum": 1,
 					"objType": "Car",
