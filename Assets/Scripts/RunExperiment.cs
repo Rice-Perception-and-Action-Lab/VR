@@ -127,7 +127,7 @@ public class RunExperiment : MonoBehaviour {
 
             if (trial.playSound)
             {
-                ReadAudioFiles(trials[i].soundFile);
+                ReadAudioFiles("Assets/Trials/soundFiles/" + trials[i].soundFile);
             }
 
         }
