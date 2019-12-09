@@ -185,12 +185,12 @@ public class RunExperiment : MonoBehaviour {
             cusMotArrayIndex = new int[numObjs];
             numCustomCoordinates = new int[numObjs];
 
-            // Play sounds for the trial
-            List<AudioClip> trialClips = audioClips[curTrial];
-            List<float> trialAudioTime = audioDelays[curTrial];
-
             if (trial.playSound)
             {
+				// Play sounds for the trial
+				List<AudioClip> trialClips = audioClips[curTrial];
+				List<float> trialAudioTime = audioDelays[curTrial];
+		
                 for (int tcIndex = 0; tcIndex < trialClips.Count; tcIndex++)
                 {
                     AudioSource audioSource = audioSourceObject.AddComponent<AudioSource>();
