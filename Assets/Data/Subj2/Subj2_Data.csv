@@ -1,4 +1,4 @@
 Subj,Sex,Session,Group,Trial,TrialName,CorrAns,TrialStart,TrialEnd,RespTime,Resp,TTC Estimate,Confidence
-2,1,1,1,1,TTC2,0,0.9599356,1.753363,0.7934279,Right,-2999.207,N/A
-2,1,1,1,2,TTC7,0,2.786069,3.852437,1.066368,Right,-2998.934,N/A
-2,1,1,1,3,TTC8,0,4.773833,23.16621,18.39237,Right,-2981.608,N/A
+2,1,2,1,1,gn2acdcs,0,7.648232,21.60802,13.95979,Left,-9986.04,N/A
+2,1,2,1,2,gn2acdcs,0,22.77412,33.82432,11.0502,Right,-9988.95,N/A
+2,1,2,1,3,gn2acdcs,0,35.04602,46.44001,11.39399,Right,-9988.606,N/A

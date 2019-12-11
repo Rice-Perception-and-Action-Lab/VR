@@ -1,15 +1,27 @@
 {
-    "subjNum": 2,
-    "subjSex": 1,
-    "session": 2,
+    "subjNum": 1,
+    "subjSex": 0,
+    "session": 1,
     "group": 1,
-    "trialFile": "~\\..\\Assets\\Trials\\si4test.json",
+    "trialFile": "~\\..\\Assets\\Trials\\sc1test.json",
     "showFeedback": false,
-    "feedbackType": 1,
+    "feedbackType": 0,
     "collectConfidence": false,
     "feedbackColor": "black",
-    "trackHeadPos": true,
+    "trackHeadPos": false,
     "Trials": [
+        {
+            "trialNum": 0,
+            "trialName": "",
+            "corrAns": 0,
+            "objData": [],
+            "trialStart": 0.0,
+            "trialEnd": 0.0,
+            "respTime": 0.0,
+            "response": "",
+            "confidence": "",
+            "ttcEstimate": 0.0
+        },
         {
             "trialNum": 0,
             "trialName": "",

@@ -1,0 +1,320 @@
+{
+    "trials": [
+        {
+            "trialNum": 1,
+            "trialName": "sc1test1",
+            "corrAns": 0,
+            "playSound": true,
+            "soundFile": "testSoundFile.txt",
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        -90,
+                        0,
+                        90
+                    ],
+                    "startPos": [
+                        -10,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        15,
+                        0,
+                        5
+                    ],
+                    "velocity": 20,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        -90,
+                        0,
+                        90
+                    ],
+                    "startPos": [
+                        -100,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        10,
+                        0,
+                        5
+                    ],
+                    "velocity": 20,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                }
+            ]
+        },
+        {
+            "trialNum": 2,
+            "trialName": "sc1test1",
+            "corrAns": 0,
+            "playSound": true,
+            "soundFile": "testSoundFile.txt",
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        -90,
+                        0,
+                        90
+                    ],
+                    "startPos": [
+                        -100,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        15,
+                        0,
+                        5
+                    ],
+                    "velocity": 10,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        -30,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        10,
+                        0,
+                        5
+                    ],
+                    "velocity": 10,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                }
+            ]
+        },
+        {
+            "trialNum": 3,
+            "trialName": "sc1test1",
+            "corrAns": 0,
+            "playSound": true,
+            "soundFile": "testSoundFile.txt",
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        -90,
+                        0,
+                        90
+                    ],
+                    "startPos": [
+                        -10,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        15,
+                        0,
+                        5
+                    ],
+                    "velocity": 10,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        -30,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        10,
+                        0,
+                        5
+                    ],
+                    "velocity": 10,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                }
+            ]
+        },
+        {
+            "trialNum": 4,
+            "trialName": "sc1test1",
+            "corrAns": 0,
+            "playSound": true,
+            "soundFile": "testSoundFile.txt",
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        -90,
+                        0,
+                        90
+                    ],
+                    "startPos": [
+                        -10,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        15,
+                        0,
+                        5
+                    ],
+                    "velocity": 10,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Car",
+                    "customMot": false,
+                    "customFile": "",
+                    "customDur": 0,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        -30,
+                        0,
+                        5
+                    ],
+                    "endPos": [
+                        10,
+                        0,
+                        5
+                    ],
+                    "velocity": 10,
+                    "timeVisible": 100,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                }
+            ]
+        }
+    ]
+}

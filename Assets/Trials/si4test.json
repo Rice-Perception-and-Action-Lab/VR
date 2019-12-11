@@ -1,0 +1,236 @@
+{
+    "trials": [
+        {
+            "trialNum": 1,
+            "trialName": "gn2acdcs",
+            "corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "customMot": true,
+                    "customFile": "gnacd.cus",
+                    "customDur": 8,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 0,
+                    "timeVisible": 100000,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Sphere",
+                    "customMot": true,
+                    "customFile": "gndca.cus",
+                    "customDur": 8,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 0,
+                    "timeVisible": 10000,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                }
+            ]
+        },
+		{
+            "trialNum": 2,
+            "trialName": "gn2acdcs",
+            "corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "customMot": true,
+                    "customFile": "gnacd.cus",
+                    "customDur": 8,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 0,
+                    "timeVisible": 100000,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Sphere",
+                    "customMot": true,
+                    "customFile": "gndca.cus",
+                    "customDur": 8,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 0,
+                    "timeVisible": 10000,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                }
+            ]
+        },
+		{
+            "trialNum": 3,
+            "trialName": "gn2acdcs",
+            "corrAns": 0,
+            "objects": [
+                {
+                    "objNum": 1,
+                    "objType": "Sphere",
+                    "customMot": true,
+                    "customFile": "gnacd.cus",
+                    "customDur": 8,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 0,
+                    "timeVisible": 100000,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                },
+                {
+                    "objNum": 2,
+                    "objType": "Sphere",
+                    "customMot": true,
+                    "customFile": "gndca.cus",
+                    "customDur": 8,
+                    "objScale": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "objRot": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "startPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "endPos": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "velocity": 0,
+                    "timeVisible": 10000,
+                    "rotationSpeedX": 0,
+                    "rotationSpeedY": 0,
+                    "rotationSpeedZ": 0,
+                    "offsetX": false,
+                    "offsetY": false,
+                    "offsetZ": false
+                }
+            ]
+        }
+       
+    ]
+}

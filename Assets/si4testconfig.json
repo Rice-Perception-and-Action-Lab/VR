@@ -1,0 +1,28 @@
+{
+    "subjNum": 2,
+    "subjSex": 1,
+	"session": 2,
+	"group": 1,
+    "trialFile": "~\\..\\Assets\\Trials\\si4test.json",
+    "trackHeadPos": true,
+	"trackControllerPos": true,
+    "showFeedback": false,
+	"feedbackType": 1,
+	"collectConfidence": false,
+    "feedbackColor": "black",
+    "feedbackSize": 75,
+    "feedbackPos": [
+      0,
+      6,
+      100
+    ],
+	"ground": false,
+	"road": false,
+	"roadPos": [
+	0,
+	0,
+	5
+	],
+	"pressHold": false,
+	"debugging": false
+}

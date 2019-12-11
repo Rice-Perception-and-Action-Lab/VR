@@ -1,9 +1,9 @@
 {
     "subjNum": 2,
     "subjSex": 1,
-    "session": 1,
+    "session": 2,
     "group": 1,
-    "trialFile": "~\\..\\Assets\\Trials\\carSimulation.json",
+    "trialFile": "~\\..\\Assets\\Trials\\si4test.json",
     "showFeedback": false,
     "feedbackType": 1,
     "collectConfidence": false,
@@ -12,192 +12,192 @@
     "Trials": [
         {
             "trialNum": 1,
-            "trialName": "TTC2",
+            "trialName": "gn2acdcs",
             "corrAns": 0,
             "objData": [
                 {
                     "objNum": 1,
-                    "objType": "Car",
+                    "objType": "Sphere",
                     "objScale": [
                         1.0,
                         1.0,
                         1.0
                     ],
                     "startPos": [
-                        -77.77777862548828,
                         0.0,
-                        5.0
+                        0.0,
+                        0.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        5.0
+                        0.0
                     ],
-                    "distTraveled": 77.77777862548828,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
+                    "distTraveled": 0.0,
+                    "velocity": 0.0,
+                    "timeVisible": 100000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 },
                 {
                     "objNum": 2,
-                    "objType": "Car",
+                    "objType": "Sphere",
                     "objScale": [
                         1.0,
                         1.0,
                         1.0
                     ],
                     "startPos": [
-                        -100.0,
                         0.0,
-                        5.0
+                        0.0,
+                        0.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        5.0
+                        0.0
                     ],
-                    "distTraveled": 100.0,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
+                    "distTraveled": 0.0,
+                    "velocity": 0.0,
+                    "timeVisible": 10000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 0.9599356055259705,
-            "trialEnd": 1.7533634901046754,
-            "respTime": 0.7934278845787048,
-            "response": "Right",
+            "trialStart": 7.6482319831848148,
+            "trialEnd": 21.608022689819337,
+            "respTime": 13.95979118347168,
+            "response": "Left",
             "confidence": "N/A",
-            "ttcEstimate": -2999.20654296875
+            "ttcEstimate": -9986.0400390625
         },
         {
             "trialNum": 2,
-            "trialName": "TTC7",
+            "trialName": "gn2acdcs",
             "corrAns": 0,
             "objData": [
                 {
                     "objNum": 1,
-                    "objType": "Car",
+                    "objType": "Sphere",
                     "objScale": [
                         1.0,
                         1.0,
                         1.0
                     ],
                     "startPos": [
-                        -77.77777862548828,
                         0.0,
-                        5.0
+                        0.0,
+                        0.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        5.0
+                        0.0
                     ],
-                    "distTraveled": 77.77777862548828,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
+                    "distTraveled": 0.0,
+                    "velocity": 0.0,
+                    "timeVisible": 100000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 },
                 {
                     "objNum": 2,
-                    "objType": "Car",
+                    "objType": "Sphere",
                     "objScale": [
                         1.0,
                         1.0,
                         1.0
                     ],
                     "startPos": [
-                        -155.55555725097657,
                         0.0,
-                        5.0
+                        0.0,
+                        0.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        5.0
+                        0.0
                     ],
-                    "distTraveled": 155.55555725097657,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
+                    "distTraveled": 0.0,
+                    "velocity": 0.0,
+                    "timeVisible": 10000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 2.78606915473938,
-            "trialEnd": 3.8524370193481447,
-            "respTime": 1.0663678646087647,
+            "trialStart": 22.774124145507814,
+            "trialEnd": 33.82432174682617,
+            "respTime": 11.05019760131836,
             "response": "Right",
             "confidence": "N/A",
-            "ttcEstimate": -2998.93359375
+            "ttcEstimate": -9988.9501953125
         },
         {
             "trialNum": 3,
-            "trialName": "TTC8",
+            "trialName": "gn2acdcs",
             "corrAns": 0,
             "objData": [
                 {
                     "objNum": 1,
-                    "objType": "Car",
+                    "objType": "Sphere",
                     "objScale": [
                         1.0,
                         1.0,
                         1.0
                     ],
                     "startPos": [
-                        -77.77777862548828,
                         0.0,
-                        5.0
+                        0.0,
+                        0.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        5.0
+                        0.0
                     ],
-                    "distTraveled": 77.77777862548828,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
+                    "distTraveled": 0.0,
+                    "velocity": 0.0,
+                    "timeVisible": 100000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 },
                 {
                     "objNum": 2,
-                    "objType": "Car",
+                    "objType": "Sphere",
                     "objScale": [
                         1.0,
                         1.0,
                         1.0
                     ],
                     "startPos": [
-                        -166.6666717529297,
                         0.0,
-                        5.0
+                        0.0,
+                        0.0
                     ],
                     "endPos": [
                         0.0,
                         0.0,
-                        5.0
+                        0.0
                     ],
-                    "distTraveled": 166.6666717529297,
-                    "velocity": 11.118409156799317,
-                    "timeVisible": 3000.0,
+                    "distTraveled": 0.0,
+                    "velocity": 0.0,
+                    "timeVisible": 10000.0,
                     "rotationSpeedX": 0.0,
                     "rotationSpeedY": 0.0,
                     "rotationSpeedZ": 0.0
                 }
             ],
-            "trialStart": 4.77383279800415,
-            "trialEnd": 23.16620635986328,
-            "respTime": 18.39237403869629,
+            "trialStart": 35.0460205078125,
+            "trialEnd": 46.440006256103519,
+            "respTime": 11.393985748291016,
             "response": "Right",
             "confidence": "N/A",
-            "ttcEstimate": -2981.607666015625
+            "ttcEstimate": -9988.6064453125
         }
     ]
 }
