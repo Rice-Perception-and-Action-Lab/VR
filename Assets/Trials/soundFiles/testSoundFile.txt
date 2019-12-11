@@ -1,2 +1,2 @@
 3.0	av1
-3.0	chime
+5.0	chime

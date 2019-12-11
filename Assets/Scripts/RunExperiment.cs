@@ -127,7 +127,7 @@ public class RunExperiment : MonoBehaviour {
 
             if (trial.playSound)
             {
-                ReadAudioFiles(trials[i].soundFile);
+                ReadAudioFiles("Assets/Trials/soundFiles/" + trials[i].soundFile);
             }
 
         }
@@ -185,12 +185,12 @@ public class RunExperiment : MonoBehaviour {
             cusMotArrayIndex = new int[numObjs];
             numCustomCoordinates = new int[numObjs];
 
-            // Play sounds for the trial
-            List<AudioClip> trialClips = audioClips[curTrial];
-            List<float> trialAudioTime = audioDelays[curTrial];
-
             if (trial.playSound)
             {
+                // Play sounds for the trial
+                List<AudioClip> trialClips = audioClips[curTrial];
+                List<float> trialAudioTime = audioDelays[curTrial];
+
                 for (int tcIndex = 0; tcIndex < trialClips.Count; tcIndex++)
                 {
                     AudioSource audioSource = audioSourceObject.AddComponent<AudioSource>();
@@ -593,16 +593,16 @@ public class RunExperiment : MonoBehaviour {
             n = posStrings.Length; // Length of the line
             if (n == 0) { break; } // In case accidentally added empty lines at the end of a file.
 
-            double[] position = new double[n];
+            float[] position = new float[n];
             // Population positions array.
             for (int i = 1; i < n; i++) // Start at one since we don't keep the frame number.
             {
                 // Convert string decimal to double and put into an array.
-                position[i - 1] = Convert.ToDouble(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
+                position[i - 1] = Convert.ToSingle(posStrings[i]); // Assumes you use periods to delineate decimal numbers.
             }
 
-            Vector3 coordinates = new Vector3((float)position[0], (float)position[1], (float)position[2]);
-            Vector3 rotDegrees = new Vector3((float)position[3], (float)position[4], (float)position[5]);
+            Vector3 coordinates = new Vector3(position[0], position[1], position[2]);
+            Vector3 rotDegrees = new Vector3(position[3], position[4], position[5]);
 
             cusMotArray[j].Add(coordinates);
             rotations[j].Add(rotDegrees);
